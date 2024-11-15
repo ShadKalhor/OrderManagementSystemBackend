@@ -1,0 +1,46 @@
+plugins {
+    // Apply the Java plugin
+    id 'java'
+
+    // Apply the Spring Boot plugin
+    id 'org.springframework.boot' version '2.7.0'  // Use a stable version
+
+    // Dependency management plugin for Spring Boot
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23) // Replace 17 with your JDK version
+    }
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '11'  // Matches your JDK version
+
+repositories {
+    // Use Maven Central to resolve dependencies
+    mavenCentral()
+}
+
+dependencies {
+    implementation files('src/libs/gson-2.8.8.jar')
+    // Spring Boot Web Starter for building RESTful APIs
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring Boot DevTools for live reload during development (Optional)
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Spring Data JPA for working with Hibernate and databases
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // SQL Server JDBC Driver for connecting to SQL Server
+    runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11'  // Specify the version
+
+    // Spring Boot Starter Test for unit and integration testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()  // Enable JUnit 5 testing platform
+}
