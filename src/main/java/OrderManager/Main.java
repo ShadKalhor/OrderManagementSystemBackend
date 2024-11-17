@@ -16,12 +16,7 @@ import java.util.UUID;
 public class Main {
     private static final int PORT = 8081;
 
-    public static void main(String[] args) {/*
-        UserController userController = new UserController();
-        UUID roleId = UUID.fromString("45c4cad3-d78d-4e76-93d2-7da1c3900969");
-        User user = new User(UUID.randomUUID(), roleId, "Kayha", "07508361067","Ss123$Dd", Utilities.Genders.Male);
-        userController.createUser(user);
-        userController.PrintUsers();*/
+    public static void main(String[] args) {
 
         try {
             // Initialize controllers

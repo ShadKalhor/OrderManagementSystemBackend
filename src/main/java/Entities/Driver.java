@@ -59,4 +59,14 @@ public class Driver {
     public void setAge(int age) {
         this.age = age;
     }
+    @Override
+    public String toString() {
+        return
+                "id=" + id +
+                        ", name='" + name + '\'' +
+                        ", phone='" + phone + '\'' +
+                        ", vehicleNumber=" + vehicleNumber +
+                        ", age='" + age + '\n'
+                ;
+    }
 }

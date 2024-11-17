@@ -3,7 +3,7 @@ package Controllers;
 import Entities.*;
 import OrderManager.Database.DatabaseConnection;
 import org.apache.tomcat.jni.Address;
-
+import Entities.Utilities;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,15 +101,16 @@ public class OrderController {
     }
 
     public void UpdateOrder(Order selectedOrder) {
-        String sql = "UPDATE Orders SET userId = ?, addressId = ?, driverId = ?, status = ?, deliveryStatus = ?, subTotal = ?, deliveryFee = ?, tax = ?, totalPrice = ?, notes = ? WHERE id = ?";
+        String sql = "UPDATE Orders SET userId = ?, addressId = ?, driverId = ?, statusId = ?, deliveryStatusId = ?, subTotal = ?, deliveryFee = ?, tax = ?, totalPrice = ?, notes = ? WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-
+            int statusId = getStatusId(selectedOrder.getStatus());
+            int deliveryStatusId = getDeliveryStatusId(selectedOrder.getDeliveryStatus());
             statement.setString(1, selectedOrder.getUserId().toString());
             statement.setString(2, selectedOrder.getAddressId().toString());
             statement.setString(3, selectedOrder.getDriverId().toString());
-            statement.setString(4, selectedOrder.getStatus().name());
-            statement.setString(5, selectedOrder.getDeliveryStatus().name());
+            statement.setInt(4, statusId);
+            statement.setInt(5, deliveryStatusId);
             statement.setDouble(6, selectedOrder.getSubTotal());
             statement.setDouble(7, selectedOrder.getDeliveryFee());
             statement.setDouble(8, selectedOrder.getTax());
@@ -144,6 +145,11 @@ public class OrderController {
             System.out.println("Error loading orders from database.");
             e.printStackTrace();
         }
+    }
+
+    public List<Order> GetOrders(){
+        loadOrders();
+        return orderList;
     }
 
     public void CreateOrder(Order order) {
@@ -301,17 +307,55 @@ public class OrderController {
 
     private Order buildOrderFromResultSet(ResultSet resultSet) throws SQLException {
         Order order = new Order();
+        Utilities.Status statustype = getStatusType(Integer.parseInt(resultSet.getString("statusId")));
+        Utilities.DeliveryStatus deliveryStatusType = getDeliveryStatusType(Integer.parseInt(resultSet.getString("deliveryStatusId")));
+
         order.setId(UUID.fromString(resultSet.getString("id")));
         order.setUserId(UUID.fromString(resultSet.getString("userId")));
         order.setAddressId(resultSet.getString("addressId") != null ? UUID.fromString(resultSet.getString("addressId")) : null);
         order.setDriverId(resultSet.getString("driverId") != null ? UUID.fromString(resultSet.getString("driverId")) : null);
-        order.setStatus(Utilities.Status.valueOf(resultSet.getString("status")));
-        order.setDeliveryStatus(Utilities.DeliveryStatus.valueOf(resultSet.getString("deliveryStatus")));
+        order.setStatus(statustype);
+        order.setDeliveryStatus(deliveryStatusType);
         order.setSubTotal(resultSet.getDouble("subTotal"));
         order.setDeliveryFee(resultSet.getDouble("deliveryFee"));
         order.setTax(resultSet.getDouble("tax"));
         order.setTotalPrice(resultSet.getDouble("totalPrice"));
         order.setNotes(resultSet.getString("notes"));
         return order;
+    }
+
+    private Utilities.Status getStatusType(int statusId) {
+        switch (statusId) {
+            case 1:
+                return Utilities.Status.Pending;
+            case 2:
+                return Utilities.Status.Confirmed;
+            case 3:
+                return Utilities.Status.Reviewing;
+            case 4:
+                return Utilities.Status.Approved;
+            case 5:
+                return Utilities.Status.OutForDelivery;
+            case 6:
+                return Utilities.Status.Canceled;
+            case 7:
+                return Utilities.Status.OnHold;
+            case 8:
+                return Utilities.Status.Returned;
+            case 9:
+                return Utilities.Status.Refunded;
+        }
+        return Utilities.Status.Pending;
+    }
+    private Utilities.DeliveryStatus getDeliveryStatusType(int deliveryStatusId) {
+        switch (deliveryStatusId) {
+            case 1:
+                return Utilities.DeliveryStatus.Pending;
+            case 2:
+                return Utilities.DeliveryStatus.onWay;
+            case 3:
+                return Utilities.DeliveryStatus.Delivered;
+        }
+        return Utilities.DeliveryStatus.Pending;
     }
 }

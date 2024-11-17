@@ -1,10 +1,14 @@
 package Controllers;
 
 import Entities.Driver;
+import Entities.Order;
+import Entities.Utilities;
 import OrderManager.Database.DatabaseConnection;
 import Extensions.RegexFormats;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class DriverController {
@@ -60,6 +64,24 @@ public class DriverController {
         return null;
     }
 
+    public List<Driver> GetDrivers(){
+        String sql = "SELECT * FROM Driver";
+        List<Driver> drivers = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Driver driver = buildOrderFromResultSet(resultSet);
+                drivers.add(driver);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading orders from database.");
+            e.printStackTrace();
+        }
+        return drivers;
+    }
+
     public void updateDriver(UUID driverId, String name, String phone, String vehicleNumber, int age) {
         String query = "UPDATE Driver SET name = ?, phone = ?, vehicleNumber = ?, age = ? WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -111,5 +133,15 @@ public class DriverController {
             return false;
         }
         return true;
+    }
+
+    private Driver buildOrderFromResultSet(ResultSet resultSet) throws SQLException {
+        Driver driver = new Driver();
+        driver.setId(UUID.fromString(resultSet.getString("id")));
+        driver.setName(resultSet.getString("name"));
+        driver.setPhone(resultSet.getString("phone"));
+        driver.setVehicleNumber(resultSet.getString("vehicleNumber"));
+        driver.setAge(resultSet.getInt("age"));
+        return driver;
     }
 }

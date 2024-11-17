@@ -2,24 +2,31 @@ package OrderManager.Handlers;
 
 import Controllers.DriverController;
 import Entities.Driver;
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
+import java.util.List;
 import java.util.UUID;
 
 public class DriverHandler implements HttpHandler {
     private final DriverController driverController = new DriverController();
-
+    private static final Gson gson = new Gson();
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
-
+        String path = exchange.getRequestURI().getPath();
         switch (method.toUpperCase()) {
             case "POST":
                 handleCreateDriver(exchange);
                 break;
             case "GET":
+                if (path.equals("/driver/list")) {
+                handleListDrivers(exchange); // New request for listing drivers
+            } else{
+                handleGetDriver(exchange);
+            }
                 handleGetDriver(exchange);
                 break;
             case "PUT":
@@ -31,6 +38,20 @@ public class DriverHandler implements HttpHandler {
             default:
                 exchange.sendResponseHeaders(405, -1); // Method Not Allowed
                 break;
+        }
+    }
+
+    private void handleListDrivers(HttpExchange exchange) throws IOException {
+        try {
+            List<Driver> drivers = driverController.GetDrivers(); // Fetch drivers from the controller
+            String response = gson.toJson(drivers);
+            exchange.sendResponseHeaders(200, response.getBytes().length); // HTTP 200 OK
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(response.getBytes());
+            }
+        } catch (Exception e) {
+            exchange.sendResponseHeaders(500, -1); // HTTP 500 Internal Server Error
+            e.printStackTrace();
         }
     }
 
