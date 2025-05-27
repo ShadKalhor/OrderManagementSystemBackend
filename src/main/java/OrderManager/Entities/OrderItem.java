@@ -1,4 +1,4 @@
-package Entities;
+package OrderManager.Entities;
 
 import java.util.UUID;
 
@@ -12,6 +12,12 @@ public class OrderItem {
 
     public OrderItem(UUID itemId, int quantity, double totalPrice) {
         this.id = UUID.randomUUID();
+        this.itemId = itemId;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+    }
+    public OrderItem(UUID id,UUID itemId, int quantity, double totalPrice) {
+        this.id = id;
         this.itemId = itemId;
         this.quantity = quantity;
         this.totalPrice = totalPrice;

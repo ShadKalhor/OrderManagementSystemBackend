@@ -1,18 +1,18 @@
-package Entities;
+package OrderManager.Entities;
 
-import Entities.*;
+import OrderManager.Entities.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+import OrderManager.Entities.Utilities;
 public class Order {
     private UUID id;
     private UUID userId;
     private UUID addressId;
     private UUID driverId;
-    private Entities.Utilities.Status status;
-    private Entities.Utilities.DeliveryStatus deliveryStatus;
-    private List<Entities.OrderItem> items;
+    private Utilities.Status status;
+    private Utilities.DeliveryStatus deliveryStatus;
+    private List<OrderItem> items;
     private double subTotal;
     private double deliveryFee;
     private double tax;
@@ -22,7 +22,7 @@ public class Order {
     public Order() {
         id = UUID.randomUUID();
         addressId = UUID.randomUUID();
-        status = Entities.Utilities.Status.Pending;
+        status = Utilities.Status.Pending;
     }
 
     public UUID getId() {
@@ -57,30 +57,30 @@ public class Order {
         this.driverId = driverId;
     }
 
-    public Entities.Utilities.Status getStatus() {
+    public Utilities.Status getStatus() {
         return status;
     }
 
-    public void setStatus(Entities.Utilities.Status status) {
+    public void setStatus(Utilities.Status status) {
         this.status = status;
     }
 
-    public Entities.Utilities.DeliveryStatus getDeliveryStatus() {
+    public Utilities.DeliveryStatus getDeliveryStatus() {
         return deliveryStatus;
     }
 
-    public void setDeliveryStatus(Entities.Utilities.DeliveryStatus deliveryStatus) {
+    public void setDeliveryStatus(Utilities.DeliveryStatus deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
     }
 
-    public List<Entities.OrderItem> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Entities.OrderItem> items) {
+    public void setItems(List<OrderItem> items) {
         this.items = items;
     }
-    public void addItem(Entities.OrderItem item) {
+    public void addItem(OrderItem item) {
         if(items == null)
             items = new ArrayList<>();
         this.items.add(item);

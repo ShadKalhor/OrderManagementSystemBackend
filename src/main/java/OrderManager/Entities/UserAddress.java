@@ -1,4 +1,4 @@
-package Entities;
+package OrderManager.Entities;
 
 import java.util.UUID;
 

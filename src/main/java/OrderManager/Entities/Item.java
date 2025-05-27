@@ -1,5 +1,5 @@
-package Entities;
-import java.util.Arrays;
+package OrderManager.Entities;
+
 import java.util.UUID;
 
 public class Item {
@@ -89,11 +89,11 @@ public class Item {
     public String toString() {
         return
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", size='" + size + '\'' +
-                ", isAvailable=" + isAvailable + '\n'
+                        ", name='" + name + '\'' +
+                        ", description='" + description + '\'' +
+                        ", price=" + price +
+                        ", size='" + size + '\'' +
+                        ", isAvailable=" + isAvailable + '\n'
                 ;
     }
 }

@@ -1,6 +1,6 @@
-package Controllers;
+package OrderManager.Controllers;
 
-import Entities.Item;
+import OrderManager.Entities.Item;
 import OrderManager.Database.DatabaseConnection;
 
 import java.sql.*;
@@ -70,6 +70,23 @@ public class ItemController {
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, itemId.toString());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return buildItemFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving item by ID from database.");
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public Item GetItemByName(String itemName) {
+        String sql = "SELECT * FROM Item WHERE name = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, itemName);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {

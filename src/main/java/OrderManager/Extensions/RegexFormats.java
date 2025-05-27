@@ -1,4 +1,4 @@
-package Extensions;
+package OrderManager.Extensions;
 
 public class RegexFormats {
     public String NameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ' -]{1,50}$";

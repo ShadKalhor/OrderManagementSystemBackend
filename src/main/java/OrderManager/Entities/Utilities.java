@@ -1,4 +1,4 @@
-package Entities;
+package OrderManager.Entities;
 
 public class Utilities {
     public static enum Genders{

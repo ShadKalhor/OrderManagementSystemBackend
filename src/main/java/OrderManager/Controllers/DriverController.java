@@ -1,18 +1,20 @@
-package Controllers;
+package OrderManager.Controllers;
 
-import Entities.Driver;
-import Entities.Order;
-import Entities.Utilities;
 import OrderManager.Database.DatabaseConnection;
-import Extensions.RegexFormats;
-
+import OrderManager.Extensions.RegexFormats;
+import org.springframework.web.bind.annotation.*;
+import OrderManager.Entities.Driver;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@RestController
+@RequestMapping("/Driver")
 public class DriverController {
 
+
+    @PostMapping("/Create")
     public void createDriver(Driver driver) {
         String query = "INSERT INTO Driver (id, name, phone, vehicleNumber, age) VALUES (?, ?, ?, ?, ?)";
         if (isValidDriver(driver)) {
@@ -36,8 +38,8 @@ public class DriverController {
             System.out.println("Invalid driver data.");
         }
     }
-
-    public Driver readDriver(UUID driverId) {
+    @GetMapping("/GetDriver")
+    public Driver GetDriver(UUID driverId) {
         String query = "SELECT * FROM Driver WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -64,6 +66,7 @@ public class DriverController {
         return null;
     }
 
+    @GetMapping("/GetDrivers")
     public List<Driver> GetDrivers(){
         String sql = "SELECT * FROM Driver";
         List<Driver> drivers = new ArrayList<>();
@@ -82,6 +85,7 @@ public class DriverController {
         return drivers;
     }
 
+    @PatchMapping("/Update")
     public void updateDriver(UUID driverId, String name, String phone, String vehicleNumber, int age) {
         String query = "UPDATE Driver SET name = ?, phone = ?, vehicleNumber = ?, age = ? WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -106,7 +110,8 @@ public class DriverController {
         }
     }
 
-    public void deleteDriver(UUID driverId) {
+    @DeleteMapping("/Delete{driverId}")
+    public void deleteDriver(@PathVariable UUID driverId) {
         String query = "DELETE FROM Driver WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -125,6 +130,8 @@ public class DriverController {
             e.printStackTrace();
         }
     }
+
+
 
     private boolean isValidDriver(Driver driver) {
         RegexFormats formats = new RegexFormats();

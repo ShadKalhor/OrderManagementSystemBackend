@@ -1,18 +1,21 @@
-package Controllers;
+package OrderManager.Controllers;
 
-import Entities.UserAddress;
 import OrderManager.Database.DatabaseConnection;
+import OrderManager.Entities.UserAddress;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@RestController
+@RequestMapping("/Address")
 public class AddressController {
 
-    // Create a new address
+    @PostMapping("/Create")
     public void createAddress(UserAddress address) {
-        String sql = "INSERT INTO UserAddresses (id, userId, name, city, description, type, street, residentialNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO UserAddress (id, userId, name, city, description, type, street, residentialNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -31,10 +34,10 @@ public class AddressController {
             }
         } catch (SQLException e) {
             System.out.println("Error creating address in database.");
-            e.printStackTrace();
         }
     }
-    public UserAddress getFirstAddressByUserId(UUID userId) {
+
+   /* public UserAddress getFirstAddressByUserId(UUID userId) {
         String sql = "SELECT TOP 1 * FROM dbo.UserAddress WHERE userId = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -51,10 +54,9 @@ public class AddressController {
         }
         return null;
     }
+*/
 
-
-
-    // Retrieve an address by ID
+    @GetMapping("/GetAddressById")
     public UserAddress getAddressById(UUID id) {
         String sql = "SELECT * FROM UserAddress WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -73,7 +75,28 @@ public class AddressController {
         return null;
     }
 
-    // Update an existing address
+    @GetMapping("/GetAllAddressesById")
+    public List<UserAddress> listAddressesByUserId(UUID userId) {
+        List<UserAddress> addresses = new ArrayList<>();
+        String sql = "SELECT * FROM UserAddress WHERE userId = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, userId.toString());
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                addresses.add(buildAddressFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving addresses by user ID from database.");
+            e.printStackTrace();
+        }
+        return addresses;
+    }
+
+
+    @PatchMapping("/Update")
     public void updateAddress(UserAddress address) {
         String sql = "UPDATE UserAddress SET userId = ?, name = ?, city = ?, description = ?, type = ?, street = ?, residentialNo = ? WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -100,7 +123,8 @@ public class AddressController {
         }
     }
 
-    // Delete an address by ID
+
+    @DeleteMapping("/Delete")
     public void deleteAddress(UUID id) {
         String sql = "DELETE FROM UserAddress WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -120,27 +144,7 @@ public class AddressController {
         }
     }
 
-    // List all addresses for a user
-    public List<UserAddress> listAddressesByUserId(UUID userId) {
-        List<UserAddress> addresses = new ArrayList<>();
-        String sql = "SELECT * FROM UserAddress WHERE userId = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, userId.toString());
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                addresses.add(buildAddressFromResultSet(resultSet));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error retrieving addresses by user ID from database.");
-            e.printStackTrace();
-        }
-        return addresses;
-    }
-
-    // Helper method to construct a UserAddress object from a ResultSet
     private UserAddress buildAddressFromResultSet(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString("id"));
         UUID userId = UUID.fromString(resultSet.getString("userId"));

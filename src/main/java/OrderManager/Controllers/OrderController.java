@@ -1,17 +1,17 @@
-package Controllers;
+package OrderManager.Controllers;
 
-import Entities.*;
 import OrderManager.Database.DatabaseConnection;
-import org.apache.tomcat.jni.Address;
-import Entities.Utilities;
+import OrderManager.Entities.*;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class OrderController {
-    private AddressController addressController = new AddressController();
-    private List<Order> orderList = new ArrayList<>();
+    final private AddressController addressController = new AddressController();
+    final private OrderListAndOrderController orderListAndOrderController = new OrderListAndOrderController();
+    final private List<Order> orderList = new ArrayList<>();
 
     public void DeleteOrder(UUID orderId) {
         String sql = "DELETE FROM Orders WHERE id = ?";
@@ -27,9 +27,37 @@ public class OrderController {
             }
         } catch (SQLException e) {
             System.out.println("Error deleting order from database.");
-            e.printStackTrace();
         }
     }
+
+
+    public List<Order> GetOrdersByUserId(UUID userId){
+
+        String sql = "SELECT id FROM Orders WHERE userId = ?";
+        List<Order> orders = new ArrayList<>();
+        try(Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)){
+
+            statement.setString(1, userId.toString());
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID orderId = UUID.fromString(resultSet.getString("id")); // Retrieve order ID
+                Order order = GetOrderById(orderId); // Fetch the order using getOrderById
+                if (order != null) {
+                    orders.add(order); // Add the order to the list
+                }
+            }
+
+
+        }catch (SQLException e){
+            System.out.println("Error retrieving order by ID from database.");
+        }
+        return orders;
+
+    }
+
+
 
     public Order GetOrderById(UUID orderId) {
         String sql = "SELECT * FROM Orders WHERE id = ?";
@@ -44,7 +72,6 @@ public class OrderController {
             }
         } catch (SQLException e) {
             System.out.println("Error retrieving order by ID from database.");
-            e.printStackTrace();
         }
         return null;
     }
@@ -60,25 +87,6 @@ public class OrderController {
             selectedOrder.addItem(orderItem);
             UpdateOrder(selectedOrder);
         }
-    }
-
-    private Order getOrderByUser(User loggedInUser) {
-        String sql = "SELECT * FROM Orders WHERE userId = ? AND status = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, loggedInUser.getId().toString());
-            statement.setString(2, Utilities.Status.Pending.name());
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return buildOrderFromResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error loading order by user.");
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public void PrintCart(User loggedInUser) {
@@ -126,24 +134,6 @@ public class OrderController {
             }
         } catch (SQLException e) {
             System.out.println("Error updating order in database.");
-            e.printStackTrace();
-        }
-    }
-
-    private void loadOrders() {
-        String sql = "SELECT * FROM Orders";
-        orderList.clear();
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                Order order = buildOrderFromResultSet(resultSet);
-                orderList.add(order);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error loading orders from database.");
-            e.printStackTrace();
         }
     }
 
@@ -177,7 +167,6 @@ public class OrderController {
             }
         } catch (SQLException e) {
             System.out.println("Error creating order in database.");
-            e.printStackTrace();
         }
     }
     public void PlacePendingOrder(UUID userId, List<OrderItem> items) {
@@ -185,11 +174,13 @@ public class OrderController {
         Order newOrder = new Order();
         newOrder.setId(UUID.randomUUID());  // Generate a new unique order ID
         newOrder.setUserId(userId);
-        UserAddress address = addressController.getFirstAddressByUserId(userId);
-        newOrder.setAddressId(address.getId());
+        /*UserAddress address = addressController.getFirstAddressByUserId(userId);
+        if(address == null)
+            System.out.println("No Address Available For That User");
+        */newOrder.setAddressId(UUID.fromString("2D1BA3E0-67A0-4195-8606-3E6231808F90"));
         newOrder.setDriverId(UUID.fromString("47931899-d415-48d6-a21b-97b1e1884a21"));
         newOrder.setStatus(Utilities.Status.Approved);
-        newOrder.setDeliveryStatus(Utilities.DeliveryStatus.Pending);// Set the order status to Confirmed
+        newOrder.setDeliveryStatus(Utilities.DeliveryStatus.Pending);// Set the order status to (Confirmed)
         newOrder.setItems(items);
         newOrder.setNotes("n");// Add the provided list of OrderItems
 
@@ -211,9 +202,31 @@ public class OrderController {
         System.out.println("New order placed successfully for user: " + userId);
     }
 
+
+
+
+
     // Helper methods for calculating delivery fee and tax
     private double calculateDeliveryFee(double subTotal) {
         return subTotal > 100 ? 0 : 5;  // Example: Free delivery for orders over $100
+    }
+
+    private Order getOrderByUser(User loggedInUser) {
+        String sql = "SELECT * FROM Orders WHERE userId = ? AND status = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, loggedInUser.getId().toString());
+            statement.setString(2, Utilities.Status.Pending.name());
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return buildOrderFromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading order by user.");
+        }
+        return null;
     }
 
     private double calculateTax(double subTotal) {
@@ -263,7 +276,6 @@ public class OrderController {
 
             connection.commit(); // Commit transaction
         } catch (SQLException e) {
-            e.printStackTrace();
             System.out.println("Error saving order to database.");
         }
     }
@@ -305,22 +317,40 @@ public class OrderController {
     }
 
 
+    private void loadOrders() {
+        String sql = "SELECT * FROM Orders";
+        orderList.clear();
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Order order = buildOrderFromResultSet(resultSet);
+                orderList.add(order);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading orders from database.");
+        }
+    }
+
     private Order buildOrderFromResultSet(ResultSet resultSet) throws SQLException {
         Order order = new Order();
-        Utilities.Status statustype = getStatusType(Integer.parseInt(resultSet.getString("statusId")));
+        Utilities.Status statusType = getStatusType(Integer.parseInt(resultSet.getString("statusId")));
         Utilities.DeliveryStatus deliveryStatusType = getDeliveryStatusType(Integer.parseInt(resultSet.getString("deliveryStatusId")));
 
         order.setId(UUID.fromString(resultSet.getString("id")));
         order.setUserId(UUID.fromString(resultSet.getString("userId")));
         order.setAddressId(resultSet.getString("addressId") != null ? UUID.fromString(resultSet.getString("addressId")) : null);
         order.setDriverId(resultSet.getString("driverId") != null ? UUID.fromString(resultSet.getString("driverId")) : null);
-        order.setStatus(statustype);
+        order.setStatus(statusType);
         order.setDeliveryStatus(deliveryStatusType);
         order.setSubTotal(resultSet.getDouble("subTotal"));
         order.setDeliveryFee(resultSet.getDouble("deliveryFee"));
         order.setTax(resultSet.getDouble("tax"));
         order.setTotalPrice(resultSet.getDouble("totalPrice"));
         order.setNotes(resultSet.getString("notes"));
+
+        order.setItems(orderListAndOrderController.GetOrderListByOrderId(order.getId()));
         return order;
     }
 
@@ -357,5 +387,9 @@ public class OrderController {
                 return Utilities.DeliveryStatus.Delivered;
         }
         return Utilities.DeliveryStatus.Pending;
+    }
+
+    private void addItemsToOrder(Order order, List<OrderItem> orderItems){
+
     }
 }

@@ -21,25 +21,31 @@ sourceCompatibility = '11'  // Matches your JDK version
 repositories {
     // Use Maven Central to resolve dependencies
     mavenCentral()
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'      // Spring Web for building web applications
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // Spring Data JPA for database interaction
+        runtimeOnly 'com.h2database:h2'                                        // H2 Database for in-memory development
+        testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot testing support
+
+
+        implementation files('src/libs/gson-2.8.8.jar')
+        /*   // Spring Boot Web Starter for building RESTful APIs
+           implementation 'org.springframework.boot:spring-boot-starter-web'
+
+           // Spring Boot DevTools for live reload during development (Optional)
+           developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+           // Spring Data JPA for working with Hibernate and databases
+           implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+       */
+        // SQL Server JDBC Driver for connecting to SQL Server
+        runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11'  // Specify the version
+    /*    // Spring Boot Starter Test for unit and integration testing
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    */}
 }
 
-dependencies {
-    implementation files('src/libs/gson-2.8.8.jar')
-    // Spring Boot Web Starter for building RESTful APIs
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    // Spring Boot DevTools for live reload during development (Optional)
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-    // Spring Data JPA for working with Hibernate and databases
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // SQL Server JDBC Driver for connecting to SQL Server
-    runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11'  // Specify the version
-
-    // Spring Boot Starter Test for unit and integration testing
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
 
 test {
     useJUnitPlatform()  // Enable JUnit 5 testing platform
