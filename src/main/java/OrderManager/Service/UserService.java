@@ -1,10 +1,15 @@
 package OrderManager.Service;
 
+import OrderManager.Entities.Gender;
 import OrderManager.Entities.User;
+import OrderManager.Entities.UserRole;
 import OrderManager.Entities.Utilities;
 import OrderManager.Database.DatabaseConnection;
 import OrderManager.Extensions.RegexFormats;
+import OrderManager.Repository.GenderRepository;
 import OrderManager.Repository.UserRepository;
+import OrderManager.Repository.UserRoleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -18,20 +23,30 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private GenderRepository genderRepository;
 
 
     public Optional<User> GetUserById(UUID userId){
         return userRepository.findById(userId);
     }
+
     public List<User> GetAllUsers(){
         return userRepository.findAll();
     }
+
     public Optional<User> SaveUser(User user) {
         if(!isValidUser(user) && !isDuplicatePhone(user))
             return Optional.ofNullable(userRepository.save(user));
         return Optional.empty();
     }
+
     public boolean DeleteUser(UUID userId) {
         Optional<User> user = GetUserById(userId);
         if(user.isPresent()) {
@@ -41,11 +56,13 @@ public class UserService {
         return false;
     }
 
+
+
     private boolean isValidUser(User user) {
         RegexFormats formats = new RegexFormats();
 
 
-        if (user.getRoleId() == null) {
+        if (user.getRole() == null) {
 
             return false;
         }
@@ -92,9 +109,12 @@ public class UserService {
                 String password = resultSet.getString("password");
                 int genderId = resultSet.getInt("genderId");
 
-                Utilities.Genders gender = genderId == 1 ? Utilities.Genders.Male : Utilities.Genders.Female;
+                Gender gender = (genderRepository.findById(genderId)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid gender ID: " + genderId)));;
+                UserRole role = (userRoleRepository.findById(roleId)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid Role ID: " + roleId)));;
 
-                User user = new User(id, roleId, name, phone, password, gender);
+                User user = new User(id, role, name, phone, password, gender);
                 users = new ArrayList<>();
                 users.add(user);
             }

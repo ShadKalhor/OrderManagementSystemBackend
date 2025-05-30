@@ -2,6 +2,7 @@ package OrderManager.Controllers;
 
 import OrderManager.Entities.User;
 import OrderManager.Service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,13 +14,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("user")
 public class UserController {
+    @Autowired
+    UserService userService;
 
-    private final UserService userService = new UserService();
-
-    @GetMapping("/greet")
-    public String sayHello() {
-        return "Hello from Spring Boot!";
-    }
     @PostMapping
     public ResponseEntity<User> CreateUser(@RequestBody User user){
         Optional<User> savedUser =  userService.SaveUser(user);

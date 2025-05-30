@@ -1,12 +1,14 @@
 package OrderManager.Repository;
 
 import OrderManager.Entities.User;
+import OrderManager.Entities.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
+
+
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRoleRepository extends JpaRepository<UserRole, UUID> {
 
 }

@@ -2,27 +2,37 @@ package OrderManager.Entities;
 
 import java.util.UUID;
 import OrderManager.Entities.*;
+import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Users")
 public class User {
+
     @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "BINARY(16)")
     private final UUID id;
-    private UUID roleId;
+
+    @ManyToOne
+    @JoinColumn(name = "roleid")
+    private UserRole role;
+
     private String name;
     private String phone;
     private String password;
-    private Utilities.Genders gender;
+
+    @ManyToOne
+    @JoinColumn(name = "genderid") // Make sure this matches your DB column name
+    private Gender gender;
+
 
     // Constructor
-    public User(UUID id, UUID roleId, String name, String phone, String password, Utilities.Genders newgender) {
+    public User(UUID id, UserRole roleId, String name, String phone, String password, Gender newgender) {
         this.id = id;
-        this.roleId = roleId;
+        this.role = role;
         this.name = name;
         this.phone = phone;
         this.password = password;
@@ -42,8 +52,8 @@ public class User {
         return id;
     }
 
-    public UUID getRoleId() {
-        return roleId;
+    public UserRole getRole() {
+        return role;
     }
 
     public String getName() {
@@ -58,13 +68,13 @@ public class User {
         return password;
     }
 
-    public Utilities.Genders getGender() {
+    public Gender getGender() {
         return gender;
     }
 
     // Setters
-    public void setRoleId(UUID roleId) {
-        this.roleId = roleId;
+    public void setRoleId(UserRole role) {
+        this.role = role;
     }
 
     public void setName(String name) {
@@ -79,7 +89,7 @@ public class User {
         this.password = password;
     }
 
-    public void setGender(Utilities.Genders newgender) {
+    public void setGender(Gender newgender) {
         gender = newgender;
     }
 
@@ -88,7 +98,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", roleId='" + roleId + '\'' +
+                ", roleId='" + role.getRoleName() + '\'' +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
                 ", gender=" + gender +
