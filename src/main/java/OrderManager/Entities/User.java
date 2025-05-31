@@ -1,23 +1,21 @@
 package OrderManager.Entities;
 
 import java.util.UUID;
-import OrderManager.Entities.*;
-import org.hibernate.annotations.GenericGenerator;
+
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "Users", schema = "dbo")
 public class User {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
-    private final UUID id;
+    @Type(type = "uuid-char")
+    private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "roleid")
+    @JoinColumn(name = "roleId")
     private UserRole role;
 
     private String name;
@@ -25,12 +23,12 @@ public class User {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "genderid") // Make sure this matches your DB column name
+    @JoinColumn(name = "genderId") // Make sure this matches your DB column name
     private Gender gender;
 
 
     // Constructor
-    public User(UUID id, UserRole roleId, String name, String phone, String password, Gender newgender) {
+    public User(UUID id, UserRole role, String name, String phone, String password, Gender newgender) {
         this.id = id;
         this.role = role;
         this.name = name;
@@ -42,7 +40,7 @@ public class User {
 
     // Constructor
     public User() {
-        this.id = UUID.randomUUID();
+
     }
     public User(UUID Id){
         this.id = Id;
@@ -72,8 +70,9 @@ public class User {
         return gender;
     }
 
+    public void setId(UUID id){this.id = id;}
     // Setters
-    public void setRoleId(UserRole role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
