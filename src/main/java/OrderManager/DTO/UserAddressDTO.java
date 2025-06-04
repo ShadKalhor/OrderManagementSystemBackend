@@ -1,21 +1,16 @@
-package OrderManager.Entities;
+package OrderManager.DTO;
 
-import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.UUID;
 
-@Entity
-public class UserAddress {
-    @Id
-    @Type(type = "uuid-char")
+
+public class UserAddressDTO {
     private UUID id;
-
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
-
+    private UUID userId;
     private String name;
     private String city;
     private String description;
@@ -24,18 +19,20 @@ public class UserAddress {
     private String residentialNo;
 
     @Column(name = "isPrimary")
-    private boolean isPrimary;
-    public UserAddress() {}
+    private Boolean isPrimary;
 
-    public UserAddress(UUID id, User user, String name, String city, String description, String type, String street, String residentialNo) {
+    public UserAddressDTO() {}
+
+    public UserAddressDTO(UUID id, UUID userId, String name, String city, String description, String type, String street, String residentialNo, boolean isPrimary) {
         this.id = id;
-        this.user = user;
+        this.userId = userId;
         this.name = name;
         this.city = city;
         this.description = description;
         this.type = type;
         this.street = street;
         this.residentialNo = residentialNo;
+        this.isPrimary = isPrimary;
     }
 
     public UUID getId() {
@@ -46,12 +43,12 @@ public class UserAddress {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public UUID getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -102,8 +99,11 @@ public class UserAddress {
         this.residentialNo = residentialNo;
     }
 
+    public Boolean getIsPrimary() {
+        return isPrimary;
+    }
 
-    public Boolean getIsPrimary() {return isPrimary;}
-
-    public void setIsPrimary(boolean isPrimary) {this.isPrimary = isPrimary;}
+    public void setIsPrimary(boolean isPrimary) {
+        this.isPrimary = isPrimary;
+    }
 }

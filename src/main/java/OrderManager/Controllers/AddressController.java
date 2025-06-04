@@ -1,160 +1,69 @@
 package OrderManager.Controllers;
 
-import OrderManager.Database.DatabaseConnection;
+import OrderManager.Entities.User;
 import OrderManager.Entities.UserAddress;
+import OrderManager.Service.AddressService;
+import OrderManager.Service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/Address")
+@RequestMapping("/address")
 public class AddressController {
 
-    @PostMapping("/Create")
-    public void createAddress(UserAddress address) {
-        String sql = "INSERT INTO UserAddress (id, userId, name, city, description, type, street, residentialNo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+    @Autowired
+    private UserService userService;
 
-            statement.setString(1, UUID.randomUUID().toString());
-            statement.setString(2, address.getUserId().toString());
-            statement.setString(3, address.getName());
-            statement.setString(4, address.getCity());
-            statement.setString(5, address.getDescription());
-            statement.setString(6, address.getType());
-            statement.setString(7, address.getStreet());
-            statement.setString(8, address.getResidentialNo());
+    @Autowired
+    private AddressService addressService;
 
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Address created successfully.");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error creating address in database.");
-        }
+    @PostMapping
+    public ResponseEntity<UserAddress> CreateAddress(@RequestBody UserAddress address){
+        Optional<UserAddress> result = addressService.CreateAddress(address);
+        return result.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-   /* public UserAddress getFirstAddressByUserId(UUID userId) {
-        String sql = "SELECT TOP 1 * FROM dbo.UserAddress WHERE userId = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, userId.toString());
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return buildAddressFromResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error retrieving address by user ID from database.");
-            e.printStackTrace();
-        }
-        return null;
-    }
-*/
-
-    @GetMapping("/GetAddressById")
-    public UserAddress getAddressById(UUID id) {
-        String sql = "SELECT * FROM UserAddress WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, id.toString());
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return buildAddressFromResultSet(resultSet);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error retrieving address by ID from database.");
-            e.printStackTrace();
-        }
-        return null;
+    @PutMapping
+    public ResponseEntity<UserAddress> UpdateAddress(@RequestBody UserAddress address){
+        Optional<UserAddress> result = addressService.CreateAddress(address);
+        return result.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/GetAllAddressesById")
-    public List<UserAddress> listAddressesByUserId(UUID userId) {
-        List<UserAddress> addresses = new ArrayList<>();
-        String sql = "SELECT * FROM UserAddress WHERE userId = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, userId.toString());
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                addresses.add(buildAddressFromResultSet(resultSet));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error retrieving addresses by user ID from database.");
-            e.printStackTrace();
-        }
-        return addresses;
+    @GetMapping("{Id}")
+    public ResponseEntity<UserAddress> GetAddressById(@PathVariable("Id") UUID uuid){
+        Optional<UserAddress> result = addressService.GetAddressById(uuid);
+        return result.map(ResponseEntity::ok)
+                .orElseGet(()-> ResponseEntity.notFound().build());
     }
 
-
-    @PatchMapping("/Update")
-    public void updateAddress(UserAddress address) {
-        String sql = "UPDATE UserAddress SET userId = ?, name = ?, city = ?, description = ?, type = ?, street = ?, residentialNo = ? WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, address.getUserId().toString());
-            statement.setString(2, address.getName());
-            statement.setString(3, address.getCity());
-            statement.setString(4, address.getDescription());
-            statement.setString(5, address.getType());
-            statement.setString(6, address.getStreet());
-            statement.setString(7, address.getResidentialNo());
-            statement.setString(8, address.getId().toString());
-
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Address updated successfully.");
-            } else {
-                System.out.println("Address not found.");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error updating address in database.");
-            e.printStackTrace();
-        }
+    @GetMapping("/getbyuser")
+    public ResponseEntity<List<UserAddress>> GetUserAddresses(@RequestBody User user){
+        Optional<List<UserAddress>> result = addressService.GetUserAddresses(user);
+        return result.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    @GetMapping("/getbyuser{id}")
+    public ResponseEntity<List<UserAddress>> GetUserById(@PathVariable("id") UUID uuid){
+        System.out.println(uuid);
+        Optional<List<UserAddress>> result = addressService.GetUserAddresses(uuid);
+        System.out.println(result);
+        return result.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
-    @DeleteMapping("/Delete")
-    public void deleteAddress(UUID id) {
-        String sql = "DELETE FROM UserAddress WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, id.toString());
-
-            int rowsDeleted = statement.executeUpdate();
-            if (rowsDeleted > 0) {
-                System.out.println("Address deleted successfully.");
-            } else {
-                System.out.println("Address not found.");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error deleting address from database.");
-            e.printStackTrace();
-        }
-    }
-
-
-    private UserAddress buildAddressFromResultSet(ResultSet resultSet) throws SQLException {
-        UUID id = UUID.fromString(resultSet.getString("id"));
-        UUID userId = UUID.fromString(resultSet.getString("userId"));
-        String name = resultSet.getString("name");
-        String city = resultSet.getString("city");
-        String description = resultSet.getString("description");
-        String type = resultSet.getString("type");
-        String street = resultSet.getString("street");
-        String residentialNo = resultSet.getString("residentialNo");
-
-        return new UserAddress(id, userId, name, city, description, type, street, residentialNo);
+    @DeleteMapping("{id}")
+    public ResponseEntity<Boolean> DeleteAddress(@PathVariable("id") UUID uuid){
+        boolean isDeleted = addressService.DeleteAddress(uuid);
+        if(isDeleted)
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.badRequest().build();
     }
 }

@@ -1,24 +1,17 @@
 package OrderManager.Service;
 
-import OrderManager.DTO.UserDTO;
-import OrderManager.Entities.Gender;
 import OrderManager.Entities.User;
-import OrderManager.Entities.UserRole;
-import OrderManager.Entities.Utilities;
-import OrderManager.Database.DatabaseConnection;
+import OrderManager.Entities.UserAddress;
 import OrderManager.Extensions.RegexFormats;
+import OrderManager.Repository.AddressRepository;
 import OrderManager.Repository.GenderRepository;
 import OrderManager.Repository.UserRepository;
 import OrderManager.Repository.UserRoleRepository;
+import org.apache.tomcat.jni.Address;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.swing.text.html.Option;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +21,9 @@ import java.util.UUID;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -43,43 +39,9 @@ public class UserService {
     public List<User> GetAllUsers(){
         return userRepository.findAll();
     }
-/*
-    public Optional<User> SaveUser(UserDTO dto){
-        User user = new User();
-        user.setName(dto.getName());
-        user.setPhone(dto.getPhone());
-        user.setPassword(dto.getPassword());
-
-        System.out.println("Looking up role with ID: " + dto.getRoleId());
-        System.out.println("Role ID class: " + dto.getRoleId().getClass().getName());
-
-        UserRole role = userRoleRepository.findById(dto.getRoleId())
-                .orElseThrow(() -> new EntityNotFoundException("Role not found with ID: " + dto.getRoleId()));
-        user.setRole(role);
-
-        Gender gender = genderRepository.findById(dto.getGenderId())
-                .orElseThrow(() -> new EntityNotFoundException("Gender not found with ID: " + dto.getGenderId()));
-        user.setGender(gender);
-
-        if (isValidUser(user) && !isDuplicatePhone(user)) {
-            return Optional.of(userRepository.save(user));
-        }
-        return Optional.empty();
-
-    }*/
 
     public Optional<User> GetUserByPhoneNumber(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber);
-    }
-
-    public Optional<User> UpdateUser(User user){
-
-        user = checkInput(user);
-
-        if(isValidUser(user))
-            return Optional.of(userRepository.save(user));
-        return Optional.empty();
-
     }
 
     public Optional<User> SaveUser(User user) {
@@ -90,6 +52,16 @@ public class UserService {
             return Optional.of(userRepository.save(user));
         return Optional.empty();
     }
+
+    public boolean DeleteUser(UUID userId) {
+        Optional<User> user = GetUserById(userId);
+        if(user.isPresent()) {
+            userRepository.deleteById(userId);
+            return true;
+        }
+        return false;
+    }
+
 
     private User checkInput(User user) {
         if(user.getGender().getName() == null || user.getGender().getName().isEmpty())
@@ -116,15 +88,6 @@ public class UserService {
 
         return user;
 
-    }
-
-    public boolean DeleteUser(UUID userId) {
-        Optional<User> user = GetUserById(userId);
-        if(user.isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
     }
 
     private boolean isValidUser(User user) {
