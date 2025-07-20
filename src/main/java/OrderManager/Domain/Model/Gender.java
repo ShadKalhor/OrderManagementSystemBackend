@@ -10,9 +10,7 @@ import javax.persistence.Table;
 public class Gender {
 
     @Id
-    @GeneratedValue
-    private int Id;
-
+    private Integer Id;
     private String Name;
 
 

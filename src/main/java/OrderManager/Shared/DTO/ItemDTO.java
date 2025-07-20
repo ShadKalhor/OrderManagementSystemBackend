@@ -1,9 +1,16 @@
-package OrderManager.Entities;
+package OrderManager.DTO;
 
+import org.hibernate.annotations.Type;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.UUID;
 
-public class Item {
-    private final UUID id;         // Make this final if you want it to be immutable
+
+public class ItemDTO {
+    @Id
+    @Type(type = "uuid-char")
+    private UUID id;         // Make this final if you want it to be immutable
     private String name;
     private String description;
     private double price;
@@ -13,7 +20,7 @@ public class Item {
     private int quantity;
 
     // Constructor
-    public Item(UUID id, String name, String description, double price, String size, double discount, boolean isAvailable, int quantity) {
+    public ItemDTO(UUID id, String name, String description, double price, String size, double discount, boolean isAvailable, int quantity) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,6 +35,8 @@ public class Item {
     public UUID getId() {
         return id;
     }
+
+    public void setId(UUID uuid){this.id = uuid;}
 
     public String getName() {
         return name;

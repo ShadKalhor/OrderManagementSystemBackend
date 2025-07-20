@@ -1,9 +1,15 @@
 package OrderManager.Entities;
 
+import org.hibernate.annotations.Type;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.UUID;
 
+@Entity
 public class Driver {
-
+    @Id
+    @Type(type = "uuid-char")
     private UUID id;
     private String name;
     private String phone;

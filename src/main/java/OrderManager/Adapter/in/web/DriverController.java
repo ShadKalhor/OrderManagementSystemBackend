@@ -1,9 +1,9 @@
 package OrderManager.Controllers;
 
 import OrderManager.Database.DatabaseConnection;
-import OrderManager.Extensions.RegexFormats;
+import OrderManager.Shared.Extensions.RegexFormats;
 import org.springframework.web.bind.annotation.*;
-import OrderManager.Entities.Driver;
+import OrderManager.Domain.Model.Driver;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

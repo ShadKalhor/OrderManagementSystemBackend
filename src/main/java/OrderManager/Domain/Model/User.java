@@ -7,7 +7,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Users", schema = "dbo")
+@Table(name = "Users")
 public class User {
 
     @Id
@@ -16,6 +16,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "roleId")
+    @Type(type = "uuid-char")
     private UserRole role;
 
     private String name;

@@ -1,18 +1,39 @@
 package OrderManager.Entities;
 
-import OrderManager.Entities.*;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import OrderManager.Entities.Utilities;
+
+@Entity
+@Table(name = "Orders")
 public class Order {
+    @Id
+    @Type(type = "uuid-char")
     private UUID id;
-    private UUID userId;
-    private UUID addressId;
-    private UUID driverId;
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+    @OneToOne
+    @JoinColumn(name = "addressId")
+    private UserAddress address;
+
+    @ManyToOne
+    @JoinColumn(name = "driverId")
+    private Driver driver;
+
+    @Enumerated(EnumType.STRING)
     private Utilities.Status status;
+
+    @Enumerated(EnumType.STRING)
     private Utilities.DeliveryStatus deliveryStatus;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
+
     private double subTotal;
     private double deliveryFee;
     private double tax;
@@ -20,10 +41,9 @@ public class Order {
     private String notes;
 
     public Order() {
-        id = UUID.randomUUID();
-        addressId = UUID.randomUUID();
         status = Utilities.Status.Pending;
     }
+
 
     public UUID getId() {
         return id;
@@ -33,28 +53,28 @@ public class Order {
         this.id = id;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(UUID userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public UUID getAddressId() {
-        return addressId;
+    public UserAddress getAddress() {
+        return address;
     }
 
-    public void setAddressId(UUID addressId) {
-        this.addressId = addressId;
+    public void setAddress(UserAddress address) {
+        this.address = address;
     }
 
-    public UUID getDriverId() {
-        return driverId;
+    public Driver getDriver() {
+        return driver;
     }
 
-    public void setDriverId(UUID driverId) {
-        this.driverId = driverId;
+    public void setDriver(Driver driver) {
+        this.driver = driver;
     }
 
     public Utilities.Status getStatus() {

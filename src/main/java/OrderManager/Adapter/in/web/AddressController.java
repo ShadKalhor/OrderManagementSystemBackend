@@ -1,9 +1,9 @@
 package OrderManager.Controllers;
 
-import OrderManager.Entities.User;
-import OrderManager.Entities.UserAddress;
-import OrderManager.Service.AddressService;
-import OrderManager.Service.UserService;
+import OrderManager.Domain.Model.User;
+import OrderManager.Domain.Model.UserAddress;
+import OrderManager.Application.Service.AddressService;
+import OrderManager.Application.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

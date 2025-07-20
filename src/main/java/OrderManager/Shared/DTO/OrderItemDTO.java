@@ -1,22 +1,22 @@
-package OrderManager.Entities;
+package OrderManager.DTO;
 
 import java.util.UUID;
 
-public class OrderItem {
+public class OrderItemDTO {
     private UUID id;
     private UUID itemId;
     private int quantity;
     private double totalPrice;
 
-    public OrderItem() {}
+    public OrderItemDTO() {}
 
-    public OrderItem(UUID itemId, int quantity, double totalPrice) {
+    public OrderItemDTO(UUID itemId, int quantity, double totalPrice) {
         this.id = UUID.randomUUID();
         this.itemId = itemId;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
     }
-    public OrderItem(UUID id,UUID itemId, int quantity, double totalPrice) {
+    public OrderItemDTO(UUID id,UUID itemId, int quantity, double totalPrice) {
         this.id = id;
         this.itemId = itemId;
         this.quantity = quantity;

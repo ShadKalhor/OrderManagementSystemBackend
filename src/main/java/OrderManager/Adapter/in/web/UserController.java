@@ -1,10 +1,8 @@
 package OrderManager.Controllers;
 
-import OrderManager.DTO.UserDTO;
-import OrderManager.Entities.User;
-import OrderManager.Entities.UserRole;
+import OrderManager.Domain.Model.User;
 import OrderManager.Repository.UserRoleRepository;
-import OrderManager.Service.UserService;
+import OrderManager.Application.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +42,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/getbyid{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> GetById(@PathVariable("id") UUID uuid){
         Optional<User> user = userService.GetUserById(uuid);
         return user.map(ResponseEntity::ok)
