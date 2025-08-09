@@ -1,4 +1,4 @@
-package OrderManager.Controllers;
+package OrderManager.Adapter.in.web;
 
 import OrderManager.Database.DatabaseConnection;
 import OrderManager.Shared.Extensions.RegexFormats;

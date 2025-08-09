@@ -1,7 +1,6 @@
-package OrderManager.Controllers;
+package OrderManager.Adapter.in.web;
 
 import OrderManager.Domain.Model.User;
-import OrderManager.Repository.UserRoleRepository;
 import OrderManager.Application.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    UserRoleRepository userRoleRepository;
     @PostMapping
     public ResponseEntity<User> CreateUser(@RequestBody User user){
         Optional<User> savedUser =  userService.SaveUser(user);

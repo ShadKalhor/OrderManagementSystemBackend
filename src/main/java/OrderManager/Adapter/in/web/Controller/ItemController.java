@@ -1,4 +1,4 @@
-package OrderManager.Controllers;
+package OrderManager.Adapter.in.web;
 
 import OrderManager.Domain.Model.Item;
 import OrderManager.Application.Service.ItemService;

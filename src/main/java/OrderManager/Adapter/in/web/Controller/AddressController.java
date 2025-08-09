@@ -1,4 +1,4 @@
-package OrderManager.Controllers;
+package OrderManager.Adapter.in.web;
 
 import OrderManager.Domain.Model.User;
 import OrderManager.Domain.Model.UserAddress;
