@@ -1,4 +1,12 @@
 package OrderManager.Adapter.out.Persistence;
 
-public class SpringDataUserRepository {
+import OrderManager.Domain.Model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public interface SpringDataUserRepository extends JpaRepository<User, UUID> {
+
+    Optional<User> findByPhoneNumber(String phoneNumber);
 }

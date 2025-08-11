@@ -1,10 +1,9 @@
-package OrderManager.Service;
+package OrderManager.Application.Service;
 
 
-import OrderManager.Entities.Item;
-import OrderManager.Entities.OrderItem;
-import OrderManager.Repository.ItemRepository;
-import OrderManager.Repository.OrderItemRepository;
+import OrderManager.Application.Port.out.ItemPersistencePort;
+import OrderManager.Application.Port.out.OrderItemPersistencePort;
+import OrderManager.Domain.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +12,21 @@ import java.util.*;
 @Service
 public class ItemService {
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
+    
+    private OrderItemPersistencePort orderItemPort;
+    private ItemPersistencePort itemPort;
 
-    @Autowired
-    private ItemRepository itemRepository;
-
+    
+    public ItemService(OrderItemPersistencePort orderitemPort, ItemPersistencePort itemPort){
+        this.orderItemPort = orderitemPort;
+        this.itemPort = itemPort;
+    }
+    
     public Map<String, String> GetUnavailableItems(List<OrderItem> orderItems){
         Map<String, String> unavailableItems = null;
 
         for(OrderItem orderItem : orderItems){
-            Optional<Item> result = itemRepository.findById(orderItem.getItem().getId());
+            Optional<Item> result = itemPort.findById(orderItem.getItem().getId());
 
             if(result.isPresent()){
                 Item item = result.get();
@@ -46,7 +49,7 @@ public class ItemService {
     public Optional<Item> SaveItem(Item item) {
         Optional<Item> result;
         if (isValidItem(item))
-            result = Optional.of(itemRepository.save(item));
+            result = Optional.of(itemPort.save(item));
         else
             return Optional.empty();
         return result;
@@ -82,19 +85,19 @@ public class ItemService {
 
 
     public Optional<Item> GetItemById(UUID itemId) {
-        return itemRepository.findById(itemId);
+        return itemPort.findById(itemId);
     }
 
 
     public Optional<List<Item>> GetAllItems() {
-        return Optional.of(itemRepository.findAll());
+        return Optional.of(itemPort.findAll());
     }
 
     public boolean DeleteItem(UUID itemId) {
 
-        Optional<Item> item = itemRepository.findById(itemId);
+        Optional<Item> item = itemPort.findById(itemId);
         if (item.isPresent()){
-            itemRepository.deleteById(itemId);
+            itemPort.deleteById(itemId);
             return true;
         }else
             return false;

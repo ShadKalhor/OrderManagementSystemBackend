@@ -1,4 +1,16 @@
 package OrderManager.Adapter.out.Persistence;
 
-public class OrderItemRepositoryAdapter {
+import OrderManager.Application.Port.out.OrderItemPersistencePort;
+import OrderManager.Application.Port.out.OrderPersistencePort;
+import OrderManager.Domain.Model.Order;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public class OrderItemRepositoryAdapter implements OrderItemPersistencePort {
+
+
+
+
 }

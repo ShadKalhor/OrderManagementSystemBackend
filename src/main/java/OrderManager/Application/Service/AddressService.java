@@ -1,8 +1,7 @@
-package OrderManager.Service;
+package OrderManager.Application.Service;
 
-import OrderManager.Entities.User;
-import OrderManager.Entities.UserAddress;
-import OrderManager.Repository.AddressRepository;
+import OrderManager.Application.Port.out.AddressPersistencePort;
+import OrderManager.Domain.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,32 +11,35 @@ import java.util.UUID;
 
 @Service
 public class AddressService {
-    @Autowired
-    private AddressRepository addressRepository;
+    
+    private AddressPersistencePort addressPort;
 
+    public AddressService(AddressPersistencePort addressPort){
+        this.addressPort = addressPort;
+    }
 
     public Optional<UserAddress> CreateAddress(UserAddress userAddress){
 
-        Optional<UserAddress> result = Optional.of(addressRepository.save(userAddress));
+        Optional<UserAddress> result = Optional.of(addressPort.save(userAddress));
         if (result != null)
             return result;
         return Optional.empty();
     }
 
 
-
+/*
     public Optional<List<UserAddress>> GetUserAddresses(User user){
-        Optional<List<UserAddress>> addresses = addressRepository.findAddressesByUser(user);
+        Optional<List<UserAddress>> addresses = addressPort.findAddressesByUser(user);
         return addresses;
-    }
+    }*/
 
     public Optional<List<UserAddress>> GetUserAddresses(UUID userId){
-        Optional<List<UserAddress>> addresses = addressRepository.findAddressesByUserId(userId);
+        Optional<List<UserAddress>> addresses = addressPort.findAddressesByUserId(userId);
         return addresses;
     }
 
     public Optional<UserAddress> GetAddressById(UUID uuid){
-        Optional<UserAddress> result = addressRepository.findById(uuid);
+        Optional<UserAddress> result = addressPort.findById(uuid);
         if (result != null)
             return result;
         return Optional.empty();
@@ -47,7 +49,7 @@ public class AddressService {
     public boolean DeleteAddress(UUID uuid){
         Optional<UserAddress> address = GetAddressById(uuid);
         if(address.isPresent()) {
-            addressRepository.deleteById(uuid);
+            addressPort.deleteById(uuid);
             return true;
         }
         return false;

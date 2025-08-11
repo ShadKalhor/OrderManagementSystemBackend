@@ -1,3 +1,4 @@
+/*
 package OrderManager.DTO;
 
 import java.util.UUID;
@@ -54,4 +55,4 @@ public class OrderItemDTO {
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
-}
+}*/

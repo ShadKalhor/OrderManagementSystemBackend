@@ -1,4 +1,18 @@
 package OrderManager.Application.Port.out;
 
-public class AddressPersistencePort {
+import OrderManager.Domain.Model.UserAddress;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface AddressPersistencePort {
+    
+    Optional<List<UserAddress>> findAddressesByUserId(UUID userId);
+
+    UserAddress save(UserAddress userAddress);
+
+    Optional<UserAddress> findById(UUID uuid);
+
+    void deleteById(UUID uuid);
 }

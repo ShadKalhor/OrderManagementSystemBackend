@@ -1,4 +1,4 @@
-package OrderManager.Adapter.in.web;
+package OrderManager.Adapter.in.web.Controller;
 
 import OrderManager.Domain.Model.User;
 import OrderManager.Domain.Model.UserAddress;
@@ -45,7 +45,7 @@ public class AddressController {
 
     @GetMapping("/getbyuser")
     public ResponseEntity<List<UserAddress>> GetUserAddresses(@RequestBody User user){
-        Optional<List<UserAddress>> result = addressService.GetUserAddresses(user);
+        Optional<List<UserAddress>> result = addressService.GetUserAddresses(user.getId());
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

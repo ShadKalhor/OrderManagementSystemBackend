@@ -1,9 +1,15 @@
-package OrderManager.Entities;
+package OrderManager.Domain.Model;
 
 public class Utilities {
-    public static enum Genders{
+    public enum Genders{
         Male,
         Female,
+        Other,
+    }
+    public enum UserRoles{
+        Member,
+        Driver,
+        Admin,
     }
     public enum Status{
         Pending,

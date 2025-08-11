@@ -1,10 +1,7 @@
-package OrderManager.Service;
+package OrderManager.Application.Service;
 
-import OrderManager.Entities.Item;
-import OrderManager.Entities.Order;
-import OrderManager.Entities.OrderItem;
-import OrderManager.Entities.Utilities;
-import OrderManager.Repository.OrderRepository;
+import OrderManager.Application.Port.out.OrderPersistencePort;
+import OrderManager.Domain.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,12 +15,16 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
-    @Autowired
     private ItemService itemService;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private OrderPersistencePort orderPort;
 
+    public OrderService(OrderPersistencePort orderPort, ItemService itemService){
+        this.itemService = itemService;
+        this.orderPort = orderPort;
+    }
+    
+    
     @Transactional
     public Optional<Order> CreateOrder(Order order){
         Map<String,String> unavailableItems = itemService.GetUnavailableItems(order.getItems());
@@ -36,31 +37,31 @@ public class OrderService {
 
 
         order = CalculateOrder(order);
-        Optional<Order> result = Optional.of(orderRepository.save(order));
+        Optional<Order> result = Optional.of(orderPort.save(order));
         return result;
     }
 
     public Optional<List<Order>> GetAllOrders(){
-        return Optional.of( orderRepository.findAll());
+        return Optional.of( orderPort.findAll());
     }
 
 
     public Optional<Order> GetOrderById(UUID orderId){
-        Optional<Order> order = orderRepository.findById(orderId);
+        Optional<Order> order = orderPort.findById(orderId);
         return order;
     }
 
     public boolean DeleteOrder(UUID orderId){
         Optional<Order> order = GetOrderById(orderId);
         if(order.isPresent()) {
-            orderRepository.deleteById(orderId);
+            orderPort.deleteById(orderId);
             return true;
         }
         return false;
     }
 
     public Optional<List<Order>> GetByUserId(UUID userId) {
-        Optional<List<Order>> orders = orderRepository.findByUserId(userId);
+        Optional<List<Order>> orders = orderPort.findByUserId(userId);
         return orders;
     }
 

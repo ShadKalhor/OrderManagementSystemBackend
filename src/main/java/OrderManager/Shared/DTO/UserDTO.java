@@ -1,3 +1,4 @@
+/*
 package OrderManager.DTO;
 
 import java.util.UUID;
@@ -63,3 +64,4 @@ public class UserDTO {
         this.genderId = genderId;
     }
 }
+*/

@@ -1,109 +1,39 @@
-package OrderManager.Entities;
+package OrderManager.Domain.Model;
 
 import java.util.UUID;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+
+import OrderManager.Domain.Model.Utilities.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
     @Type(type = "uuid-char")
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "roleId")
-    @Type(type = "uuid-char")
-    private UserRole role;
+    @Builder.Default
+    private UserRoles role = UserRoles.Member;
 
     private String name;
     private String phone;
     private String password;
-
-    @ManyToOne
-    @JoinColumn(name = "genderId") // Make sure this matches your DB column name
-    private Gender gender;
+    @Builder.Default
+    private Genders gender = Genders.Other;
 
 
-    // Constructor
-    public User(UUID id, UserRole role, String name, String phone, String password, Gender newgender) {
-        this.id = id;
-        this.role = role;
-        this.name = name;
-        this.phone = phone;
-        this.password = password;
-        gender = newgender;
-    }
-
-
-    // Constructor
-    public User() {
-
-    }
-    public User(UUID Id){
-        this.id = Id;
-    }
-    // Getters
-    public UUID getId() {
-        return id;
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setId(UUID id){this.id = id;}
-    // Setters
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setGender(Gender newgender) {
-        gender = newgender;
-    }
-
-    // Optional toString method for better output
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", roleId='" + role.getRoleName() + '\'' +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", gender=" + gender +
-                '}';
-    }
 }
 
 

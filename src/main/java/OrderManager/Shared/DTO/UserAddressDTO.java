@@ -1,3 +1,4 @@
+/*
 package OrderManager.DTO;
 
 import org.hibernate.annotations.Type;
@@ -107,3 +108,4 @@ public class UserAddressDTO {
         this.isPrimary = isPrimary;
     }
 }
+*/

@@ -1,4 +1,4 @@
 package OrderManager.Application.Port.out;
 
-public class OrderItemPersistencePort {
+public interface OrderItemPersistencePort {
 }

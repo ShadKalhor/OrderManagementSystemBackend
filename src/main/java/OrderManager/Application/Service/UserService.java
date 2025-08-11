@@ -1,47 +1,39 @@
-package OrderManager.Service;
+package OrderManager.Application.Service;
 
-import OrderManager.Entities.User;
-import OrderManager.Entities.UserAddress;
-import OrderManager.Extensions.RegexFormats;
-import OrderManager.Repository.AddressRepository;
-import OrderManager.Repository.GenderRepository;
-import OrderManager.Repository.UserRepository;
-import OrderManager.Repository.UserRoleRepository;
-import org.apache.tomcat.jni.Address;
+import OrderManager.Application.Port.out.AddressPersistencePort;
+import OrderManager.Application.Port.out.UserPersistencePort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import OrderManager.Extensions.RegexFormats;
+import OrderManager.Domain.Model.*;
+
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private AddressRepository addressRepository;
 
-    @Autowired
-    private UserRoleRepository userRoleRepository;
+    private final UserPersistencePort userPort;
 
-    @Autowired
-    private GenderRepository genderRepository;
-
+    
+    public UserService(UserPersistencePort userPort){
+        this.userPort = userPort;
+    }
 
     public Optional<User> GetUserById(UUID userId){
-        return userRepository.findById(userId);
+        return userPort.findById(userId);
     }
 
     public List<User> GetAllUsers(){
-        return userRepository.findAll();
+        return userPort.findAll();
     }
 
     public Optional<User> GetUserByPhoneNumber(String phoneNumber) {
-        return userRepository.findByPhoneNumber(phoneNumber);
+        return userPort.findByPhoneNumber(phoneNumber);
     }
 
     public Optional<User> SaveUser(User user) {
@@ -49,14 +41,14 @@ public class UserService {
         user = checkInput(user);
 
         if(isValidUser(user) && !isDuplicatePhone(user))
-            return Optional.of(userRepository.save(user));
+            return Optional.of(userPort.save(user));
         return Optional.empty();
     }
 
     public boolean DeleteUser(UUID userId) {
         Optional<User> user = GetUserById(userId);
         if(user.isPresent()) {
-            userRepository.deleteById(userId);
+            userPort.deleteById(userId);
             return true;
         }
         return false;
@@ -64,25 +56,6 @@ public class UserService {
 
 
     private User checkInput(User user) {
-        if(user.getGender().getName() == null || user.getGender().getName().isEmpty())
-            user.setGender(genderRepository.findById(user.getGender().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Gender not found with ID: " + user.getGender().getId()))
-            );
-
-        else if (user.getGender().getId() == 0)
-            user.setGender(genderRepository.GetByName(user.getGender().getName()));
-
-
-        if (user.getRole().getRoleName() == null || user.getRole().getRoleName().isEmpty()) {
-            user.setRole(
-                    userRoleRepository.findById(user.getRole().getId())
-                            .orElseThrow(() -> new EntityNotFoundException("Role not found with ID: " + user.getRole().getId()))
-            );
-        }
-
-        else if(user.getRole().getId() == null || user.getRole().getId().equals(new UUID(0L, 0L)))
-            user.setRole(userRoleRepository.GetByRoleName(user.getRole().getRoleName()));
-
         if(user.getId() == null || user.getId().equals(new UUID(0L, 0L)))
             user.setId(UUID.randomUUID());
 
@@ -119,7 +92,7 @@ public class UserService {
 
     private boolean isDuplicatePhone(User user) {
 
-        return Optional.of(userRepository.findAll())
+        return Optional.of(userPort.findAll())
                 .filter(u -> !u.isEmpty())
                 .map(u -> u.stream().anyMatch(p -> user.getPhone().equals(p.getPhone()) && !(user.getId().equals(p.getId()))))
                 .orElse(false);
