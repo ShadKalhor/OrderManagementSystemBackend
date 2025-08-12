@@ -2,11 +2,13 @@ package OrderManager.Adapter.out.Persistence;
 
 import OrderManager.Application.Port.out.UserPersistencePort;
 import OrderManager.Domain.Model.User;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class UserRepositoryAdapter implements UserPersistencePort {
 
     private SpringDataUserRepository userRepository;
@@ -26,8 +28,8 @@ public class UserRepositoryAdapter implements UserPersistencePort {
     }
 
     @Override
-    public Optional<User> findByPhoneNumber(String phoneNumber) {
-        return userRepository.findByPhoneNumber(phoneNumber);
+    public Optional<User> findByPhone(String phoneNumber) {
+        return userRepository.findByPhone(phoneNumber);
     }
 
     @Override

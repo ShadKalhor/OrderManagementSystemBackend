@@ -2,11 +2,13 @@ package OrderManager.Adapter.out.Persistence;
 
 import OrderManager.Application.Port.out.AddressPersistencePort;
 import OrderManager.Domain.Model.UserAddress;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class AddressRepositoryAdapter implements AddressPersistencePort {
 
     SpringDataAddressRepository addressRepository;

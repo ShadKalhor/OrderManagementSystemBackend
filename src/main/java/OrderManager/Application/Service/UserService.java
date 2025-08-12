@@ -33,7 +33,7 @@ public class UserService {
     }
 
     public Optional<User> GetUserByPhoneNumber(String phoneNumber) {
-        return userPort.findByPhoneNumber(phoneNumber);
+        return userPort.findByPhone(phoneNumber);
     }
 
     public Optional<User> SaveUser(User user) {

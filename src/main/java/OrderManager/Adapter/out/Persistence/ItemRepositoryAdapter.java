@@ -2,11 +2,13 @@ package OrderManager.Adapter.out.Persistence;
 
 import OrderManager.Application.Port.out.ItemPersistencePort;
 import OrderManager.Domain.Model.Item;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class ItemRepositoryAdapter implements ItemPersistencePort {
 
     SpringDataItemRepository itemRepository;

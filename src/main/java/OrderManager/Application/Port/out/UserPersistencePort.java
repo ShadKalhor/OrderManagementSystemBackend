@@ -11,7 +11,7 @@ public interface UserPersistencePort {
 
     List<User> findAll();
 
-    Optional<User> findByPhoneNumber(String phoneNumber);
+    Optional<User> findByPhone(String phoneNumber);
 
     User save(User user);
 
