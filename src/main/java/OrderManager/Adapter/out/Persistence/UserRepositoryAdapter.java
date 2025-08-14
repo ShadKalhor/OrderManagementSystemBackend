@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public class UserRepositoryAdapter implements UserPersistencePort {
 
-    private SpringDataUserRepository userRepository;
+    private final SpringDataUserRepository userRepository;
 
     public UserRepositoryAdapter(SpringDataUserRepository userRepository){
         this.userRepository = userRepository;

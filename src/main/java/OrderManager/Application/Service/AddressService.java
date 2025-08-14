@@ -27,12 +27,6 @@ public class AddressService {
     }
 
 
-/*
-    public Optional<List<UserAddress>> GetUserAddresses(User user){
-        Optional<List<UserAddress>> addresses = addressPort.findAddressesByUser(user);
-        return addresses;
-    }*/
-
     public Optional<List<UserAddress>> GetUserAddresses(UUID userId){
         Optional<List<UserAddress>> addresses = addressPort.findAddressesByUserId(userId);
         return addresses;

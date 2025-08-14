@@ -11,7 +11,7 @@ plugins {
 }
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21) // Replace 17 with your JDK version
+        languageVersion = JavaLanguageVersion.of(17) // Replace 17 with your JDK version
     }
 }
 

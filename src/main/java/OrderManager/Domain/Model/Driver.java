@@ -8,6 +8,8 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import java.util.UUID;
 
 @Entity
@@ -19,8 +21,9 @@ public class Driver {
     @Id
     @Type(type = "uuid-char")
     private UUID id;
-    private String name;
-    private String phone;
+    @OneToOne
+    @JoinColumn(name = "userId")
+    private User account;
     private String vehicleNumber;
     private int age;
 

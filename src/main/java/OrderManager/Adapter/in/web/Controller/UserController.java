@@ -46,7 +46,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/getall")
+    @GetMapping()
     public ResponseEntity<List<User>> GetAllUsers(){
         Optional<List<User>> users =Optional.of(userService.GetAllUsers());
         return users.map(ResponseEntity::ok)

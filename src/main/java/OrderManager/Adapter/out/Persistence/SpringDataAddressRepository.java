@@ -9,6 +9,5 @@ import java.util.UUID;
 
 public interface SpringDataAddressRepository extends JpaRepository<UserAddress, UUID> {
 
-
     Optional<List<UserAddress>> findAddressesByUserId(UUID userId);
 }
