@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -42,10 +43,10 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
-    private double subTotal;
+    private BigDecimal subTotal;
     private double deliveryFee;
-    private double tax;
-    private double totalPrice;
+    private BigDecimal tax;
+    private BigDecimal totalPrice;
     private String notes;
     public void addItem(OrderItem item) {
         if(items == null)

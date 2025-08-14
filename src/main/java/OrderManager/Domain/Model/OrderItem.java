@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.UUID;
 @Entity
 @Table(name = "OrderItem")
@@ -24,19 +25,20 @@ public class OrderItem {
     @JoinColumn(name = "itemId")
     private Item item;
     private int quantity;
-    private double totalPrice;
+    private BigDecimal totalPrice;
+
     @ManyToOne
-    @JoinColumn(name = "orderId", nullable = true)
+    @JoinColumn(name = "orderId")
     @Type(type = "uuid-char")
     private Order order;
 
-    public OrderItem(Item item, int quantity, double totalPrice) {
+    public OrderItem(Item item, int quantity, BigDecimal totalPrice) {
         this.id = UUID.randomUUID();
         this.item = item;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
     }
-    public OrderItem(UUID id,Item item, int quantity, double totalPrice) {
+    public OrderItem(UUID id,Item item, int quantity, BigDecimal totalPrice) {
         this.id = id;
         this.item = item;
         this.quantity = quantity;

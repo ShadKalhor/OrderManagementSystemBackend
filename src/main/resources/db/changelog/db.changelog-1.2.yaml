@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.2-change-price-to-bigdecimal
+      author: Shad
+      changes:
+        - modifyDataType:
+            tableName: Item
+            columnName: price
+            newDataType: DECIMAL(19,2)
+  - changeSet:
+      id: 1.2-change-discount-to-bigdecimal
+      author: Shad
+      changes:
+        - modifyDataType:
+            tableName: Item
+            columnName: discount
+            newDataType: DECIMAL(19,2)
+  - changeSet:
+      id: 1.2-change-totalPrice-orderItem-to-bigdecimal
+      author: Shad
+      changes:
+        - modifyDataType:
+            tableName: OrderItem
+            columnName: totalPrice
+            newDataType: DECIMAL(19,2)
+  - changeSet:
+      id: 1.2-change-totalPrice-order-to-bigdecimal
+      author: Shad
+      changes:
+        - modifyDataType:
+            tableName: Orders
+            columnName: totalPrice
+            newDataType: DECIMAL(19,2)
+  - changeSet:
+      id: 1.2-change-subtotalPrice-order-to-bigdecimal
+      author: Shad
+      changes:
+        - modifyDataType:
+            tableName: Orders
+            columnName: subTotal
+            newDataType: DECIMAL(19,2)
+  - changeSet:
+      id: 1.2-change-tax-order-to-bigdecimal
+      author: Shad
+      changes:
+        - modifyDataType:
+            tableName: Orders
+            columnName: tax
+            newDataType: DECIMAL(19,2)
