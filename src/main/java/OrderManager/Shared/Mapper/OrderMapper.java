@@ -1,108 +1,38 @@
 package OrderManager.Shared.Mapper;
 
-import OrderManager.Domain.Model.*;
-import OrderManager.Domain.Model.Utilities.*;
-import OrderManager.Shared.Dto.OrderDto;
-import OrderManager.Shared.Dto.UserDto;
-import OrderManager.Shared.Dto.UserAddressDto;
-import OrderManager.Shared.Dto.DriverDto;
-import OrderManager.Shared.Dto.OrderItemDto;
+import OrderManager.Shared.Dto.OrderDtos.CreateOrderRequest;
+import OrderManager.Shared.Dto.OrderDtos.OrderResponse;
+import OrderManager.Shared.Dto.OrderDtos.UpdateOrderRequest;
+import org.mapstruct.*;
+import OrderManager.Domain.Model.Order;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+@Mapper(
+    componentModel = "spring",
+    uses = { UserMapper.class, UserAddressMapper.class, DriverMapper.class, OrderItemMapper.class, MoneyMapper.class },
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
+public interface OrderMapper {
 
-public class OrderMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(source = "userId",    target = "user.id")
+    @Mapping(source = "addressId", target = "address.id")
+    @Mapping(source = "driverId",  target = "driver.id")
+    @Mapping(target = "subTotal", ignore = true)
+    @Mapping(target = "deliveryFee", ignore = true)
+    @Mapping(target = "tax", ignore = true)
+    @Mapping(target = "totalPrice", ignore = true)
+    Order toDomain(CreateOrderRequest r);
 
-    private final OrderItemMapper orderItemMapper = new OrderItemMapper();
-    private final UserMapper userMapper = new UserMapper();
-    private final UserAddressMapper addressMapper = new UserAddressMapper();
-    private final DriverMapper driverMapper = new DriverMapper();
+    @Mapping(source = "userId",    target = "user.id")
+    @Mapping(source = "addressId", target = "address.id")
+    @Mapping(source = "driverId",  target = "driver.id")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "subTotal", ignore = true)
+    @Mapping(target = "deliveryFee", ignore = true)
+    @Mapping(target = "tax", ignore = true)
+    @Mapping(target = "totalPrice", ignore = true)
+    void update(@MappingTarget Order entity, UpdateOrderRequest r);
 
-    public Order toDomain(OrderDto.CreateOrderRequest r) {
-        if (r == null) return null;
-        Order o = new Order();
-        if (r.userId() != null) {
-            User u = new User();
-            u.setId(r.userId());
-            o.setUser(u);
-        }
-        if (r.addressId() != null) {
-            UserAddress a = new UserAddress();
-            a.setId(r.addressId());
-            o.setAddress(a);
-        }
-        if (r.driverId() != null) {
-            Driver d = new Driver();
-            d.setId(r.driverId());
-            o.setDriver(d);
-        }
-        if (r.status() != null) o.setStatus(r.status());
-        if (r.deliveryStatus() != null) o.setDeliveryStatus(r.deliveryStatus());
-        if (r.items() != null) {
-            List<OrderItem> items = new ArrayList<>();
-            for (OrderItemDto.CreateOrderItemRequest itemReq : r.items()) {
-                items.add(orderItemMapper.toDomain(itemReq));
-            }
-            o.setItems(items);
-        }
-        o.setNotes(r.notes());
-        return o;
-    }
-
-    public void update(Order o, OrderDto.UpdateOrderRequest r) {
-        if (o == null || r == null) return;
-        if (r.userId() != null) {
-            User u = new User();
-            u.setId(r.userId());
-            o.setUser(u);
-        }
-        if (r.addressId() != null) {
-            UserAddress a = new UserAddress();
-            a.setId(r.addressId());
-            o.setAddress(a);
-        }
-        if (r.driverId() != null) {
-            Driver d = new Driver();
-            d.setId(r.driverId());
-            o.setDriver(d);
-        }
-        if (r.status() != null) o.setStatus(r.status());
-        if (r.deliveryStatus() != null) o.setDeliveryStatus(r.deliveryStatus());
-        if (r.items() != null) {
-            List<OrderItem> items = new ArrayList<>();
-            for (OrderItemDto.CreateOrderItemRequest itemReq : r.items()) {
-                items.add(orderItemMapper.toDomain(itemReq));
-            }
-            o.setItems(items);
-        }
-        if (r.notes() != null) o.setNotes(r.notes());
-    }
-
-    public OrderDto.OrderResponse toResponse(Order o) {
-        if (o == null) return null;
-        UserDto.UserSummary userSummary = o.getUser() != null ? userMapper.toSummary(o.getUser()) : null;
-        UserAddressDto.UserAddressResponse addr = o.getAddress() != null ? addressMapper.toResponse(o.getAddress()) : null;
-        DriverDto.DriverResponse driverResp = o.getDriver() != null ? driverMapper.toResponse(o.getDriver()) : null;
-        List<OrderItemDto.OrderItemResponse> itemResponses = null;
-        if (o.getItems() != null) {
-            itemResponses = o.getItems().stream().map(orderItemMapper::toResponse).collect(Collectors.toList());
-        }
-        return new OrderDto.OrderResponse(
-            o.getId(),
-            userSummary,
-            addr,
-            driverResp,
-            o.getStatus(),
-            o.getDeliveryStatus(),
-            itemResponses,
-            o.getSubTotal(),
-            BigDecimal.valueOf(o.getDeliveryFee()),
-            o.getTax(),
-            o.getTotalPrice(),
-            o.getNotes()
-        );
-    }
+    @Mapping(source = "deliveryFee", target = "deliveryFee", qualifiedByName = "doubleToBigDecimal")
+    OrderResponse toResponse(Order entity);
 }

@@ -44,7 +44,7 @@ public class Order {
     private List<OrderItem> items;
 
     private BigDecimal subTotal;
-    private double deliveryFee;
+    private BigDecimal deliveryFee;
     private BigDecimal tax;
     private BigDecimal totalPrice;
     private String notes;

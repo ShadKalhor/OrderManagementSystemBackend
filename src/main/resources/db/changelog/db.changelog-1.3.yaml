@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.3-change-deliveryfee-to-bigdecimal
+      author: Shad
+      changes:
+        - modifyDataType:
+            tableName: Orders
+            columnName: deliveryFee
+            newDataType: DECIMAL(19,2)

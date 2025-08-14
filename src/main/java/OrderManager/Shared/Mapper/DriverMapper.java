@@ -1,43 +1,46 @@
 package OrderManager.Shared.Mapper;
 
+import OrderManager.Shared.Dto.DriverDtos.CreateDriverRequest;
+import OrderManager.Shared.Dto.DriverDtos.DriverResponse;
+import OrderManager.Shared.Dto.DriverDtos.UpdateDriverRequest;
+import org.mapstruct.*;
 import OrderManager.Domain.Model.Driver;
 import OrderManager.Domain.Model.User;
-import OrderManager.Shared.Dto.DriverDto.*;
-import OrderManager.Shared.Dto.UserDto;
 
-public class DriverMapper {
+@Mapper(
+    componentModel = "spring",
+    uses = { UserMapper.class },
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
+public interface DriverMapper {
 
-    public Driver toDomain(CreateDriverRequest r) {
-        Driver d = new Driver();
-        d.setVehicleNumber(r.vehicleNumber());
-        d.setAge(r.age());
-        d.setAccount(toUser(r.account()));
-        return d;
+    @Mapping(target = "id", ignore = true)
+    
+    Driver toDomain(CreateDriverRequest r);
+
+    @Mapping(target = "id", ignore = true)
+    void update(@MappingTarget Driver entity, UpdateDriverRequest r);
+
+    // Expose name from nested account
+    @Mapping(source = "account.name", target = "name")
+    DriverResponse toResponse(Driver entity);
+
+    // Set nested account.name safely
+    @AfterMapping
+    default void fillAccountOnCreate(CreateDriverRequest r, @MappingTarget Driver entity) {
+        if (r == null) return;
+        if (r.name() != null) {
+            if (entity.getAccount() == null) entity.setAccount(new User());
+            entity.getAccount().setName(r.name());
+        }
     }
 
-    public void applyPatch(Driver target, UpdateDriverRequest r) {
-        if (r.vehicleNumber() != null)  target.setVehicleNumber(r.vehicleNumber());
-        if (r.age() != null)            target.setAge(r.age());
-        if (r.account() != null)        target.setAccount(toUser(r.account()));
-    }
-
-
-    public DriverResponse toResponse(Driver d) {
-        return new DriverResponse(
-                d.getId(),
-                d.getVehicleNumber(),
-                d.getAge(),
-                toUserDto(d.getAccount())
-        );
-    }
-
-    private User toUser(UserDto dto) {
-        if (dto == null) return null;
-        User u = new User();
-        u.setName(dto.getName());
-        u.setRole(dto.getRole());
-        u.setGender(dto.getGender());
-        u.setPhone(dto.getPhone());
-        return u;
+    @AfterMapping
+    default void fillAccountOnUpdate(UpdateDriverRequest r, @MappingTarget Driver entity) {
+        if (r == null) return;
+        if (r.name() != null) {
+            if (entity.getAccount() == null) entity.setAccount(new User());
+            entity.getAccount().setName(r.name());
+        }
     }
 }

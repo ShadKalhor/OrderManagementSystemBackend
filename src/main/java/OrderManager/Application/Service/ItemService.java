@@ -5,6 +5,7 @@ import OrderManager.Application.Port.out.ItemPersistencePort;
 import OrderManager.Domain.Model.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -59,7 +60,7 @@ public class ItemService {
             System.out.println("Invalid description.");
             return false;
         }
-        if (item.getPrice() < 0) {
+        if (item.getPrice().compareTo(BigDecimal.ZERO) < 0) {
             System.out.println("Price cannot be negative.");
             return false;
         }
@@ -67,7 +68,7 @@ public class ItemService {
             System.out.println("Invalid size.");
             return false;
         }
-        if (item.getDiscount() < 0 || item.getDiscount() > 1) {
+        if (item.getDiscount().compareTo(BigDecimal.ZERO) < 0 || item.getDiscount().compareTo(BigDecimal.ONE) > 1) {
             System.out.println("Discount must be between 0 and 1.");
             return false;
         }

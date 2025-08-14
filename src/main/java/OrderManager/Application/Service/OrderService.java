@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,29 +69,66 @@ public class OrderService {
 
 
     private Order CalculateOrder(Order order){
-        double subtotal = calculateSubtotal(order.getItems());
+        BigDecimal subtotal = calculateSubtotal(order.getItems());
+        BigDecimal minFee = new BigDecimal("2.00");
+        BigDecimal feePct = new BigDecimal("0.05");
+
+        BigDecimal taxPct = new BigDecimal("0.10");
+
         order.setSubTotal(subtotal);
-        order.setDeliveryFee(
-                Math.max(subtotal*0.05, 2.0)
-        );
-        order.setTax(
-                subtotal*0.1
-        );
-        order.setTotalPrice(
-                order.getSubTotal() + order.getDeliveryFee() + order.getTax()
-        );
+
+
+        BigDecimal deliveryFee = subtotal.multiply(feePct);
+        if (deliveryFee.compareTo(minFee) < 0) {
+            deliveryFee = minFee;
+        }
+        order.setDeliveryFee(deliveryFee);
+
+        BigDecimal tax = subtotal.multiply(taxPct);
+        order.setTax(tax);
+
+        BigDecimal total = subtotal.add(deliveryFee).add(tax);
+        order.setTotalPrice(total);
 
         return order;
     }
 
-    private double calculateSubtotal(List<OrderItem> orderItems){
-        double subtotal = 0.0;
+    private BigDecimal calculateSubtotal(List<OrderItem> orderItems){
+
+        BigDecimal subtotal = BigDecimal.ZERO;
+
+        for (OrderItem orderItem : orderItems) {
+            Optional<Item> itemOpt = itemService.GetItemById(orderItem.getItem().getId());
+            Item item = itemOpt.orElseThrow(() ->
+                    new EntityNotFoundException("Item not found with ID: " + orderItem.getItem().getId())
+            );
+            orderItem.setItem(item); // hydrate
+
+            BigDecimal price = item.getPrice() != null ? item.getPrice() : BigDecimal.ZERO;
+            BigDecimal discount = item.getDiscount() != null ? item.getDiscount() : BigDecimal.ZERO;
+            BigDecimal qty = BigDecimal.valueOf(orderItem.getQuantity());
+
+            BigDecimal oneMinusDiscount = BigDecimal.ONE.subtract(discount);
+            if (oneMinusDiscount.compareTo(BigDecimal.ZERO) < 0) {
+                oneMinusDiscount = BigDecimal.ZERO; // guard if discount > 1
+            }
+
+            BigDecimal unitNet = price.multiply(oneMinusDiscount);
+            BigDecimal lineTotal = unitNet.multiply(qty);
+
+            orderItem.setTotalPrice(lineTotal);
+            subtotal = subtotal.add(lineTotal);
+        }
+
+        return subtotal;
+
+        /* BigDecimal subtotal = BigDecimal.ZERO;
         for (OrderItem orderItem : orderItems){
             Optional<Item> itemOpt = itemService.GetItemById(orderItem.getItem().getId());
 
             if (itemOpt.isPresent()) {
                 Item item = itemOpt.get();
-                orderItem.setItem(item);// <-- Now this works
+                orderItem.setItem(item);
             } else {
                 throw new EntityNotFoundException("Item not found with ID: " + orderItem.getItem().getId());
             }
@@ -102,6 +140,7 @@ public class OrderService {
             subtotal+=orderItem.getTotalPrice();
         }
         return subtotal;
+*/
     }
 
 
