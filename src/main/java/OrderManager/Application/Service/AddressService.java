@@ -2,7 +2,6 @@ package OrderManager.Application.Service;
 
 import OrderManager.Application.Port.out.AddressPersistencePort;
 import OrderManager.Domain.Model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,41 +11,34 @@ import java.util.UUID;
 @Service
 public class AddressService {
     
-    private AddressPersistencePort addressPort;
+    private final AddressPersistencePort addressPort;
 
     public AddressService(AddressPersistencePort addressPort){
         this.addressPort = addressPort;
     }
 
     public Optional<UserAddress> CreateAddress(UserAddress userAddress){
-
-        Optional<UserAddress> result = Optional.of(addressPort.save(userAddress));
-        if (result != null)
-            return result;
-        return Optional.empty();
+        return addressPort.save(userAddress);
     }
 
 
     public Optional<List<UserAddress>> GetUserAddresses(UUID userId){
-        Optional<List<UserAddress>> addresses = addressPort.findAddressesByUserId(userId);
-        return addresses;
+        return addressPort.findAddressesByUserId(userId);
     }
 
     public Optional<UserAddress> GetAddressById(UUID uuid){
-        Optional<UserAddress> result = addressPort.findById(uuid);
-        if (result != null)
-            return result;
-        return Optional.empty();
+        return addressPort.findById(uuid);
     }
 
 
-    public boolean DeleteAddress(UUID uuid){
-        Optional<UserAddress> address = GetAddressById(uuid);
-        if(address.isPresent()) {
-            addressPort.deleteById(uuid);
-            return true;
-        }
-        return false;
+    public boolean DeleteAddress(UUID addressId){
+        return addressPort.findById(addressId)
+                .map(d -> {
+                    addressPort.deleteById(addressId);
+                    return true;
+                })
+                .orElse(false);
+
     }
 
 }

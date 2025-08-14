@@ -2,9 +2,7 @@ package OrderManager.Application.Service;
 
 
 import OrderManager.Application.Port.out.ItemPersistencePort;
-import OrderManager.Application.Port.out.OrderItemPersistencePort;
 import OrderManager.Domain.Model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,13 +10,10 @@ import java.util.*;
 @Service
 public class ItemService {
 
-    
-    private OrderItemPersistencePort orderItemPort;
-    private ItemPersistencePort itemPort;
+    private final ItemPersistencePort itemPort;
 
     
-    public ItemService(OrderItemPersistencePort orderitemPort, ItemPersistencePort itemPort){
-        this.orderItemPort = orderitemPort;
+    public ItemService(ItemPersistencePort itemPort){
         this.itemPort = itemPort;
     }
     
@@ -33,7 +28,7 @@ public class ItemService {
                 if(item.getQuantity() < orderItem.getQuantity()) {
                     if (unavailableItems == null)
                         unavailableItems = new HashMap<>();
-                        unavailableItems.put(item.getName(), "inventory does not have" +
+                    unavailableItems.put(item.getName(), "inventory does not have" +
                                 orderItem.getQuantity() + " Of " + item.getName() + " Left.");
                 }
             }
@@ -95,12 +90,12 @@ public class ItemService {
 
     public boolean DeleteItem(UUID itemId) {
 
-        Optional<Item> item = itemPort.findById(itemId);
-        if (item.isPresent()){
-            itemPort.deleteById(itemId);
-            return true;
-        }else
-            return false;
+        return itemPort.findById(itemId)
+                .map(d -> {
+                    itemPort.deleteById(itemId);
+                    return true;
+                })
+                .orElse(false);
     }
 
 }

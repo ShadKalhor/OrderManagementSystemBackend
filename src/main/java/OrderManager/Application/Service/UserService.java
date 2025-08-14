@@ -1,14 +1,11 @@
 package OrderManager.Application.Service;
 
-import OrderManager.Application.Port.out.AddressPersistencePort;
 import OrderManager.Application.Port.out.UserPersistencePort;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import OrderManager.Extensions.RegexFormats;
+import OrderManager.Shared.Extensions.RegexFormats;
 import OrderManager.Domain.Model.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,12 +43,12 @@ public class UserService {
     }
 
     public boolean DeleteUser(UUID userId) {
-        Optional<User> user = GetUserById(userId);
-        if(user.isPresent()) {
-            userPort.deleteById(userId);
-            return true;
-        }
-        return false;
+        return userPort.findById(userId)
+                .map(d -> {
+                    userPort.deleteById(userId);
+                    return true;
+                })
+                .orElse(false);
     }
 
 

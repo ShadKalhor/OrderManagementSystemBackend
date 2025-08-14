@@ -52,12 +52,13 @@ public class OrderService {
     }
 
     public boolean DeleteOrder(UUID orderId){
-        Optional<Order> order = GetOrderById(orderId);
-        if(order.isPresent()) {
-            orderPort.deleteById(orderId);
-            return true;
-        }
-        return false;
+        return orderPort.findById(orderId)
+                .map(d -> {
+                    orderPort.deleteById(orderId);
+                    return true;
+                })
+                .orElse(false);
+
     }
 
     public Optional<List<Order>> GetByUserId(UUID userId) {

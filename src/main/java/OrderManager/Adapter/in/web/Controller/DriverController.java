@@ -1,15 +1,9 @@
 package OrderManager.Adapter.in.web.Controller;
 
 import OrderManager.Application.Service.DriverService;
-import OrderManager.Database.DatabaseConnection;
-import OrderManager.Domain.Model.User;
-import OrderManager.Domain.Model.UserAddress;
-import OrderManager.Shared.Dto.DriverDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import OrderManager.Domain.Model.Driver;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

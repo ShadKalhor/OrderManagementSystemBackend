@@ -10,7 +10,7 @@ public interface AddressPersistencePort {
     
     Optional<List<UserAddress>> findAddressesByUserId(UUID userId);
 
-    UserAddress save(UserAddress userAddress);
+    Optional<UserAddress> save(UserAddress userAddress);
 
     Optional<UserAddress> findById(UUID uuid);
 

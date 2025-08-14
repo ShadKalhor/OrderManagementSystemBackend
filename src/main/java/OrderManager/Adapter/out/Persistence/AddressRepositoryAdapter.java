@@ -23,8 +23,8 @@ public class AddressRepositoryAdapter implements AddressPersistencePort {
     }
 
     @Override
-    public UserAddress save(UserAddress userAddress) {
-        return addressRepository.save(userAddress);
+    public Optional<UserAddress> save(UserAddress userAddress) {
+        return Optional.of(addressRepository.save(userAddress));
     }
 
     @Override
