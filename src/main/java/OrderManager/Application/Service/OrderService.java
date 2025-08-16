@@ -16,9 +16,9 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
-    private ItemService itemService;
+    private final ItemService itemService;
 
-    private OrderPersistencePort orderPort;
+    private final OrderPersistencePort orderPort;
 
     public OrderService(OrderPersistencePort orderPort, ItemService itemService){
         this.itemService = itemService;
@@ -42,8 +42,8 @@ public class OrderService {
         return result;
     }
 
-    public Optional<List<Order>> GetAllOrders(){
-        return Optional.of( orderPort.findAll());
+    public List<Order> GetAllOrders(){
+        return orderPort.findAll();
     }
 
 

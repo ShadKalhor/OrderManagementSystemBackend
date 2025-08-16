@@ -1,10 +1,17 @@
 package OrderManager.Shared.Mapper;
 
+import OrderManager.Domain.Model.Driver;
+import OrderManager.Domain.Model.User;
+import OrderManager.Domain.Model.UserAddress;
 import OrderManager.Shared.Dto.OrderDtos.CreateOrderRequest;
 import OrderManager.Shared.Dto.OrderDtos.OrderResponse;
 import OrderManager.Shared.Dto.OrderDtos.UpdateOrderRequest;
 import org.mapstruct.*;
 import OrderManager.Domain.Model.Order;
+
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Mapper(
     componentModel = "spring",
@@ -35,4 +42,33 @@ public interface OrderMapper {
 
     @Mapping(source = "deliveryFee", target = "deliveryFee", qualifiedByName = "doubleToBigDecimal")
     OrderResponse toResponse(Order entity);
+
+    @AfterMapping
+    default void fillNestedOnCreate(CreateOrderRequest r, @MappingTarget Order entity) {
+        if (r == null) return;
+        setIfNotNull(r.userId(), entity::setUser, User::new);
+        setIfNotNull(r.addressId(), entity::setAddress, UserAddress::new);
+        setIfNotNull(r.driverId(), entity::setDriver, Driver::new);
+    }
+
+    @AfterMapping
+    default void fillNestedOnUpdate(UpdateOrderRequest r, @MappingTarget Order entity) {
+        if (r == null) return;
+        setIfNotNull(r.userId(), entity::setUser, User::new);
+        setIfNotNull(r.addressId(), entity::setAddress, UserAddress::new);
+        setIfNotNull(r.driverId(), entity::setDriver, Driver::new);
+    }
+
+    private <T> void setIfNotNull(UUID id, Consumer<T> setter, Supplier<T> creator) {
+        if (id != null) {
+            T obj = creator.get();
+            // Use reflection to call setId(UUID)
+            try {
+                obj.getClass().getMethod("setId", UUID.class).invoke(obj, id);
+            } catch (Exception e) {
+                throw new IllegalStateException("Failed to set id on " + obj.getClass(), e);
+            }
+            setter.accept(obj);
+        }
+    }
 }

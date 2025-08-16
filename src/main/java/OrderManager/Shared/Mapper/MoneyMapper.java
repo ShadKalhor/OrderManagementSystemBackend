@@ -12,13 +12,4 @@ public class MoneyMapper {
         return BigDecimal.valueOf(v);
     }
 
-    @Named("doubleObjToBigDecimal")
-    public BigDecimal doubleObjToBigDecimal(Double v) {
-        return v == null ? null : BigDecimal.valueOf(v);
-    }
-
-    @Named("bigDecimalToDouble")
-    public double bigDecimalToDouble(BigDecimal v) {
-        return v == null ? 0.0 : v.doubleValue();
-    }
 }

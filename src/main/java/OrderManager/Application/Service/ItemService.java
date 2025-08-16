@@ -85,8 +85,8 @@ public class ItemService {
     }
 
 
-    public Optional<List<Item>> GetAllItems() {
-        return Optional.of(itemPort.findAll());
+    public List<Item> GetAllItems() {
+        return itemPort.findAll();
     }
 
     public boolean DeleteItem(UUID itemId) {

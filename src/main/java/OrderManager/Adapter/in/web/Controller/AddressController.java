@@ -3,11 +3,15 @@ package OrderManager.Adapter.in.web.Controller;
 import OrderManager.Domain.Model.User;
 import OrderManager.Domain.Model.UserAddress;
 import OrderManager.Application.Service.AddressService;
-import OrderManager.Application.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import OrderManager.Shared.Dto.UserAddressDtos.CreateUserAddressRequest;
+import OrderManager.Shared.Dto.UserAddressDtos.UpdateUserAddressRequest;
+import OrderManager.Shared.Dto.UserAddressDtos.UserAddressResponse;
+import OrderManager.Shared.Dto.UserDtos.UpdateUserRequest;
+import OrderManager.Shared.Mapper.UserAddressMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,50 +20,76 @@ import java.util.UUID;
 @RequestMapping("/address")
 public class AddressController {
 
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private AddressService addressService;
+    private final AddressService addressService;
+    private final UserAddressMapper addressMapper;
+
+    public AddressController(AddressService addressService,UserAddressMapper addressMapper){
+        this.addressService = addressService;
+        this.addressMapper = addressMapper;
+    }
 
     @PostMapping
-    public ResponseEntity<UserAddress> CreateAddress(@RequestBody UserAddress address){
+    public ResponseEntity<UserAddressResponse> CreateAddress(@Valid @RequestBody CreateUserAddressRequest addressBody){/*
         Optional<UserAddress> result = addressService.CreateAddress(address);
         return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());*/
+
+        var address = addressMapper.toDomain(addressBody);
+        return addressService.CreateAddress(address)
+                .map(addressMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PutMapping
-    public ResponseEntity<UserAddress> UpdateAddress(@RequestBody UserAddress address){
-        Optional<UserAddress> result = addressService.CreateAddress(address);
+    @PutMapping("/{addressId}")
+    public ResponseEntity<UserAddressResponse> UpdateAddress(@PathVariable UUID addressId, @Valid @RequestBody UpdateUserAddressRequest addressBody){
+        /*Optional<UserAddress> result = addressService.CreateAddress(address);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    */
+        var addressExists = addressService.GetAddressById(addressId).orElse(null);
+
+        if (addressExists == null)
+            return ResponseEntity.notFound().build();
+
+        addressMapper.update(addressExists, addressBody);
+        var updatedUser = addressService.CreateAddress(addressExists);
+        return updatedUser.map(address -> ResponseEntity.ok(addressMapper.toResponse(address))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @GetMapping("{Id}")
-    public ResponseEntity<UserAddress> GetAddressById(@PathVariable("Id") UUID uuid){
-        Optional<UserAddress> result = addressService.GetAddressById(uuid);
+    @GetMapping("/{Id}")
+    public ResponseEntity<UserAddressResponse> GetAddressById(@PathVariable("Id") UUID addressId){
+        /*Optional<UserAddress> result = addressService.GetAddressById(uuid);
         return result.map(ResponseEntity::ok)
                 .orElseGet(()-> ResponseEntity.notFound().build());
+    */
+        return addressService.GetAddressById(addressId)
+                .map(addressMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 
-    @GetMapping("/getbyuser")
-    public ResponseEntity<List<UserAddress>> GetUserAddresses(@RequestBody User user){
-        Optional<List<UserAddress>> result = addressService.GetUserAddresses(user.getId());
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-    @GetMapping("/getbyuser{id}")
-    public ResponseEntity<List<UserAddress>> GetUserById(@PathVariable("id") UUID uuid){
-        System.out.println(uuid);
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<UserAddressResponse>> GetUserById(@PathVariable("id") UUID userId){
+        /*System.out.println(uuid);
         Optional<List<UserAddress>> result = addressService.GetUserAddresses(uuid);
         System.out.println(result);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    */
+        Optional<List<UserAddress>> result = addressService.GetUserAddresses(userId);
+        return result
+                .filter(list -> !list.isEmpty())
+                .map(list -> list.stream().map(addressMapper::toResponse).toList())
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Boolean> DeleteAddress(@PathVariable("id") UUID uuid){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> DeleteAddress(@PathVariable("id") UUID uuid){
         boolean isDeleted = addressService.DeleteAddress(uuid);
         if(isDeleted)
             return ResponseEntity.ok().build();
