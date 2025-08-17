@@ -58,8 +58,8 @@ public class AddressController {
         return updatedUser.map(address -> ResponseEntity.ok(addressMapper.toResponse(address))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @GetMapping("/{Id}")
-    public ResponseEntity<UserAddressResponse> GetAddressById(@PathVariable("Id") UUID addressId){
+    @GetMapping("/{addressId}")
+    public ResponseEntity<UserAddressResponse> GetAddressById(@PathVariable("addressId") UUID addressId){
         /*Optional<UserAddress> result = addressService.GetAddressById(uuid);
         return result.map(ResponseEntity::ok)
                 .orElseGet(()-> ResponseEntity.notFound().build());
@@ -71,8 +71,8 @@ public class AddressController {
 
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<List<UserAddressResponse>> GetUserById(@PathVariable("id") UUID userId){
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<UserAddressResponse>> GetUserById(@PathVariable("userId") UUID userId){
         /*System.out.println(uuid);
         Optional<List<UserAddress>> result = addressService.GetUserAddresses(uuid);
         System.out.println(result);
@@ -88,9 +88,9 @@ public class AddressController {
 
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> DeleteAddress(@PathVariable("id") UUID uuid){
-        boolean isDeleted = addressService.DeleteAddress(uuid);
+    @DeleteMapping("/{addressId}")
+    public ResponseEntity<Void> DeleteAddress(@PathVariable("addressId") UUID addressId){
+        boolean isDeleted = addressService.DeleteAddress(addressId);
         if(isDeleted)
             return ResponseEntity.ok().build();
         else

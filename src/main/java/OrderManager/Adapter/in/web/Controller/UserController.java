@@ -60,8 +60,8 @@ public class UserController {
     }
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> GetById(@PathVariable("id") UUID userId){
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponse> GetById(@PathVariable("userId") UUID userId){
         /*
         Optional<User> user = userService.GetUserById(uuid);
         return user.map(ResponseEntity::ok)
@@ -100,8 +100,8 @@ public class UserController {
         return ResponseEntity.ok(users);
 
     }
-    @DeleteMapping("/{Id}")
-    public ResponseEntity<Void> DeleteUser(@PathVariable("Id") UUID userId){
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> DeleteUser(@PathVariable("userId") UUID userId){
         boolean isDeleted = userService.DeleteUser(userId);
         if(isDeleted)
             return ResponseEntity.noContent().build();

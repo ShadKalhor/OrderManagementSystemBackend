@@ -41,7 +41,7 @@ public class ItemController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{itemId}")
     public ResponseEntity<ItemResponse> UpdateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
         /*Optional<Item> result = itemService.SaveItem(item);
         return result.map(ResponseEntity::ok)
@@ -57,8 +57,8 @@ public class ItemController {
         return updatedUser.map(item -> ResponseEntity.ok(itemMapper.toResponse(item))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @GetMapping("/{Id}")
-    public ResponseEntity<ItemResponse> GetItemById(@PathVariable("Id") UUID itemId){
+    @GetMapping("/{itemId}")
+    public ResponseEntity<ItemResponse> GetItemById(@PathVariable("itemId") UUID itemId){
         /*Optional<Item> result = itemService.GetItemById(itemId);
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -81,8 +81,8 @@ public class ItemController {
         return ResponseEntity.ok(items);
     }
 
-    @DeleteMapping("/{Id}")
-    public ResponseEntity<Void> DeleteItem(@PathVariable("Id") UUID itemId){
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<Void> DeleteItem(@PathVariable("itemId") UUID itemId){
         boolean isDeleted = itemService.DeleteItem(itemId);
         if(isDeleted)
             return ResponseEntity.noContent().build();

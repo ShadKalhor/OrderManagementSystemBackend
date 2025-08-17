@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = EnumOrNullValidator.class)
+@Constraint(validatedBy = {EnumOrNullValidator.class, EnumOrNullEnumValidator.class})
 @Documented
 public @interface EnumOrNull {
     String message() default "Value must match one of the allowed enum constants";

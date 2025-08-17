@@ -39,7 +39,7 @@ public class DriverController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{driverId}")
     public ResponseEntity<DriverResponse> UpdateDriver(@PathVariable UUID driverId,@Valid @RequestBody UpdateDriverRequest driverBody){
        /* Optional<Driver> result = driverService.CreateDriver(driver);
         return result.map(ResponseEntity::ok)
@@ -57,7 +57,7 @@ public class DriverController {
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{driverId}")
     public ResponseEntity<DriverResponse> GetDriver(@PathVariable UUID driverId){/*
         Optional<Driver> result = driverService.FindDriver(driverId);
         return result.map(ResponseEntity::ok)
@@ -83,7 +83,7 @@ public class DriverController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{driverId}")
     public ResponseEntity<Void> DeleteDriver(@PathVariable UUID driverId){
         boolean isDeleted = driverService.DeleteDriver(driverId);
         if(isDeleted)

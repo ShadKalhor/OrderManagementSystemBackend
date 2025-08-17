@@ -13,7 +13,7 @@ public class Main {
     //TODO: Paging and sorting
     //TODO: AOP
     //TODO: change create endpoints so that if its successful its 201 not 200 and make sure that create methods return nothing.
-
+    //TODO: Update the services so that in update theres two parameters required one is id and the other is the updatedentity.
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
 

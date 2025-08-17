@@ -44,7 +44,7 @@ public class OrderController {
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{orderId}")
     public ResponseEntity<OrderResponse> UpdateOrder(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderRequest orderBody){
         /*Optional<Order> result = orderService.CreateOrder(order);
         return result.map(ResponseEntity::ok)
