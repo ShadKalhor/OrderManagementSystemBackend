@@ -100,7 +100,6 @@ class AddressControllerTest {
     void getUserAddresses_notFound_whenListEmpty_andControllerTreatsEmptyAs404() throws Exception {
         var userId = UUID.randomUUID();
 
-        // Optional present but empty list (controller decides policy)
         given(addressService.GetUserAddresses(userId)).willReturn(Optional.of(List.of()));
 
         mvc.perform(get("/address/user/{userId}", userId))
@@ -119,8 +118,6 @@ class AddressControllerTest {
         given(addressService.CreateAddress(any(UserAddress.class)))
                 .willReturn(Optional.of(entity));
 
-        /*
-        given(addressService.CreateAddress(entity)).willReturn(entity);*/
         given(addressMapper.toResponse(entity)).willReturn(response);
 
         mvc.perform(post("/address")

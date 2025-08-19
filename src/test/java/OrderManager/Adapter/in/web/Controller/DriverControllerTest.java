@@ -122,32 +122,26 @@ class DriverControllerTest {
         void create_ok() throws Exception {
             UUID id = UUID.randomUUID();
 
-            // Incoming JSON per CreateDriverRequest: name, vehicleNumber, age, accountId
             String body = """
-      {
-        "name": "Alex",
-        "vehicleNumber": "ABC-123",
-        "age": 30,
-        "accountId": "%s"
-      }
-      """.formatted(UUID.randomUUID());
+                            {
+                                "name": "Alex",
+                                "vehicleNumber": "ABC-123",
+                                "age": 30,
+                                "accountId": "%s"
+                            }
+                          """.formatted(UUID.randomUUID());
 
-            // What the mapper should produce from the request BEFORE persisting
             Driver toCreate = mkDriver(null, "Alex", "ABC-123", 30); // id is null pre-persist
 
-            // What the service returns AFTER persisting
             Driver entityAfterSave = mkDriver(id, "Alex", "ABC-123", 30);
             DriverResponse dto = mkResponse(id, "Alex", "ABC-123", 30);
 
-            // 1) Stub mapper: CreateDriverRequest -> Driver (adjust method name if yours differs)
             when(driverMapper.toDomain(any(OrderManager.Shared.Dto.DriverDtos.CreateDriverRequest.class)))
                     .thenReturn(toCreate);
 
-            // 2) Stub service: Driver -> Optional<Driver> (persisted)
             when(driverService.CreateDriver(any(Driver.class)))
                     .thenReturn(Optional.of(entityAfterSave));
 
-            // 3) Stub mapper: Driver -> DriverResponse
             when(driverMapper.toResponse(entityAfterSave)).thenReturn(dto);
 
             mockMvc.perform(post("/Driver")

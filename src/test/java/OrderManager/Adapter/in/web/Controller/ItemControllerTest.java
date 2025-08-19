@@ -82,11 +82,8 @@ class ItemControllerTest {
             Item saved    = mkItem(id,   "Burger", new BigDecimal("7.50"), "Juicy beef burger");
             ItemResponse dto = mkResp(id, "Burger", new BigDecimal("7.50"), "Juicy beef burger", "Large", BigDecimal.ZERO,true,20 );
 
-            // mapper: request -> domain (rename to your actual method if needed)
             when(itemMapper.toDomain(any(CreateItemRequest.class))).thenReturn(toCreate);
-            // service: persist
             when(itemService.SaveItem(any(Item.class))).thenReturn(Optional.of(saved));
-            // mapper: domain -> response
             when(itemMapper.toResponse(saved)).thenReturn(dto);
 
             mockMvc.perform(post("/item")
@@ -102,7 +99,6 @@ class ItemControllerTest {
         @Test
         @DisplayName("returns 400 when validation fails")
         void create_validationFail() throws Exception {
-            // Missing required fields or invalid values
             String body = """
               { "name": "", "price": -1 }
               """;
@@ -136,7 +132,7 @@ class ItemControllerTest {
         }
     }
 
-    // ================== PUT /item/{id} ==================
+
     @Nested
     @DisplayName("PUT /item/{id}")
     class Update {
@@ -159,8 +155,6 @@ class ItemControllerTest {
             ItemResponse dto = mkResp(id, "Burger Deluxe", new BigDecimal("8.75"), "Upgraded burger","No Size",BigDecimal.ZERO,true,100);
 
             when(itemService.GetItemById(id)).thenReturn(Optional.of(existing));
-            // If your mapper has a void update(existing, UpdateOrderRequest) method, no stub needed.
-            // Persist/save
             when(itemService.SaveItem(existing)).thenReturn(Optional.of(updated));
             when(itemMapper.toResponse(updated)).thenReturn(dto);
 
@@ -172,7 +166,6 @@ class ItemControllerTest {
                     .andExpect(jsonPath("$.name").value("Burger Deluxe"))
                     .andExpect(jsonPath("$.price").value(8.75));
         }
-
         @Test
         @DisplayName("returns 404 when target item doesn't exist")
         void update_notFound() throws Exception {
@@ -210,7 +203,6 @@ class ItemControllerTest {
         }
     }
 
-    // ================== GET /item/{id} ==================
     @Nested
     @DisplayName("GET /item/{id}")
     class GetById {
@@ -243,7 +235,6 @@ class ItemControllerTest {
         }
     }
 
-    // ================== GET /item ==================
     @Nested
     @DisplayName("GET /item")
     class GetAll {
@@ -271,7 +262,6 @@ class ItemControllerTest {
         }
     }
 
-    // ================== DELETE /item/{id} ==================
     @Nested
     @DisplayName("DELETE /item/{id}")
     class Delete {

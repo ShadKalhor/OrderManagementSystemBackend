@@ -38,12 +38,10 @@ class OrderControllerTest {
     @MockBean OrderService orderService;
     @MockBean OrderMapper orderMapper;
 
-    // --- Helpers -------------------------------------------------------------
 
     private static Order mkOrder(UUID id) {
         Order o = Order.builder().build();
         o.setId(id);
-        // we don't need to fully populate nested fields because we map to OrderResponse via mocked mapper
         o.setSubTotal(new BigDecimal("10.00"));
         o.setDeliveryFee(new BigDecimal("2.00"));
         o.setTax(new BigDecimal("1.00"));
@@ -52,24 +50,22 @@ class OrderControllerTest {
     }
 
     private static OrderResponse mkResp(UUID id) {
-        // All nested DTOs can be null for controller tests; we assert a couple of top-level fields
         return new OrderResponse(
                 id,
-                /* user */ null,
-                /* address */ null,
-                /* driver */ null,
-                /* status */ null,
-                /* deliveryStatus */ null,
-                /* items */ List.of(),
+                 null,
+                 null,
+                 null,
+                 null,
+                 null,
+                 List.of(),
                 new BigDecimal("10.00"),
                 new BigDecimal("2.00"),
                 new BigDecimal("1.00"),
                 new BigDecimal("13.00"),
-                /* notes */ null
+                 null
         );
     }
 
-    // --- POST /order ---------------------------------------------------------
 
     @Nested
     @DisplayName("POST /order")
@@ -80,7 +76,6 @@ class OrderControllerTest {
         void create_ok() throws Exception {
             UUID id = UUID.randomUUID();
 
-            // Valid CreateOrderRequest JSON
             UUID userId = UUID.randomUUID();
             UUID addressId = UUID.randomUUID();
             UUID itemId = UUID.randomUUID();
@@ -100,11 +95,8 @@ class OrderControllerTest {
             Order saved    = mkOrder(id);         // post-persist
             OrderResponse dto = mkResp(id);
 
-            // mapper: request -> domain
             when(orderMapper.toDomain(any(CreateOrderRequest.class))).thenReturn(toCreate);
-            // service: save
             when(orderService.CreateOrder(any(Order.class))).thenReturn(Optional.of(saved));
-            // mapper: domain -> response
             when(orderMapper.toResponse(saved)).thenReturn(dto);
 
             mockMvc.perform(post("/order")
@@ -119,7 +111,6 @@ class OrderControllerTest {
         @Test
         @DisplayName("returns 400 when validation fails")
         void create_validationFail() throws Exception {
-            // Missing required fields (userId, addressId, items) -> @Valid should trigger
             String body = """
               { "notes": "invalid payload missing required fields" }
               """;
@@ -159,7 +150,6 @@ class OrderControllerTest {
         }
     }
 
-    // --- PUT /order/{id} -----------------------------------------------------
 
     @Nested
     @DisplayName("PUT /order/{id}")
@@ -185,9 +175,7 @@ class OrderControllerTest {
             OrderResponse dto = mkResp(id);
 
             when(orderService.GetOrderById(id)).thenReturn(Optional.of(existing));
-            // controller calls mapper.update(existing, body) -> void; Mockito is fine without explicit stub
 
-            // controller then calls service.CreateOrder(existing) as an "update/save"
             when(orderService.CreateOrder(existing)).thenReturn(Optional.of(updated));
             when(orderMapper.toResponse(updated)).thenReturn(dto);
 
@@ -243,7 +231,6 @@ class OrderControllerTest {
         }
     }
 
-    // --- GET /order/{Id} -----------------------------------------------------
 
     @Nested
     @DisplayName("GET /order/{Id}")
@@ -276,7 +263,6 @@ class OrderControllerTest {
         }
     }
 
-    // --- GET /order ----------------------------------------------------------
 
     @Nested
     @DisplayName("GET /order")
@@ -305,7 +291,6 @@ class OrderControllerTest {
         }
     }
 
-    // --- GET /order/findbyuserid/{Id} ---------------------------------------
 
     @Nested
     @DisplayName("GET /order/findbyuserid/{Id}")
@@ -344,7 +329,6 @@ class OrderControllerTest {
         }
     }
 
-    // --- DELETE /order/{Id} --------------------------------------------------
 
     @Nested
     @DisplayName("DELETE /order/{Id}")
