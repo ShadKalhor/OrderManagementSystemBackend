@@ -1,6 +1,6 @@
 package OrderManager.Application.Port.out;
 
-import OrderManager.Domain.Model.UserAddress;
+import OrderManager.Domain.Model.*;
 
 import java.util.List;
 import java.util.Optional;

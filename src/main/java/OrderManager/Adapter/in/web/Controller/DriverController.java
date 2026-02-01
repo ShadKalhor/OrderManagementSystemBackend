@@ -45,7 +45,7 @@ public class DriverController {
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     */
-        var driverExists = driverService.FindDriver(driverId).orElse(null);
+        var driverExists = driverService.GetDriverById(driverId).orElse(null);
 
         if (driverExists == null)
             return ResponseEntity.notFound().build();
@@ -63,7 +63,7 @@ public class DriverController {
         return result.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());*/
 
-        return driverService.FindDriver(driverId)
+        return driverService.GetDriverById(driverId)
                 .map(driverMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -75,7 +75,7 @@ public class DriverController {
         return drivers.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.noContent().build());
     */
-        var drivers = driverService.FindAllDrivers().stream()
+        var drivers = driverService.GetAllDrivers().stream()
                 .map(driverMapper::toResponse)
                 .toList();
         return ResponseEntity.ok(drivers);

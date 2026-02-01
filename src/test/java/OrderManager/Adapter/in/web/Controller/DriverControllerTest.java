@@ -62,7 +62,7 @@ class DriverControllerTest {
             Driver entity = mkDriver(id, "Alex", "ABC-123", 30);
             DriverResponse dto = mkResponse(id, "Alex", "ABC-123", 30);
 
-            when(driverService.FindDriver(id)).thenReturn(Optional.of(entity));
+            when(driverService.GetDriverById(id)).thenReturn(Optional.of(entity));
             when(driverMapper.toResponse(entity)).thenReturn(dto);
 
             mockMvc.perform(get("/Driver/{id}", id))
@@ -78,7 +78,7 @@ class DriverControllerTest {
         @DisplayName("returns 400 when not found (matches current controller behavior)")
         void getDriver_notFound() throws Exception {
             UUID id = UUID.randomUUID();
-            when(driverService.FindDriver(id)).thenReturn(Optional.empty());
+            when(driverService.GetDriverById(id)).thenReturn(Optional.empty());
 
             mockMvc.perform(get("/Driver/{id}", id))
                     .andExpect(status().isNotFound());
@@ -101,7 +101,7 @@ class DriverControllerTest {
             DriverResponse r1 = mkResponse(id1, "Alex", "ABC-123", 30);
             DriverResponse r2 = mkResponse(id2, "Sam", "XYZ-789", 45);
 
-            given(driverService.FindAllDrivers()).willReturn(List.of(e1, e2));
+            given(driverService.GetAllDrivers()).willReturn(List.of(e1, e2));
             given(driverMapper.toResponse(e1)).willReturn(r1);
             given(driverMapper.toResponse(e2)).willReturn(r2);
 
@@ -214,7 +214,7 @@ class DriverControllerTest {
             Driver updated = mkDriver(id, "Alex Updated", "CAR-456", 31);
             DriverResponse dto = mkResponse(id, "Alex Updated", "CAR-456", 31);
 
-            when(driverService.FindDriver(id)).thenReturn(Optional.of(existing));
+            when(driverService.GetDriverById(id)).thenReturn(Optional.of(existing));
             when(driverService.CreateDriver(any(Driver.class)))
                     .thenReturn(Optional.of(updated));
             when(driverMapper.toResponse(updated)).thenReturn(dto);
@@ -240,7 +240,7 @@ class DriverControllerTest {
               }
               """;
 
-            when(driverService.FindDriver(id)).thenReturn(Optional.empty());
+            when(driverService.GetDriverById(id)).thenReturn(Optional.empty());
 
             mockMvc.perform(put("/Driver/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)

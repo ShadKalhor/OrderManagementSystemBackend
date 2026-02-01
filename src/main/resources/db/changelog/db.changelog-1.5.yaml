@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.5-create-reservations
+      author: Shad
+      changes:
+        - createTable:
+            tableName: reservations
+            columns:
+              - column: { name: id, type: CHAR(36), constraints: { primaryKey: true, nullable: false } }
+              - column: { name: order_id, type: CHAR(36) }
+              - column: { name: status, type: VARCHAR(16), constraints: { nullable: false } }
+              - column: { name: expires_at, type: TIMESTAMP }
+              - column: { name: created_at, type: TIMESTAMP, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+
+        - createTable:
+            tableName: reservation_lines
+            columns:
+              - column: { name: id, type: CHAR(36), constraints: { primaryKey: true, nullable: false } }  # <-- surrogate PK
+              - column: { name: reservation_id, type: CHAR(36), constraints: { nullable: false } }
+              - column: { name: item_id,        type: VARCHAR(255), constraints: { nullable: false } }
+              - column: { name: qty,            type: INT, constraints: { nullable: false } }
+
+        - addForeignKeyConstraint:
+            baseTableName: reservation_lines
+            baseColumnNames: reservation_id
+            referencedTableName: reservations
+            referencedColumnNames: id
+            onDelete: CASCADE
+            constraintName: fk_reservation_lines_reservation
+
+        - addForeignKeyConstraint:
+            baseTableName: reservation_lines
+            baseColumnNames: item_id
+            referencedTableName: Item
+            referencedColumnNames: id
+            constraintName: fk_reservation_lines_item
+
+        - addUniqueConstraint:
+            tableName: reservation_lines
+            columnNames: reservation_id, item_id
+            constraintName: uq_reservation_line_res_item
+
+        - createIndex:
+            tableName: reservations
+            indexName: idx_reservations_status
+            columns: [{ name: status }]
+        - createIndex:
+            tableName: reservations
+            indexName: idx_reservations_expires_at
+            columns: [{ name: expires_at }]

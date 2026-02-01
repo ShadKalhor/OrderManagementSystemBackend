@@ -29,5 +29,6 @@ public class Item {
     private BigDecimal discount;
     private boolean isAvailable;
     private int quantity;
+    private int reserved;
 
 }

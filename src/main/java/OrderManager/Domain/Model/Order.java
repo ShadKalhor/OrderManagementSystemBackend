@@ -43,6 +43,11 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
+    @OneToOne()
+    @JoinColumn(name = "reservationId")
+    private Reservation reservation;
+
+
     private BigDecimal subTotal;
     private BigDecimal deliveryFee;
     private BigDecimal tax;

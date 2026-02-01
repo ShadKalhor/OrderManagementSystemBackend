@@ -13,7 +13,6 @@ import java.util.UUID;
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class UserAddress {
     @Id
@@ -33,6 +32,11 @@ public class UserAddress {
 
     @Column(name = "isPrimary")
     private boolean isPrimary;
+
+
+    public UserAddress(){
+        this.id = UUID.randomUUID();
+    }
 
     public UserAddress(UUID id, User user, String name, String city, String description, String type, String street, String residentialNo) {
         this.id = id;

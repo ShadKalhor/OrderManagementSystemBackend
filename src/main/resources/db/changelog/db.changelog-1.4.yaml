@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.4-add-reserved-to-item
+      author: Shad
+      changes:
+        - addColumn:
+            tableName: Item
+            columns:
+              - column:
+                  name: reserved
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false

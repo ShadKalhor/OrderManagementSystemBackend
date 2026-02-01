@@ -1,7 +1,8 @@
 package OrderManager.Application.Service;
 
-import OrderManager.Application.Port.out.AddressPersistencePort;
+import OrderManager.Application.Port.out.*;
 import OrderManager.Domain.Model.*;
+import OrderManager.Exception.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,14 @@ public class AddressService {
 
     public Optional<UserAddress> CreateAddress(UserAddress userAddress){
         return addressPort.save(userAddress);
+    }
+
+    public void UpdateAddress(UUID addressId, UserAddress userAddress){
+        Optional<UserAddress> addressExists = GetAddressById(addressId);
+        if (addressExists.isEmpty())
+            throw new EntityNotFoundException("Address",addressId);
+        userAddress.setId(addressId);
+        addressPort.save(userAddress);
     }
 
 

@@ -2,6 +2,7 @@ package OrderManager.Application.Service;
 
 import OrderManager.Application.Port.out.DriverPersistencePort;
 import OrderManager.Domain.Model.Driver;
+import OrderManager.Exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +24,20 @@ public class DriverService {
         return driverPort.save(driver);
     }
 
-    public Optional<Driver> FindDriver(UUID driverId) {
+    public void UpdateDriver(UUID driverId, Driver driver){
+
+        Optional<Driver> driverExists = GetDriverById(driverId);
+        if (driverExists.isEmpty())
+            throw new EntityNotFoundException("Driver", driverId);
+        driver.setId(driverId);
+        driverPort.save(driver);
+    }
+
+    public Optional<Driver> GetDriverById(UUID driverId) {
         return driverPort.findById(driverId);
     }
 
-    public List<Driver> FindAllDrivers() {
+    public List<Driver> GetAllDrivers() {
         return driverPort.findAll();
     }
 

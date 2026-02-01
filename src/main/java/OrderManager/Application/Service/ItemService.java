@@ -3,6 +3,8 @@ package OrderManager.Application.Service;
 
 import OrderManager.Application.Port.out.ItemPersistencePort;
 import OrderManager.Domain.Model.*;
+import OrderManager.Exception.EntityNotFoundException;
+import OrderManager.Exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,14 +44,20 @@ public class ItemService {
         return unavailableItems;
     }
 
-    public Optional<Item> SaveItem(Item item) {
-        Optional<Item> result;
-        if (isValidItem(item))
-            result = Optional.of(itemPort.save(item));
-        else
-            return Optional.empty();
-        return result;
+    public Optional<Item> CreateItem(Item item) {
+        return Optional.of(itemPort.save(item));
     }
+
+    public void UpdateItem(UUID itemId, Item item){
+
+        Optional<Item> itemExists = GetItemById(itemId);
+        if(itemExists.isEmpty())
+            throw new EntityNotFoundException("Item", itemId);
+        item.setId(itemId);
+        itemPort.save(item);
+    }
+
+/*
 
     private boolean isValidItem(Item item) {
         if (item.getName() == null || item.getName().isEmpty()) {
@@ -78,6 +86,7 @@ public class ItemService {
         }
         return true;
     }
+*/
 
 
     public Optional<Item> GetItemById(UUID itemId) {

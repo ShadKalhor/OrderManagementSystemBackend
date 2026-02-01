@@ -83,7 +83,7 @@ class ItemControllerTest {
             ItemResponse dto = mkResp(id, "Burger", new BigDecimal("7.50"), "Juicy beef burger", "Large", BigDecimal.ZERO,true,20 );
 
             when(itemMapper.toDomain(any(CreateItemRequest.class))).thenReturn(toCreate);
-            when(itemService.SaveItem(any(Item.class))).thenReturn(Optional.of(saved));
+            when(itemService.CreateItem(any(Item.class))).thenReturn(Optional.of(saved));
             when(itemMapper.toResponse(saved)).thenReturn(dto);
 
             mockMvc.perform(post("/item")
@@ -123,7 +123,7 @@ class ItemControllerTest {
             Item toCreate = mkItem(null, "Burger", new BigDecimal("7.50"), "Juicy beef burger");
 
             when(itemMapper.toDomain(any(CreateItemRequest.class))).thenReturn(toCreate);
-            when(itemService.SaveItem(any(Item.class))).thenReturn(Optional.empty());
+            when(itemService.CreateItem(any(Item.class))).thenReturn(Optional.empty());
 
             mockMvc.perform(post("/item")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -155,7 +155,7 @@ class ItemControllerTest {
             ItemResponse dto = mkResp(id, "Burger Deluxe", new BigDecimal("8.75"), "Upgraded burger","No Size",BigDecimal.ZERO,true,100);
 
             when(itemService.GetItemById(id)).thenReturn(Optional.of(existing));
-            when(itemService.SaveItem(existing)).thenReturn(Optional.of(updated));
+            when(itemService.CreateItem(existing)).thenReturn(Optional.of(updated));
             when(itemMapper.toResponse(updated)).thenReturn(dto);
 
             mockMvc.perform(put("/item/{id}", id)
@@ -194,7 +194,7 @@ class ItemControllerTest {
 
             Item existing = mkItem(id, "Burger", new BigDecimal("7.50"), "Juicy beef burger");
             when(itemService.GetItemById(id)).thenReturn(Optional.of(existing));
-            when(itemService.SaveItem(existing)).thenReturn(Optional.empty());
+            when(itemService.CreateItem(existing)).thenReturn(Optional.empty());
 
             mockMvc.perform(put("/item/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)

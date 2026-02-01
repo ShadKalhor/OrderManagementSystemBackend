@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.6-add-reservation-id-to-orders
+      author: Shad
+      changes:
+        - addColumn:
+            tableName: Orders
+            columns:
+              - column:
+                  name: reservationId
+                  type: CHAR(36)
+                  constraints:
+                    nullable: true
+        - createIndex:
+            tableName: Orders
+            indexName: idx_orders_reservationId
+            columns:
+              - column:
+                  name: reservationId
+        - addForeignKeyConstraint:
+            baseTableName: Orders
+            baseColumnNames: reservationId
+            constraintName: fk_orders_reservation
+            referencedTableName: reservations
+            referencedColumnNames: id
+            onDelete: SET NULL
+      rollback:
+        - dropForeignKeyConstraint:
+            baseTableName: Orders
+            constraintName: fk_orders_reservation
+        - dropIndex:
+            tableName: Orders
+            indexName: idx_orders_reservationId
+        - dropColumn:
+            tableName: Orders
+            columnName: reservationId

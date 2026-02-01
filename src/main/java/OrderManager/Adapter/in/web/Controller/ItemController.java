@@ -35,7 +35,7 @@ public class ItemController {
                 .orElseGet(() -> ResponseEntity.notFound().build());*/
 
         var item = itemMapper.toDomain(itemBody);
-        return itemService.SaveItem(item)
+        return itemService.CreateItem(item)
                 .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -53,7 +53,7 @@ public class ItemController {
             return ResponseEntity.notFound().build();
 
         itemMapper.update(itemExists, itemBody);
-        var updatedUser = itemService.SaveItem(itemExists);
+        var updatedUser = itemService.CreateItem(itemExists);
         return updatedUser.map(item -> ResponseEntity.ok(itemMapper.toResponse(item))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 

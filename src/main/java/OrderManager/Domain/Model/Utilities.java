@@ -6,6 +6,8 @@ public class Utilities {
         Female,
         Other,
     }
+    public enum ReservationStatus { HELD, RELEASED, COMMITTED }
+
     public enum UserRoles{
         Member,
         Driver,
