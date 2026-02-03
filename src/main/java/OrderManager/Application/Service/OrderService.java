@@ -23,7 +23,7 @@ public class OrderService {
     private static final BigDecimal DELIVERY_FEE_PCT = new BigDecimal("0.05");
     private static final BigDecimal MIN_DELIVERY_FEE = new BigDecimal("2.00");
     private static final BigDecimal TAX_PCT = new BigDecimal("0.10");
-    private static final int MONEY_SCALE = 2;//lo nishan krdini point y price.
+    private static final int MONEY_SCALE = 2;//lo nishan krdini point y Currency.
     private static final RoundingMode ROUNDING = RoundingMode.HALF_UP;
 
 
@@ -88,8 +88,26 @@ public class OrderService {
     }
 
 
-
+    //dastkari item&price detail nakre.
     public void UpdateOrder(UUID orderId, Order order){
+
+        Optional<Order> orderExists = GetOrderById(orderId);
+        Order currentOrderInfo;
+        if(orderExists.isEmpty())
+            throw new EntityNotFoundException("Order", orderId);
+        else
+            currentOrderInfo = orderExists.get();
+
+
+        order.setDeliveryFee(currentOrderInfo.getDeliveryFee());
+        order.setReservation(currentOrderInfo.getReservation());
+        order.setSubTotal(currentOrderInfo.getSubTotal());
+        order.setTax(currentOrderInfo.getTax());
+        order.setTotalPrice(currentOrderInfo.getTotalPrice());
+        order.setItems(currentOrderInfo.getItems());
+
+        order.setId(orderId);
+        orderPort.save(order);
 
     }
 
@@ -122,6 +140,7 @@ public class OrderService {
     }
 
 
+/*
 
     private Order CalculateOrder(Order order){
         BigDecimal subtotal = calculateSubtotal(order.getItems());
@@ -148,7 +167,8 @@ public class OrderService {
 
         return order;
     }
-
+*/
+/*
     private BigDecimal calculateSubtotal(List<OrderItem> orderItems){
 
         BigDecimal subtotal = BigDecimal.ZERO;
@@ -175,7 +195,8 @@ public class OrderService {
             subtotal = subtotal.add(lineTotal);
         }
         return subtotal;
-    }
+    }*/
+/*
 
     private Order DeductAmountFromInventory(Order order){
         for (OrderItem orderItem : order.getItems()){
@@ -185,6 +206,7 @@ public class OrderService {
         }
         return order;
     }
+*/
 
 
 

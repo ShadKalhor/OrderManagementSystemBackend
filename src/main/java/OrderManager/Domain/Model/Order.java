@@ -1,5 +1,6 @@
 package OrderManager.Domain.Model;
 
+import OrderManager.Shared.Validation.EnumOrNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,3 +61,19 @@ public class Order {
         this.items.add(item);
     }
 }
+
+
+/*
+
+UUID userId,
+UUID addressId,
+UUID driverId,*/
+/*
+        @Valid @NotEmpty List<CreateOrderItemRequest> items,*//*
+
+@EnumOrNull(Utilities.Status.class)
+Utilities.Status status,
+@EnumOrNull(Utilities.DeliveryStatus.class)
+Utilities.DeliveryStatus deliveryStatus,
+@Size(max=255) String notes
+*/
