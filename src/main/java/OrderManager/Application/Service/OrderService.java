@@ -23,7 +23,7 @@ public class OrderService {
     private static final BigDecimal DELIVERY_FEE_PCT = new BigDecimal("0.05");
     private static final BigDecimal MIN_DELIVERY_FEE = new BigDecimal("2.00");
     private static final BigDecimal TAX_PCT = new BigDecimal("0.10");
-    private static final int MONEY_SCALE = 2;
+    private static final int MONEY_SCALE = 2;//lo nishan krdini point y price.
     private static final RoundingMode ROUNDING = RoundingMode.HALF_UP;
 
 
@@ -42,7 +42,7 @@ public class OrderService {
         this.inventoryReservationPort = inventoryReservationPort;
     }
 
-
+/*
     @Transactional
     public Optional<Order> CreateOrder(Order order){
         Map<String,String> unavailableItems = itemService.GetUnavailableItems(order.getItems());
@@ -57,7 +57,37 @@ public class OrderService {
         order = CalculateOrder(order);
         Optional<Order> result = Optional.of(orderPort.save(order));
         return result;
+    }*/
+
+
+    @Transactional
+    public Optional<Order> CreateOrder(Order draft) {
+        hydrateItems(draft);
+        validateDraft(draft);
+
+        //reserve y item akan daka gar hatu item habu unavailable bu result dabta instance ak la ReservationResult.Failure
+        var result = inventoryReservationPort.reserveItems(draft.getItems());
+        if (result instanceof ReservationResult.Failure f) {
+            throw new InsufficientInventoryException(f.lines());
+        }
+        var reservationId = ((ReservationResult.Success) result).reservationId();
+
+        try {
+
+            applyPricing(draft);
+
+
+            draft.setReservation(inventoryReservationPort.FindReservationById(reservationId));
+            draft.setStatus(Utilities.Status.Pending);
+            return Optional.of(orderPort.save(draft));
+        } catch (RuntimeException ex) {
+
+            inventoryReservationPort.releaseReservation(reservationId);
+            throw ex;
+        }
     }
+
+
 
     public void UpdateOrder(UUID orderId, Order order){
 
@@ -113,6 +143,7 @@ public class OrderService {
         order.setTax(tax);
 
         BigDecimal total = subtotal.add(deliveryFee).add(tax);
+
         order.setTotalPrice(total);
 
         return order;
@@ -127,15 +158,14 @@ public class OrderService {
             Item item = itemOpt.orElseThrow(() ->
                     new EntityNotFoundException("Item not found with ID: " + orderItem.getItem().getId())
             );
-            orderItem.setItem(item); // hydrate
+            orderItem.setItem(item);
 
             BigDecimal price = item.getPrice() != null ? item.getPrice() : BigDecimal.ZERO;
             BigDecimal discount = item.getDiscount() != null ? item.getDiscount() : BigDecimal.ZERO;
             BigDecimal qty = BigDecimal.valueOf(orderItem.getQuantity());
-
             BigDecimal oneMinusDiscount = BigDecimal.ONE.subtract(discount);
             if (oneMinusDiscount.compareTo(BigDecimal.ZERO) < 0) {
-                oneMinusDiscount = BigDecimal.ZERO; // guard if discount > 1
+                oneMinusDiscount = BigDecimal.ZERO;
             }
 
             BigDecimal unitNet = price.multiply(oneMinusDiscount);
@@ -158,34 +188,8 @@ public class OrderService {
 
 
 
-
-    @Transactional
-    public Order createOrder(Order draft) {
-        hydrateItems(draft);               // load canonical items by ID
-        validateDraft(draft);              // qty > 0, duplicates, etc.
-
-        // 1) Try to reserve stock atomically
-        var result = inventoryReservationPort.reserveItems(draft.getItems());
-        if (result instanceof ReservationResult.Failure f) {
-            throw new InsufficientInventoryException(f.lines());
-        }
-        var reservationId = ((ReservationResult.Success) result).reservationId();
-
-        try {
-            // 2) Price it
-            applyPricing(draft);
-
-            // 3) Persist the order with the reservation reference
-            draft.setReservation(inventoryReservationPort.FindReservationById(reservationId));
-            draft.setStatus(Utilities.Status.Pending);
-            return orderPort.save(draft);
-        } catch (RuntimeException ex) {
-            // compensation if pricing/persisting fails
-            inventoryReservationPort.releaseReservation(reservationId);
-            throw ex;
-        }
-    }
     private void applyPricing(Order order) {
+
         BigDecimal subtotal = order.getItems().stream()
                 .map(this::lineTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
@@ -208,7 +212,7 @@ public class OrderService {
     private BigDecimal lineTotal(OrderItem oi) {
         Item item = oi.getItem();
         BigDecimal price = safe(item.getPrice());
-        BigDecimal discount = clamp01(safe(item.getDiscount()));
+        BigDecimal discount = roundDiscountWithinRange(safe(item.getDiscount()));
         BigDecimal qty = BigDecimal.valueOf(oi.getQuantity());
         BigDecimal unitNet = price.multiply(BigDecimal.ONE.subtract(discount));
         return unitNet.multiply(qty);
@@ -218,7 +222,7 @@ public class OrderService {
         return v == null ? BigDecimal.ZERO : v;
     }
 
-    private BigDecimal clamp01(BigDecimal v) {
+    private BigDecimal roundDiscountWithinRange(BigDecimal v) {
         if (v.compareTo(BigDecimal.ZERO) < 0) return BigDecimal.ZERO;
         if (v.compareTo(BigDecimal.ONE) > 0) return BigDecimal.ONE;
         return v;
@@ -229,11 +233,9 @@ public class OrderService {
         for (OrderItem oi : order.getItems()) {
             UUID itemId = oi.getItem().getId();
 
-            // Pull the "real" Item from the ItemService / ItemRepository via your port
             Item item = itemService.GetItemById(itemId)
                     .orElseThrow(() -> new EntityNotFoundException("Item", itemId));
 
-            // Replace the shallow Item in the OrderItem with the hydrated one
             oi.setItem(item);
         }
     }

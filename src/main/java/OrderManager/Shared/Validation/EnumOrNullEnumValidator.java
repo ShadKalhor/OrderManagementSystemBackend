@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Validator for @EnumOrNull when applied to Enum fields directly
- */
 public class EnumOrNullEnumValidator implements ConstraintValidator<EnumOrNull, Enum<?>> {
 
     private Set<String> allowed;

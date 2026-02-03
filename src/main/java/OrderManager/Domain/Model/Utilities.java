@@ -14,6 +14,7 @@ public class Utilities {
         Admin,
     }
     public enum Status{
+        NotProccessed,
         Pending,
         Confirmed,
         Reviewing,

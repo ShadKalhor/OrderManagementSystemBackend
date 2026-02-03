@@ -40,6 +40,8 @@ public class InventoryReservationAdapter implements InventoryReservationPort {
 
         var itemIds = items.stream().map(oi -> oi.getItem().getId()).toList();
 
+        //Map y item ba key, pashan check krdnawa w xstni item y be stock lo shortages.
+        //check kawa la ruy efficiency
         Map<UUID, Item> byId = itemRepo.findAllForUpdate(itemIds).stream()
                 .collect(Collectors.toMap(Item::getId, x -> x));
 

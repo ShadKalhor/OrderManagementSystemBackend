@@ -1,12 +1,11 @@
 package OrderManager.Adapter.in.web.Controller;
 
-import OrderManager.Domain.Model.User;
 import OrderManager.Domain.Model.UserAddress;
 import OrderManager.Application.Service.AddressService;
 import OrderManager.Shared.Dto.UserAddressDtos.CreateUserAddressRequest;
 import OrderManager.Shared.Dto.UserAddressDtos.UpdateUserAddressRequest;
 import OrderManager.Shared.Dto.UserAddressDtos.UserAddressResponse;
-import OrderManager.Shared.Dto.UserDtos.UpdateUserRequest;
+
 import OrderManager.Shared.Mapper.UserAddressMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

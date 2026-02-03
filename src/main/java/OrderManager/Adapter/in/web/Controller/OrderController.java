@@ -3,6 +3,7 @@ package OrderManager.Adapter.in.web.Controller;
 import OrderManager.Domain.Model.Order;
 import OrderManager.Application.Service.OrderService;
 import OrderManager.Domain.Model.UserAddress;
+import OrderManager.Domain.Model.Utilities;
 import OrderManager.Shared.Dto.OrderDtos.CreateOrderRequest;
 import OrderManager.Shared.Dto.OrderDtos.OrderResponse;
 import OrderManager.Shared.Dto.OrderDtos.UpdateOrderRequest;
@@ -37,6 +38,7 @@ public class OrderController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     */
         var order = orderMapper.toDomain(orderBody);
+        order.setStatus(Utilities.Status.NotProccessed);//Temp, pashan regaki chaktr lo chakrdni status dadanre.
         return orderService.CreateOrder(order)
                 .map(orderMapper::toResponse)
                 .map(ResponseEntity::ok)
