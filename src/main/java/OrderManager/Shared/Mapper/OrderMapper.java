@@ -28,6 +28,9 @@ public interface OrderMapper {
     @Mapping(target = "deliveryFee", ignore = true)
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
+    @Mapping(target = "reservation", ignore = true)
+    //Make Sure To Map items later!!
+    @Mapping(target = "items", ignore = true)
     Order toDomain(CreateOrderRequest r);
 
     @Mapping(source = "userId",    target = "user.id")
@@ -38,6 +41,9 @@ public interface OrderMapper {
     @Mapping(target = "deliveryFee", ignore = true)
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
+    //Make Sure To Map items later!!
+    @Mapping(target = "items", ignore = true)
+    @Mapping(target = "reservation", ignore = true)
     void update(@MappingTarget Order entity, UpdateOrderRequest r);
 
     @Mapping(source = "deliveryFee", target = "deliveryFee", qualifiedByName = "doubleToBigDecimal")

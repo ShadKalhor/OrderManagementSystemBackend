@@ -19,7 +19,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 public class User {
-
     @Id
     @Type(type = "uuid-char")
     private UUID id;

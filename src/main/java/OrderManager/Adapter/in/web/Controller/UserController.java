@@ -2,12 +2,15 @@ package OrderManager.Adapter.in.web.Controller;
 
 import OrderManager.Domain.Model.User;
 import OrderManager.Application.Service.UserService;
+import OrderManager.Shared.Config.SecurityConfig;
 import OrderManager.Shared.Dto.UserDtos.CreateUserRequest;
 import OrderManager.Shared.Dto.UserDtos.UpdateUserRequest;
 import OrderManager.Shared.Dto.UserDtos.UserResponse;
 import OrderManager.Shared.Dto.UserDtos.UserSummary;
 import OrderManager.Shared.Mapper.UserMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,20 +19,25 @@ import java.util.Optional;
 import java.util.UUID;
 
 
+
 @RestController
-@RequestMapping("user")
+@RequestMapping("/User")
 public class UserController {
 
 
     private final UserService userService;
     private final UserMapper userMapper;
 
+    //  private JwtService jwtService;
+    private AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, UserMapper userMapper){
+
+    public UserController(UserService userService, UserMapper userMapper, PasswordEncoder passwordEncoder){
 
         this.userService = userService;
         this.userMapper = userMapper;
-
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
@@ -39,6 +47,8 @@ public class UserController {
         return savedUser.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());*/
         var user = userMapper.toDomain(userBody);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userService.SaveUser(user)
                 .map(userMapper::toResponse)
                 .map(ResponseEntity::ok)

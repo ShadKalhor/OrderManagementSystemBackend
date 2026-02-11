@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/address")
+@RequestMapping("/Address")
 public class AddressController {
 
 

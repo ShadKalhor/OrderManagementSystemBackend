@@ -22,7 +22,7 @@ public interface DriverMapper {
     @Mapping(source = "accountId", target = "account.id")
     void update(@MappingTarget Driver entity, UpdateDriverRequest r);
 
-
+    @Mapping(target = "name", source = "account.name")
     DriverResponse toResponse(Driver entity);
 
 

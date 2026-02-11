@@ -17,7 +17,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("/item")
+@RequestMapping("/Item")
 public class ItemController {
 
     private final ItemService itemService;
