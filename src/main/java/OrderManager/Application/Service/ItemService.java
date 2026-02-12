@@ -57,38 +57,6 @@ public class ItemService {
         itemPort.save(item);
     }
 
-/*
-
-    private boolean isValidItem(Item item) {
-        if (item.getName() == null || item.getName().isEmpty()) {
-            System.out.println("Invalid name.");
-            return false;
-        }
-        if (item.getDescription() == null || item.getDescription().isEmpty()) {
-            System.out.println("Invalid description.");
-            return false;
-        }
-        if (item.getPrice().compareTo(BigDecimal.ZERO) < 0) {
-            System.out.println("Price cannot be negative.");
-            return false;
-        }
-        if (item.getSize() == null || item.getSize().isEmpty()) {
-            System.out.println("Invalid size.");
-            return false;
-        }
-        if (item.getDiscount().compareTo(BigDecimal.ZERO) < 0 || item.getDiscount().compareTo(BigDecimal.ONE) > 1) {
-            System.out.println("Discount must be between 0 and 1.");
-            return false;
-        }
-        if (item.getQuantity() < 0) {
-            System.out.println("Quantity cannot be negative.");
-            return false;
-        }
-        return true;
-    }
-*/
-
-
     public Optional<Item> GetItemById(UUID itemId) {
         return itemPort.findById(itemId);
     }

@@ -29,10 +29,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponse> CreateItem(@Valid @RequestBody CreateItemRequest itemBody){/*
-        Optional<Item> result = itemService.SaveItem(item);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());*/
+    public ResponseEntity<ItemResponse> CreateItem(@Valid @RequestBody CreateItemRequest itemBody){
 
         var item = itemMapper.toDomain(itemBody);
         return itemService.CreateItem(item)
@@ -43,9 +40,6 @@ public class ItemController {
 
     @PutMapping("/{itemId}")
     public ResponseEntity<ItemResponse> UpdateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
-        /*Optional<Item> result = itemService.SaveItem(item);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());*/
 
         var itemExists = itemService.GetItemById(itemId).orElse(null);
 
@@ -59,10 +53,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ResponseEntity<ItemResponse> GetItemById(@PathVariable("itemId") UUID itemId){
-        /*Optional<Item> result = itemService.GetItemById(itemId);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-*/
+
         return itemService.GetItemById(itemId)
                 .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
@@ -71,10 +62,8 @@ public class ItemController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ItemResponse>> GetAllItems(){/*
-        Optional<List<Item>> items = itemService.GetAllItems();
-        return items.map(ResponseEntity::ok)
-                .orElseGet(()->ResponseEntity.notFound().build());*/
+    public ResponseEntity<List<ItemResponse>> GetAllItems(){
+
         var items = itemService.GetAllItems().stream()
                 .map(itemMapper::toResponse)
                 .toList();

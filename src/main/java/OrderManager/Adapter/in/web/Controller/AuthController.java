@@ -33,21 +33,8 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(phone, request.password())
         );
 
-        // generate jwt with subject = phone (or username)
         String token = jwtService.generateToken(phone, Map.of());
         return ResponseEntity.ok(Map.of("token", token));
-
-
-        /*
-
-        Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.phone(), request.password())
-        );
-
-        String token = jwtService.generateToken(auth.getName(), Map.of("role", "USER"));
-        return new AuthResponse(token);
-*/
-
     }
 
 

@@ -29,10 +29,7 @@ public class AddressController {
     }
 
     @PostMapping
-    public ResponseEntity<UserAddressResponse> CreateAddress(@Valid @RequestBody CreateUserAddressRequest addressBody){/*
-        Optional<UserAddress> result = addressService.CreateAddress(address);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());*/
+    public ResponseEntity<UserAddressResponse> CreateAddress(@Valid @RequestBody CreateUserAddressRequest addressBody){
 
         var address = addressMapper.toDomain(addressBody);
         return addressService.CreateAddress(address)
@@ -59,10 +56,7 @@ public class AddressController {
 
     @GetMapping("/{addressId}")
     public ResponseEntity<UserAddressResponse> GetAddressById(@PathVariable("addressId") UUID addressId){
-        /*Optional<UserAddress> result = addressService.GetAddressById(uuid);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(()-> ResponseEntity.notFound().build());
-    */
+
         return addressService.GetAddressById(addressId)
                 .map(addressMapper::toResponse)
                 .map(ResponseEntity::ok)
@@ -72,12 +66,7 @@ public class AddressController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<UserAddressResponse>> GetUserById(@PathVariable("userId") UUID userId){
-        /*System.out.println(uuid);
-        Optional<List<UserAddress>> result = addressService.GetUserAddresses(uuid);
-        System.out.println(result);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    */
+
         Optional<List<UserAddress>> result = addressService.GetUserAddresses(userId);
         return result
                 .filter(list -> !list.isEmpty())

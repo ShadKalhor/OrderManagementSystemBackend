@@ -28,10 +28,7 @@ public class DriverController {
 
     @PostMapping
     public ResponseEntity<DriverResponse> CreateDriver(@Valid @RequestBody CreateDriverRequest driverBody){
-    /*    Optional<Driver> result = driverService.CreateDriver(driver);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    */
+
         var driver = driverMapper.toDomain(driverBody);
         return driverService.CreateDriver(driver)
                 .map(driverMapper::toResponse)
@@ -41,10 +38,7 @@ public class DriverController {
 
     @PutMapping("/{driverId}")
     public ResponseEntity<DriverResponse> UpdateDriver(@PathVariable UUID driverId,@Valid @RequestBody UpdateDriverRequest driverBody){
-       /* Optional<Driver> result = driverService.CreateDriver(driver);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    */
+
         var driverExists = driverService.GetDriverById(driverId).orElse(null);
 
         if (driverExists == null)
@@ -58,10 +52,7 @@ public class DriverController {
     }
 
     @GetMapping("/{driverId}")
-    public ResponseEntity<DriverResponse> GetDriver(@PathVariable UUID driverId){/*
-        Optional<Driver> result = driverService.FindDriver(driverId);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());*/
+    public ResponseEntity<DriverResponse> GetDriver(@PathVariable UUID driverId){
 
         return driverService.GetDriverById(driverId)
                 .map(driverMapper::toResponse)
@@ -70,11 +61,8 @@ public class DriverController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DriverResponse>> GetAllDrivers(){/*
-        Optional<List<Driver>> drivers =Optional.of(driverService.FindAllDrivers());
-        return drivers.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.noContent().build());
-    */
+    public ResponseEntity<List<DriverResponse>> GetAllDrivers(){
+
         var drivers = driverService.GetAllDrivers().stream()
                 .map(driverMapper::toResponse)
                 .toList();

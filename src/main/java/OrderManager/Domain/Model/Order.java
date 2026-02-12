@@ -1,6 +1,5 @@
 package OrderManager.Domain.Model;
 
-import OrderManager.Shared.Validation.EnumOrNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

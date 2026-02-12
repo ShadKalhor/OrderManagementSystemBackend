@@ -87,26 +87,6 @@ public class OrderService {
         order.setDeliveryStatus(patchedOrder.getDeliveryStatus());
         order.setNotes(patchedOrder.getNotes());
         return orderPort.save(order);
-
-        /*
-        Optional<Order> orderExists = GetOrderById(orderId);
-        Order currentOrderInfo;
-        if(orderExists.isEmpty())
-            throw new EntityNotFoundException("Order", orderId);
-        else
-            currentOrderInfo = orderExists.get();
-
-
-        order.setDeliveryFee(currentOrderInfo.getDeliveryFee());
-        order.setReservation(currentOrderInfo.getReservation());
-        order.setSubTotal(currentOrderInfo.getSubTotal());
-        order.setTax(currentOrderInfo.getTax());
-        order.setTotalPrice(currentOrderInfo.getTotalPrice());
-        order.setItems(currentOrderInfo.getItems());
-
-        order.setId(orderId);
-        orderPort.save(order);
-*/
     }
 
 

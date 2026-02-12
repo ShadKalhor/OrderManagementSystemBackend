@@ -17,8 +17,6 @@ public class Reservation {
     @Type(type = "uuid-char")
     private UUID id;
 
-    private UUID orderId;
-
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 

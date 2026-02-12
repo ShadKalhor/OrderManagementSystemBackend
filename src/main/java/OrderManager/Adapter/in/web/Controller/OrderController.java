@@ -33,10 +33,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> CreateOrder(@Valid @RequestBody CreateOrderRequest orderBody){
-        /*Optional<Order> result = orderService.CreateOrder(order);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
-    */
+
         var order = orderMapper.toDomain(orderBody);
         order.setStatus(Utilities.Status.NotProccessed);//Temp, pashan regaki chaktr lo chakrdni status dadanre.
         return orderService.CreateOrder(order)
@@ -48,10 +45,6 @@ public class OrderController {
 
     @PutMapping("/{orderId}")
     public ResponseEntity<OrderResponse> UpdateOrder(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderRequest orderBody){
-        /*Optional<Order> result = orderService.CreateOrder(order);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(()-> ResponseEntity.notFound().build());
-    */
 
         var orderExists = orderService.GetOrderById(orderId).orElse(null);
 
@@ -65,11 +58,7 @@ public class OrderController {
 
     @GetMapping("/{Id}")
     public ResponseEntity<OrderResponse> GetOrderById(@PathVariable("Id") UUID orderId){
-        /*Optional<Order> order = orderService.GetOrderById(orderId);
 
-        return order.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    */
         return orderService.GetOrderById(orderId)
                 .map(orderMapper::toResponse)
                 .map(ResponseEntity::ok)
@@ -79,10 +68,6 @@ public class OrderController {
 
     @GetMapping()
     public ResponseEntity<List<OrderResponse>> GetAllOrders(){
-        /*Optional<List<Order>> orders = orderService.GetAllOrders();
-        return orders.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    */
 
         var orders = orderService.GetAllOrders().stream()
                 .map(orderMapper::toResponse)
@@ -92,11 +77,7 @@ public class OrderController {
 
     @GetMapping("/findbyuserid/{Id}")
     public ResponseEntity<List<OrderResponse>> GetByUserId(@PathVariable("Id") UUID userId){
-        /*Optional<List<Order>> orders = orderService.GetByUserId(userId);
 
-        return orders.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    */
         Optional<List<Order>> result = orderService.GetByUserId(userId);
         return result
                 .filter(list -> !list.isEmpty())

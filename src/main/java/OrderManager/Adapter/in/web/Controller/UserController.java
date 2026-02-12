@@ -42,10 +42,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> CreateUser(@Valid @RequestBody CreateUserRequest userBody){
-        /*
-        Optional<User> savedUser =  userService.SaveUser(user);
-        return savedUser.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());*/
+
         var user = userMapper.toDomain(userBody);
 
         return userService.SaveUser(user)
@@ -56,10 +53,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponse> UpdateUser(@PathVariable UUID userId, @Valid @RequestBody UpdateUserRequest userBody){
-/*
-       Optional<User> savedUser =  userService.SaveUser(user);
-        return savedUser.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());*/
+
         var userExists = userService.GetUserById(userId).orElse(null);
         if(userExists == null)
             return ResponseEntity.notFound().build();
@@ -71,10 +65,6 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> GetById(@PathVariable("userId") UUID userId){
-        /*
-        Optional<User> user = userService.GetUserById(uuid);
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());*/
 
         return userService.GetUserById(userId)
                 .map(userMapper::toResponse)
@@ -85,10 +75,7 @@ public class UserController {
 
     @GetMapping("/findbyphone/{phone}")
     public ResponseEntity<UserResponse> GetByPhoneNumber(@PathVariable("phone") String phoneNumber){
-        /*
-        Optional<User> result = userService.GetUserByPhoneNumber(phoneNumber);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());*/
+
         return userService.GetUserByPhoneNumber(phoneNumber)
                 .map(userMapper::toResponse)
                 .map(ResponseEntity::ok)
@@ -98,10 +85,6 @@ public class UserController {
 
     @GetMapping()
     public ResponseEntity<List<UserSummary>> GetAllUsers(){
-        /*Optional<List<User>> users =Optional.of(userService.GetAllUsers());
-        return users.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.noContent().build());
-        */
 
         var users = userService.GetAllUsers().stream()
                 .map(userMapper::toSummary)
