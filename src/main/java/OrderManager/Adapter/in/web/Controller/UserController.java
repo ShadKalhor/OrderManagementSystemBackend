@@ -47,7 +47,6 @@ public class UserController {
         return savedUser.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());*/
         var user = userMapper.toDomain(userBody);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userService.SaveUser(user)
                 .map(userMapper::toResponse)

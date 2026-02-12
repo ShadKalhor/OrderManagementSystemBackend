@@ -17,6 +17,7 @@ public interface UserMapper {
     User toDomain(CreateUserRequest r);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "authorities", ignore = true) //temp solution
     void update(@MappingTarget User entity, UpdateUserRequest r);
 
     UserResponse toResponse(User entity);

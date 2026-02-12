@@ -1,6 +1,7 @@
 package OrderManager.Application.Service;
 
 import OrderManager.Application.Port.out.UserPersistencePort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import OrderManager.Shared.Extensions.RegexFormats;
@@ -13,12 +14,13 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-
+    private final PasswordEncoder passwordEncoder;
     private final UserPersistencePort userPort;
 
     
-    public UserService(UserPersistencePort userPort){
+    public UserService(UserPersistencePort userPort, PasswordEncoder passwordEncoder){
         this.userPort = userPort;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Optional<User> GetUserById(UUID userId){
@@ -36,7 +38,7 @@ public class UserService {
     public Optional<User> SaveUser(User user) {
 
         user = checkInput(user);
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if(isValidUser(user) && !isDuplicatePhone(user))
             return Optional.of(userPort.save(user));
         return Optional.empty();
