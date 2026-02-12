@@ -29,11 +29,9 @@ public interface OrderMapper {
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "reservation", ignore = true)
-    //Make Sure To Map items later!!
-    @Mapping(target = "items", ignore = true)
     Order toDomain(CreateOrderRequest r);
 
-    @Mapping(source = "userId",    target = "user.id")
+    @Mapping(target = "user.id", ignore = true)
     @Mapping(source = "addressId", target = "address.id")
     @Mapping(source = "driverId",  target = "driver.id")
     @Mapping(target = "id", ignore = true)
@@ -41,12 +39,11 @@ public interface OrderMapper {
     @Mapping(target = "deliveryFee", ignore = true)
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
-    //Make Sure To Map items later!!
-    @Mapping(target = "items", ignore = true)
     @Mapping(target = "reservation", ignore = true)
+    @Mapping(target = "items", ignore = true)
     void update(@MappingTarget Order entity, UpdateOrderRequest r);
 
-    @Mapping(source = "deliveryFee", target = "deliveryFee", qualifiedByName = "doubleToBigDecimal")
+
     OrderResponse toResponse(Order entity);
 
     @AfterMapping
@@ -60,7 +57,6 @@ public interface OrderMapper {
     @AfterMapping
     default void fillNestedOnUpdate(UpdateOrderRequest r, @MappingTarget Order entity) {
         if (r == null) return;
-        setIfNotNull(r.userId(), entity::setUser, User::new);
         setIfNotNull(r.addressId(), entity::setAddress, UserAddress::new);
         setIfNotNull(r.driverId(), entity::setDriver, Driver::new);
     }
@@ -68,13 +64,27 @@ public interface OrderMapper {
     private <T> void setIfNotNull(UUID id, Consumer<T> setter, Supplier<T> creator) {
         if (id != null) {
             T obj = creator.get();
-            // Use reflection to call setId(UUID)
+
             try {
                 obj.getClass().getMethod("setId", UUID.class).invoke(obj, id);
             } catch (Exception e) {
                 throw new IllegalStateException("Failed to set id on " + obj.getClass(), e);
             }
             setter.accept(obj);
+        }
+    }
+
+    @AfterMapping
+    default void ensureId(@MappingTarget Order entity) {
+        if (entity.getId() == null) {
+            entity.setId(UUID.randomUUID());
+        }
+    }
+    @AfterMapping
+    default void linkItemsToOrder(@MappingTarget Order entity) {
+        if (entity.getItems() == null) return;
+        for (var oi : entity.getItems()) {
+            oi.setOrder(entity);
         }
     }
 }

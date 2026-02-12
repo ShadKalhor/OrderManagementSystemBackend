@@ -1,10 +1,13 @@
 package OrderManager.Shared.Mapper;
 
+import OrderManager.Domain.Model.Order;
 import OrderManager.Shared.Dto.OrderItemDtos.CreateOrderItemRequest;
 import OrderManager.Shared.Dto.OrderItemDtos.OrderItemResponse;
 import OrderManager.Shared.Dto.OrderItemDtos.UpdateOrderItemRequest;
 import org.mapstruct.*;
 import OrderManager.Domain.Model.OrderItem;
+
+import java.util.UUID;
 
 @Mapper(
     componentModel = "spring",
@@ -26,4 +29,12 @@ public interface OrderItemMapper {
     void update(@MappingTarget OrderItem entity, UpdateOrderItemRequest r);
 
     OrderItemResponse toResponse(OrderItem entity);
+
+
+    @AfterMapping
+    default void ensureId(@MappingTarget OrderItem entity) {
+        if (entity.getId() == null) {
+            entity.setId(UUID.randomUUID());
+        }
+    }
 }

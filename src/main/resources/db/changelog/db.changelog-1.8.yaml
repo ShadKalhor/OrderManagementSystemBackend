@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260212-02-drop-uq-fks-and-alter-itemid
+      author: shad
+      changes:
+        - sql:
+            dbms: mssql
+            splitStatements: false
+            sql: |
+              -- Drop FK(s) using reservation_lines.item_id
+              DECLARE @sql NVARCHAR(MAX) = N'';
+
+              SELECT @sql = @sql + N'ALTER TABLE ' + QUOTENAME(s.name) + N'.' + QUOTENAME(t.name) +
+                            N' DROP CONSTRAINT ' + QUOTENAME(fk.name) + N';' + CHAR(10)
+              FROM sys.foreign_keys fk
+              JOIN sys.foreign_key_columns fkc ON fkc.constraint_object_id = fk.object_id
+              JOIN sys.columns c ON c.object_id = fkc.parent_object_id AND c.column_id = fkc.parent_column_id
+              JOIN sys.tables t ON t.object_id = fk.parent_object_id
+              JOIN sys.schemas s ON s.schema_id = t.schema_id
+              WHERE s.name = 'dbo' AND t.name = 'reservation_lines' AND c.name = 'item_id';
+
+              IF (LEN(@sql) > 0) EXEC sp_executesql @sql;
+
+              -- Drop UNIQUE constraint if it exists
+              IF EXISTS (
+                SELECT 1
+                FROM sys.objects o
+                JOIN sys.tables t ON t.object_id = o.parent_object_id
+                JOIN sys.schemas s ON s.schema_id = t.schema_id
+                WHERE o.type = 'UQ'
+                  AND o.name = 'uq_reservation_line_res_item'
+                  AND s.name = 'dbo'
+                  AND t.name = 'reservation_lines'
+              )
+              BEGIN
+                ALTER TABLE dbo.reservation_lines DROP CONSTRAINT [uq_reservation_line_res_item];
+              END
+
+              -- Drop UNIQUE INDEX if it exists (sometimes it's an index, not a UQ object)
+              IF EXISTS (
+                SELECT 1
+                FROM sys.indexes i
+                JOIN sys.tables t ON t.object_id = i.object_id
+                JOIN sys.schemas s ON s.schema_id = t.schema_id
+                WHERE i.name = 'uq_reservation_line_res_item'
+                  AND s.name = 'dbo'
+                  AND t.name = 'reservation_lines'
+              )
+              BEGIN
+                DROP INDEX [uq_reservation_line_res_item] ON dbo.reservation_lines;
+              END
+
+              -- Now alter the column
+              ALTER TABLE dbo.reservation_lines ALTER COLUMN item_id varchar(255) NOT NULL;

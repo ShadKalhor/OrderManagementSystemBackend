@@ -11,10 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 public record UpdateOrderRequest(
-        UUID userId,
         UUID addressId,
         UUID driverId,
-        @Valid @NotEmpty List<CreateOrderItemRequest> items,
         @EnumOrNull(Utilities.Status.class)
         Utilities.Status status,
         @EnumOrNull(Utilities.DeliveryStatus.class)

@@ -7,9 +7,11 @@ import OrderManager.Domain.Model.*;
 import OrderManager.Exception.EntityNotFoundException;
 import OrderManager.Exception.InsufficientInventoryException;
 import OrderManager.Exception.ValidationException;
+import OrderManager.Shared.Dto.OrderDtos.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.TransactionScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -42,24 +44,6 @@ public class OrderService {
         this.inventoryReservationPort = inventoryReservationPort;
     }
 
-/*
-    @Transactional
-    public Optional<Order> CreateOrder(Order order){
-        Map<String,String> unavailableItems = itemService.GetUnavailableItems(order.getItems());
-        if (unavailableItems !=null){
-            System.out.println("There is these unavailable items\n" + unavailableItems);
-            return Optional.empty();
-        }
-        if (order.getStatus() != Utilities.Status.Pending)
-            order = DeductAmountFromInventory(order);
-
-
-        order = CalculateOrder(order);
-        Optional<Order> result = Optional.of(orderPort.save(order));
-        return result;
-    }*/
-
-
     @Transactional
     public Optional<Order> CreateOrder(Order draft) {
         hydrateItems(draft);
@@ -89,8 +73,22 @@ public class OrderService {
 
 
     //dastkari item&price detail nakre.
-    public void UpdateOrder(UUID orderId, Order order){
+    @Transactional
+    public Order UpdateOrder(UUID orderId, Order patchedOrder){
 
+        Optional<Order> orderExists = orderPort.findById(orderId);
+        if(orderExists.isEmpty())
+            throw new EntityNotFoundException("Order Not Found with Id ", orderId);
+        Order order = orderExists.get();
+
+        order.setAddress(patchedOrder.getAddress());
+        order.setDriver(patchedOrder.getDriver());
+        order.setStatus(patchedOrder.getStatus());
+        order.setDeliveryStatus(patchedOrder.getDeliveryStatus());
+        order.setNotes(patchedOrder.getNotes());
+        return orderPort.save(order);
+
+        /*
         Optional<Order> orderExists = GetOrderById(orderId);
         Order currentOrderInfo;
         if(orderExists.isEmpty())
@@ -108,7 +106,7 @@ public class OrderService {
 
         order.setId(orderId);
         orderPort.save(order);
-
+*/
     }
 
 
@@ -138,77 +136,6 @@ public class OrderService {
                 .orElse(false);
 
     }
-
-
-/*
-
-    private Order CalculateOrder(Order order){
-        BigDecimal subtotal = calculateSubtotal(order.getItems());
-        BigDecimal minFee = new BigDecimal("2.00");
-        BigDecimal feePct = new BigDecimal("0.05");
-
-        BigDecimal taxPct = new BigDecimal("0.10");
-
-        order.setSubTotal(subtotal);
-
-
-        BigDecimal deliveryFee = subtotal.multiply(feePct);
-        if (deliveryFee.compareTo(minFee) < 0) {
-            deliveryFee = minFee;
-        }
-        order.setDeliveryFee(deliveryFee);
-
-        BigDecimal tax = subtotal.multiply(taxPct);
-        order.setTax(tax);
-
-        BigDecimal total = subtotal.add(deliveryFee).add(tax);
-
-        order.setTotalPrice(total);
-
-        return order;
-    }
-*/
-/*
-    private BigDecimal calculateSubtotal(List<OrderItem> orderItems){
-
-        BigDecimal subtotal = BigDecimal.ZERO;
-
-        for (OrderItem orderItem : orderItems) {
-            Optional<Item> itemOpt = itemService.GetItemById(orderItem.getItem().getId());
-            Item item = itemOpt.orElseThrow(() ->
-                    new EntityNotFoundException("Item not found with ID: " + orderItem.getItem().getId())
-            );
-            orderItem.setItem(item);
-
-            BigDecimal price = item.getPrice() != null ? item.getPrice() : BigDecimal.ZERO;
-            BigDecimal discount = item.getDiscount() != null ? item.getDiscount() : BigDecimal.ZERO;
-            BigDecimal qty = BigDecimal.valueOf(orderItem.getQuantity());
-            BigDecimal oneMinusDiscount = BigDecimal.ONE.subtract(discount);
-            if (oneMinusDiscount.compareTo(BigDecimal.ZERO) < 0) {
-                oneMinusDiscount = BigDecimal.ZERO;
-            }
-
-            BigDecimal unitNet = price.multiply(oneMinusDiscount);
-            BigDecimal lineTotal = unitNet.multiply(qty);
-
-            orderItem.setTotalPrice(lineTotal);
-            subtotal = subtotal.add(lineTotal);
-        }
-        return subtotal;
-    }*/
-/*
-
-    private Order DeductAmountFromInventory(Order order){
-        for (OrderItem orderItem : order.getItems()){
-            orderItem.getItem().setQuantity(
-                    orderItem.getItem().getQuantity() - orderItem.getQuantity()
-            );
-        }
-        return order;
-    }
-*/
-
-
 
     private void applyPricing(Order order) {
 
@@ -282,9 +209,6 @@ public class OrderService {
             throw new ValidationException("Order must be linked to a user");
         }
     }
-
-
-
 
 }
 

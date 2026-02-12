@@ -19,6 +19,9 @@ public record OrderResponse(
         Utilities.Status status,
         Utilities.DeliveryStatus deliveryStatus,
         List<OrderItemResponse> items,
-        BigDecimal subTotal, BigDecimal deliveryFee, BigDecimal tax, BigDecimal totalPrice,
+        BigDecimal subTotal,
+        BigDecimal deliveryFee,
+        BigDecimal tax,
+        BigDecimal totalPrice,
         String notes
 ) {}

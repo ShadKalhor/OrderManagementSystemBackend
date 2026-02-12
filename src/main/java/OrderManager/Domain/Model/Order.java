@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private Utilities.DeliveryStatus deliveryStatus;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
     @OneToOne()
@@ -58,22 +57,21 @@ public class Order {
     public void addItem(OrderItem item) {
         if(items == null)
             items = new ArrayList<>();
+        if(item.getId() == null)
+            item.setId(UUID.randomUUID());
         this.items.add(item);
     }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+        if (this.items != null) {
+            for (var oi : this.items) {
+                oi.setOrder(this);
+                if (oi.getId() == null) oi.setId(UUID.randomUUID());
+            }
+        }
+    }
+
+
 }
 
-
-/*
-
-UUID userId,
-UUID addressId,
-UUID driverId,*/
-/*
-        @Valid @NotEmpty List<CreateOrderItemRequest> items,*//*
-
-@EnumOrNull(Utilities.Status.class)
-Utilities.Status status,
-@EnumOrNull(Utilities.DeliveryStatus.class)
-Utilities.DeliveryStatus deliveryStatus,
-@Size(max=255) String notes
-*/

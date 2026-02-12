@@ -14,9 +14,12 @@ import OrderManager.Domain.Model.Item;
 public interface ItemMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "reserved", ignore = true)
     Item toDomain(CreateItemRequest r);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "reserved", ignore = true)
+    @Mapping(source = "isAvailable", target = "available")
     void update(@MappingTarget Item entity, UpdateItemRequest r);
 
     @Mapping(source = "available", target = "isAvailable")
