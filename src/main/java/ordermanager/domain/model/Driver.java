@@ -1,9 +1,7 @@
 package ordermanager.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
@@ -13,7 +11,9 @@ import javax.persistence.OneToOne;
 import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

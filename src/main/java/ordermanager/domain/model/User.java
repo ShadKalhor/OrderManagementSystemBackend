@@ -4,10 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 
 import ordermanager.domain.model.Utilities.*;
@@ -19,7 +16,9 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "Users")
-@Data
+@Getter
+@Setter
+@ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

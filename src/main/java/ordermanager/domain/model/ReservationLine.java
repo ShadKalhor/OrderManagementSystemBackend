@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@ToString(onlyExplicitlyIncluded = true)
 @Table(
         name = "reservation_lines",
         uniqueConstraints = @UniqueConstraint(name = "uq_reservation_line_res_item", columnNames = {"reservation_id", "item_id"})

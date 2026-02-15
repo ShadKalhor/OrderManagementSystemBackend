@@ -9,6 +9,7 @@ import ordermanager.domain.model.Utilities.ReservationStatus;
 import org.hibernate.annotations.Type;
 
 @Entity
+@ToString(onlyExplicitlyIncluded = true)
 @Table(name = "reservations")
 @Getter @Setter @NoArgsConstructor
 public class Reservation {
