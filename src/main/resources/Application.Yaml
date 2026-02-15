@@ -1,4 +1,0 @@
-app:
-  jwt:
-    secret: c2hhZGpqd3QtdmVyeS1sb25nLWJhc2U2NC1zZWNyZXQta2V5LTEyMzQ1
-    expiration: 3600000 # 1h in ms
