@@ -1,13 +1,9 @@
 package ordermanager.domain.model;
 
 import lombok.*;
-import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -27,4 +23,11 @@ public class Driver {
     private String vehicleNumber;
     private int age;
 
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
+    }
+
+
 }
+

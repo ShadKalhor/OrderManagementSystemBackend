@@ -30,11 +30,16 @@ public class ReservationLine {
     private int qty;
 
     public ReservationLine(Reservation reservation, UUID itemId, int qty) {
-        this.id = UUID.randomUUID();
         this.reservation = reservation;
         this.itemId = itemId;
         this.qty = qty;
     }
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
+    }
+
 }
 
 

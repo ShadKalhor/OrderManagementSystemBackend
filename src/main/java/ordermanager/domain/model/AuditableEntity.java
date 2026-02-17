@@ -2,6 +2,7 @@ package ordermanager.domain.model;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+//Ignored
 public class AuditableEntity {
     private UUID id;
 

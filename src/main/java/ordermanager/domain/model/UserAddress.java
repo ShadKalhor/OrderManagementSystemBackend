@@ -11,6 +11,7 @@ import java.util.UUID;
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserAddress {
     @Id
@@ -31,11 +32,7 @@ public class UserAddress {
     @Column(name = "isPrimary")
     private boolean isPrimary;
 
-
-    public UserAddress(){
-        this.id = UUID.randomUUID();
-    }
-
+    //TODO: check y aw constructor a bkawa lo lajyati isprimary id haya la signiture.
     public UserAddress(UUID id, User user, String name, String city, String description, String type, String street, String residentialNo) {
         this.id = id;
         this.user = user;
@@ -45,5 +42,10 @@ public class UserAddress {
         this.type = type;
         this.street = street;
         this.residentialNo = residentialNo;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
     }
 }

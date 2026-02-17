@@ -31,8 +31,13 @@ public class OrderItem {
     @Type(type = "uuid-char")
     private Order order;
 
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
+    }
+
+
     public OrderItem(Item item, int quantity, BigDecimal totalPrice) {
-        this.id = UUID.randomUUID();
         this.item = item;
         this.quantity = quantity;
         this.totalPrice = totalPrice;

@@ -5,6 +5,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -30,4 +31,8 @@ public class Item {
     private int quantity;
     private int reserved;
 
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
+    }
 }

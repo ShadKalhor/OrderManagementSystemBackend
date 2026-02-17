@@ -18,7 +18,6 @@ public class AddressService {
     }
 
     public Optional<UserAddress> CreateAddress(UserAddress userAddress){
-        userAddress.setId(UUID.randomUUID());
         return addressPort.save(userAddress);
     }
 

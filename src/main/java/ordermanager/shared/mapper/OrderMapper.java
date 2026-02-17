@@ -75,12 +75,6 @@ public interface OrderMapper {
     }
 
     @AfterMapping
-    default void ensureId(@MappingTarget Order entity) {
-        if (entity.getId() == null) {
-            entity.setId(UUID.randomUUID());
-        }
-    }
-    @AfterMapping
     default void linkItemsToOrder(@MappingTarget Order entity) {
         if (entity.getItems() == null) return;
         for (var oi : entity.getItems()) {

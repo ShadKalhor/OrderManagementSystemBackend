@@ -29,11 +29,4 @@ public interface OrderItemMapper {
 
     OrderItemResponse toResponse(OrderItem entity);
 
-
-    @AfterMapping
-    default void ensureId(@MappingTarget OrderItem entity) {
-        if (entity.getId() == null) {
-            entity.setId(UUID.randomUUID());
-        }
-    }
 }

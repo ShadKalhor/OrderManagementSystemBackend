@@ -36,6 +36,10 @@ public class User implements UserDetails {
     @Builder.Default
     private Genders gender = Genders.Other;
 
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
+    }
 
     @Override
     public String getUsername(){
@@ -71,6 +75,8 @@ public class User implements UserDetails {
     public String getPassword(){
         return this.password;
     }
+
+
 
 }
 

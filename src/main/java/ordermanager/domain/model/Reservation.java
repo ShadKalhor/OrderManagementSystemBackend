@@ -11,7 +11,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @ToString(onlyExplicitlyIncluded = true)
 @Table(name = "reservations")
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Reservation {
 
     @Id
@@ -26,6 +26,11 @@ public class Reservation {
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationLine> lines = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
+    }
 
 }
 

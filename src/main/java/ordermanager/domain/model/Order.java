@@ -52,6 +52,12 @@ public class Order {
     private BigDecimal tax;
     private BigDecimal totalPrice;
     private String notes;
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
+    }
+
     public void addItem(OrderItem item) {
         if(items == null)
             items = new ArrayList<>();
