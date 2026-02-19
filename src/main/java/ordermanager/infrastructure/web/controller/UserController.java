@@ -38,19 +38,15 @@ public class UserController {
     private final UserMapper userMapper;
     private final UserAddressMapper userAddressMapper;
 
-    //  private JwtService jwtService;
-    private AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
 
-
-    public UserController(AddressService addressService, OrderService orderService, UserService userService, UserMapper userMapper,OrderMapper orderMapper,UserAddressMapper userAddressMapper ,PasswordEncoder passwordEncoder){
+    public UserController(AddressService addressService, OrderService orderService, UserService userService,
+                          UserMapper userMapper,OrderMapper orderMapper,UserAddressMapper userAddressMapper){
         this.addressService = addressService;
         this.orderService = orderService;
         this.userService = userService;
         this.userMapper = userMapper;
         this.orderMapper = orderMapper;
         this.userAddressMapper = userAddressMapper;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
