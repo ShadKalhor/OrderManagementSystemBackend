@@ -41,7 +41,7 @@ public interface OrderMapper {
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "reservation", ignore = true)
     @Mapping(target = "items", ignore = true)
-    void update(@MappingTarget Order entity, UpdateOrderRequest r);
+    Order update(UpdateOrderRequest r);
 
 
     OrderResponse toResponse(Order entity);

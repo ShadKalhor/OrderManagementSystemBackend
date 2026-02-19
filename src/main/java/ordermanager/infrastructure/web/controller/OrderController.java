@@ -42,14 +42,12 @@ public class OrderController {
     @PutMapping("/{orderId}")
     public ResponseEntity<OrderResponse> UpdateOrder(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderRequest orderBody){
 
-        var orderExists = orderService.GetOrderById(orderId).getOrNull();
 
-        if (orderExists == null)
-            return ResponseEntity.notFound().build();
-
-        orderMapper.update(orderExists, orderBody);
-        var updatedUser = orderService.CreateOrder(orderExists);
-        return updatedUser.map(order -> ResponseEntity.ok(orderMapper.toResponse(order))).getOrElse(() -> ResponseEntity.badRequest().build());
+        var order = orderMapper.update(orderBody);
+        return orderService.UpdateOrder(orderId, order)
+                .map(orderMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .getOrElse(ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/{orderId}")

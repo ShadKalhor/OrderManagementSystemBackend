@@ -76,7 +76,7 @@ public class OrderService {
 
     //dastkari item&price detail nakre.
     @Transactional
-    public Order UpdateOrder(UUID orderId, Order patchedOrder){
+    public Option<Order> UpdateOrder(UUID orderId, Order patchedOrder){
 
         Option<Order> orderExists = orderPort.findById(orderId);
         if(orderExists.isEmpty())
@@ -88,7 +88,9 @@ public class OrderService {
         order.setStatus(patchedOrder.getStatus());
         order.setDeliveryStatus(patchedOrder.getDeliveryStatus());
         order.setNotes(patchedOrder.getNotes());
-        return orderPort.save(order).getOrElseThrow(() -> new EntityNotFoundException("order", order.getId()));
+
+        var newOrder  = orderPort.save(order).getOrElseThrow(() -> new EntityNotFoundException("order", order.getId()));
+        return Option.of(newOrder);
     }
 
 
