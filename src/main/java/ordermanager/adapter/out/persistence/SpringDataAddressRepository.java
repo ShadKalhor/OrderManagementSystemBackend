@@ -1,6 +1,6 @@
 package ordermanager.adapter.out.persistence;
 
-import ordermanager.domain.model.UserAddress;
+import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

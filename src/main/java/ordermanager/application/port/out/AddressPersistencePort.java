@@ -1,6 +1,6 @@
 package ordermanager.application.port.out;
 
-import ordermanager.domain.model.UserAddress;
+import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 
 import java.util.List;
 import java.util.Optional;

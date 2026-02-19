@@ -1,38 +1,25 @@
 package ordermanager.domain.model;
 
-import lombok.*;
-import javax.persistence.*;
-import java.time.Instant;
-import java.util.*;
-import java.util.UUID;
-import ordermanager.domain.model.Utilities.ReservationStatus;
-import org.hibernate.annotations.Type;
+import lombok.Getter;
+import lombok.Setter;
 
-@Entity
-@ToString(onlyExplicitlyIncluded = true)
-@Table(name = "reservations")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+
+@Setter
+@Getter
 public class Reservation {
 
-    @Id
-    @Type(type = "uuid-char")
     private UUID id;
-
-    @Enumerated(EnumType.STRING)
-    private ReservationStatus status;
-
+    private Utilities.ReservationStatus status;
     private Instant expiresAt;
     private Instant createdAt = Instant.now();
-
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationLine> lines = new ArrayList<>();
 
-    @PrePersist
-    public void prePersist() {
-        if (id == null) id = UUID.randomUUID();
-    }
+
+
 
 }
-
-
-

@@ -1,7 +1,7 @@
 package ordermanager.adapter.out.persistence;
 
 
-import ordermanager.domain.model.Driver;
+import ordermanager.infrastructure.store.persistence.entity.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

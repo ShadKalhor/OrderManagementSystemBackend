@@ -1,7 +1,7 @@
 package ordermanager.adapter.out.persistence;
 
 import ordermanager.application.port.out.ItemPersistencePort;
-import ordermanager.domain.model.Item;
+import ordermanager.infrastructure.store.persistence.entity.Item;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

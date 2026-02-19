@@ -4,7 +4,7 @@ import ordermanager.shared.dto.useraddress.CreateUserAddressRequest;
 import ordermanager.shared.dto.useraddress.UpdateUserAddressRequest;
 import ordermanager.shared.dto.useraddress.UserAddressResponse;
 import org.mapstruct.*;
-import ordermanager.domain.model.UserAddress;
+import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 
 @Mapper(
     componentModel = "spring",

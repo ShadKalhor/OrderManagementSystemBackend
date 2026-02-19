@@ -1,7 +1,7 @@
 package ordermanager.adapter.out.persistence;
 
 import ordermanager.application.port.out.DriverPersistencePort;
-import ordermanager.domain.model.Driver;
+import ordermanager.infrastructure.store.persistence.entity.Driver;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

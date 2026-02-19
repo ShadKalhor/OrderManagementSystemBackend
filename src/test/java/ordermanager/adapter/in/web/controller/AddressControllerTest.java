@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import ordermanager.domain.model.UserAddress;
+import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.application.service.AddressService;
 import ordermanager.shared.dto.useraddress.UserAddressResponse;
 import ordermanager.shared.mapper.UserAddressMapper;

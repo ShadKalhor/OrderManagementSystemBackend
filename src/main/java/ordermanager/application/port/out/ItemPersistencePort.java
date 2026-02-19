@@ -1,6 +1,6 @@
 package ordermanager.application.port.out;
 
-import ordermanager.domain.model.Item;
+import ordermanager.infrastructure.store.persistence.entity.Item;
 
 import java.util.List;
 import java.util.Optional;

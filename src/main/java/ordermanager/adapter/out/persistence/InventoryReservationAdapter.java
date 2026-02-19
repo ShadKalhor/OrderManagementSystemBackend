@@ -2,14 +2,14 @@ package ordermanager.adapter.out.persistence;
 
 import ordermanager.application.port.out.InventoryReservationPort;
 import ordermanager.application.port.out.ReservationResult;
-import ordermanager.domain.model.Item;
-import ordermanager.domain.model.OrderItem;
-import ordermanager.domain.model.Reservation;
-import ordermanager.domain.model.ReservationLine;
+import ordermanager.infrastructure.store.persistence.entity.Item;
+import ordermanager.infrastructure.store.persistence.entity.OrderItem;
+import ordermanager.infrastructure.store.persistence.entity.Reservation;
+import ordermanager.infrastructure.store.persistence.entity.ReservationLine;
 import ordermanager.exception.EntityNotFoundException;
+import ordermanager.domain.model.Utilities.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ordermanager.domain.model.Utilities.ReservationStatus;
 
 import java.time.Duration;
 import java.time.Instant;

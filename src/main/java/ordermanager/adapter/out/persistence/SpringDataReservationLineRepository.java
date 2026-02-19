@@ -1,6 +1,6 @@
 package ordermanager.adapter.out.persistence;
 
-import ordermanager.domain.model.ReservationLine;
+import ordermanager.infrastructure.store.persistence.entity.ReservationLine;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 

@@ -1,35 +1,23 @@
 package ordermanager.domain.model;
 
-import lombok.*;
-import org.hibernate.annotations.Type;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.UUID;
 
-@Entity
-@Getter
+
 @Setter
-@ToString(onlyExplicitlyIncluded = true)
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter
 public class UserAddress {
-    @Id
-    @Type(type = "uuid-char")
+
     private UUID id;
-
-    @ManyToOne
-    @JoinColumn(name = "userId")
     private User user;
-
     private String name;
     private String city;
     private String description;
     private String type;
     private String street;
     private String residentialNo;
-
-    @Column(name = "isPrimary")
     private boolean isPrimary;
 
     //TODO: check y aw constructor a bkawa lo lajyati isprimary id haya la signiture.
@@ -42,10 +30,5 @@ public class UserAddress {
         this.type = type;
         this.street = street;
         this.residentialNo = residentialNo;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (id == null) id = UUID.randomUUID();
     }
 }

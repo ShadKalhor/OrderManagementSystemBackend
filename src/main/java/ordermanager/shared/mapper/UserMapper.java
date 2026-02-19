@@ -5,7 +5,7 @@ import ordermanager.shared.dto.user.UpdateUserRequest;
 import ordermanager.shared.dto.user.UserResponse;
 import ordermanager.shared.dto.user.UserSummary;
 import org.mapstruct.*;
-import ordermanager.domain.model.User;
+import ordermanager.infrastructure.store.persistence.entity.User;
 
 @Mapper(
     componentModel = "spring",

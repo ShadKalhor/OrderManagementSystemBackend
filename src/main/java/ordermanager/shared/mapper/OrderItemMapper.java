@@ -4,9 +4,7 @@ import ordermanager.shared.dto.orderitem.CreateOrderItemRequest;
 import ordermanager.shared.dto.orderitem.OrderItemResponse;
 import ordermanager.shared.dto.orderitem.UpdateOrderItemRequest;
 import org.mapstruct.*;
-import ordermanager.domain.model.OrderItem;
-
-import java.util.UUID;
+import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 
 @Mapper(
     componentModel = "spring",

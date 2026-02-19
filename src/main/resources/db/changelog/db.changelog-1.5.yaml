@@ -15,7 +15,7 @@ databaseChangeLog:
         - createTable:
             tableName: reservation_lines
             columns:
-              - column: { name: id, type: CHAR(36), constraints: { primaryKey: true, nullable: false } }  # <-- surrogate PK
+              - column: { name: id, type: CHAR(36), constraints: { primaryKey: true, nullable: false } }
               - column: { name: reservation_id, type: CHAR(36), constraints: { nullable: false } }
               - column: { name: item_id,        type: VARCHAR(255), constraints: { nullable: false } }
               - column: { name: qty,            type: INT, constraints: { nullable: false } }

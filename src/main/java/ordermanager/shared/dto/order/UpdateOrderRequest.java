@@ -1,7 +1,7 @@
 package ordermanager.shared.dto.order;
 
-import ordermanager.domain.model.Utilities;
 import ordermanager.shared.validation.EnumOrNull;
+import ordermanager.domain.model.Utilities.*;
 
 import javax.validation.constraints.Size;
 import java.util.UUID;
@@ -9,10 +9,10 @@ import java.util.UUID;
 public record UpdateOrderRequest(
         UUID addressId,
         UUID driverId,
-        @EnumOrNull(Utilities.Status.class)
-        Utilities.Status status,
-        @EnumOrNull(Utilities.DeliveryStatus.class)
-        Utilities.DeliveryStatus deliveryStatus,
+        @EnumOrNull(Status.class)
+        Status status,
+        @EnumOrNull(DeliveryStatus.class)
+        DeliveryStatus deliveryStatus,
         @Size(max=255) String notes
 ) {}
 

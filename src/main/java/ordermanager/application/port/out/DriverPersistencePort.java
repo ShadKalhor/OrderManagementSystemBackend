@@ -1,6 +1,6 @@
 package ordermanager.application.port.out;
 
-import ordermanager.domain.model.Driver;
+import ordermanager.infrastructure.store.persistence.entity.Driver;
 
 import java.util.List;
 import java.util.Optional;

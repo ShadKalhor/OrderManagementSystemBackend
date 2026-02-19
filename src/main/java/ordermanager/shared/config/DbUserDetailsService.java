@@ -1,7 +1,7 @@
 package ordermanager.shared.config;
 
 import ordermanager.adapter.out.persistence.UserRepositoryAdapter;
-import ordermanager.domain.model.User;
+import ordermanager.infrastructure.store.persistence.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;

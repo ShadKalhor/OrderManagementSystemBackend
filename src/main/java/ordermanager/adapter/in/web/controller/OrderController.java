@@ -1,18 +1,16 @@
 package ordermanager.adapter.in.web.controller;
 
-import ordermanager.domain.model.Order;
 import ordermanager.application.service.OrderService;
-import ordermanager.domain.model.Utilities;
 import ordermanager.shared.dto.order.CreateOrderRequest;
 import ordermanager.shared.dto.order.OrderResponse;
 import ordermanager.shared.dto.order.UpdateOrderRequest;
 import ordermanager.shared.mapper.OrderMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ordermanager.domain.model.Utilities.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -33,7 +31,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> CreateOrder(@Valid @RequestBody CreateOrderRequest orderBody){
 
         var order = orderMapper.toDomain(orderBody);
-        order.setStatus(Utilities.Status.NotProccessed);//Temp, pashan regaki chaktr lo chakrdni status dadanre.
+        order.setStatus(Status.NotProccessed);//Temp, pashan regaki chaktr lo chakrdni status dadanre.
         return orderService.CreateOrder(order)
                 .map(orderMapper::toResponse)
                 .map(ResponseEntity::ok)

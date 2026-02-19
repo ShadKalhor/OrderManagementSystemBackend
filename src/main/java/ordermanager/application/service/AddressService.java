@@ -1,7 +1,7 @@
 package ordermanager.application.service;
 
 import ordermanager.application.port.out.AddressPersistencePort;
-import ordermanager.domain.model.UserAddress;
+import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.exception.*;
 import org.springframework.stereotype.Service;
 import java.util.List;

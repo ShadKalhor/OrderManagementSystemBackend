@@ -1,13 +1,13 @@
 package ordermanager.shared.mapper;
 
-import ordermanager.domain.model.Driver;
-import ordermanager.domain.model.User;
-import ordermanager.domain.model.UserAddress;
+import ordermanager.infrastructure.store.persistence.entity.Driver;
+import ordermanager.infrastructure.store.persistence.entity.User;
+import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.shared.dto.order.CreateOrderRequest;
 import ordermanager.shared.dto.order.OrderResponse;
 import ordermanager.shared.dto.order.UpdateOrderRequest;
 import org.mapstruct.*;
-import ordermanager.domain.model.Order;
+import ordermanager.infrastructure.store.persistence.entity.Order;
 
 import java.util.UUID;
 import java.util.function.Consumer;

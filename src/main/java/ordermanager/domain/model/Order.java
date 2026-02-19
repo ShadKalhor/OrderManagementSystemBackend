@@ -1,62 +1,33 @@
 package ordermanager.domain.model;
 
-import lombok.*;
-import org.hibernate.annotations.Type;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "Orders")
-@Getter
+
 @Setter
-@ToString(onlyExplicitlyIncluded = true)
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter
 public class Order {
-    @Id
-    @Type(type = "uuid-char")
+
     private UUID id;
-
-    @ManyToOne
-    @JoinColumn(name = "userId")
     private User user;
-    @OneToOne
-    @JoinColumn(name = "addressId")
     private UserAddress address;
-
-    @ManyToOne
-    @JoinColumn(name = "driverId")
     private Driver driver;
-
-    @Enumerated(EnumType.STRING)
     private Utilities.Status status;
-
-    @Enumerated(EnumType.STRING)
     private Utilities.DeliveryStatus deliveryStatus;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
-
-    @OneToOne()
-    @JoinColumn(name = "reservationId")
     private Reservation reservation;
-
-
     private BigDecimal subTotal;
     private BigDecimal deliveryFee;
     private BigDecimal tax;
     private BigDecimal totalPrice;
     private String notes;
 
-    @PrePersist
-    public void prePersist() {
-        if (id == null) id = UUID.randomUUID();
-    }
+
 
     public void addItem(OrderItem item) {
         if(items == null)
@@ -78,4 +49,3 @@ public class Order {
 
 
 }
-

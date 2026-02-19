@@ -1,6 +1,6 @@
 package ordermanager.adapter.out.persistence;
 
-import ordermanager.domain.model.Item;
+import ordermanager.infrastructure.store.persistence.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;

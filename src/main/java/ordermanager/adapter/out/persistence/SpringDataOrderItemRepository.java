@@ -1,6 +1,6 @@
 package ordermanager.adapter.out.persistence;
 
-import ordermanager.domain.model.OrderItem;
+import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

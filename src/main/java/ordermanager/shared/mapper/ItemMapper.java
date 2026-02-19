@@ -5,7 +5,7 @@ import ordermanager.shared.dto.item.ItemResponse;
 import ordermanager.shared.dto.item.ItemSummary;
 import ordermanager.shared.dto.item.UpdateItemRequest;
 import org.mapstruct.*;
-import ordermanager.domain.model.Item;
+import ordermanager.infrastructure.store.persistence.entity.Item;
 
 @Mapper(
     componentModel = "spring",

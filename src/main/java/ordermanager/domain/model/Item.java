@@ -1,26 +1,16 @@
 package ordermanager.domain.model;
 
-import lombok.*;
-import org.hibernate.annotations.Type;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 
-@Entity
-@Getter
 @Setter
-@ToString(onlyExplicitlyIncluded = true)
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
 public class Item {
-    //TODO:Seperate Item types with different fields.
-    @Id
-    @Type(type = "uuid-char")
+
     private UUID id;
     private String name;
     private String description;
@@ -30,9 +20,4 @@ public class Item {
     private boolean isAvailable;
     private int quantity;
     private int reserved;
-
-    @PrePersist
-    public void prePersist() {
-        if (id == null) id = UUID.randomUUID();
-    }
 }

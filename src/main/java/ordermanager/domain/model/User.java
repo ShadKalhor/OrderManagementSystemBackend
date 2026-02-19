@@ -1,83 +1,20 @@
 package ordermanager.domain.model;
 
-import java.util.Collection;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
-import lombok.*;
-import org.hibernate.annotations.Type;
 
-import ordermanager.domain.model.Utilities.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import javax.persistence.*;
-
-@Entity
-@Table(name = "Users")
-@Getter
 @Setter
-@ToString(onlyExplicitlyIncluded = true)
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class User implements UserDetails {
-    @Id
-    @Type(type = "uuid-char")
+@Getter
+public class User {
+
     private UUID id;
-
-    @Builder.Default
-    private UserRoles role = UserRoles.Member;
-
+    private Utilities.UserRoles role = Utilities.UserRoles.Member;
     private String name;
     private String phone;
     private String password;
-    @Builder.Default
-    private Genders gender = Genders.Other;
-
-    @PrePersist
-    public void prePersist() {
-        if (id == null) id = UUID.randomUUID();
-    }
-
-    @Override
-    public String getUsername(){
-        return this.phone;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
-    }
-
-    @Override
-    public String getPassword(){
-        return this.password;
-    }
-
-
+    private Utilities.Genders gender = Utilities.Genders.Other;
 
 }
-
-

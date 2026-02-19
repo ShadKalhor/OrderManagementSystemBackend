@@ -1,7 +1,7 @@
 package ordermanager.adapter.in.web.controller;
 
 import ordermanager.application.service.ItemService;
-import ordermanager.domain.model.Item;
+import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.shared.dto.item.CreateItemRequest;
 import ordermanager.shared.dto.item.ItemResponse;
 import ordermanager.shared.mapper.ItemMapper;

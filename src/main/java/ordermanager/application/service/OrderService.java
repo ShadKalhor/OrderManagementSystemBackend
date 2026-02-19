@@ -3,10 +3,13 @@ package ordermanager.application.service;
 import ordermanager.application.port.out.InventoryReservationPort;
 import ordermanager.application.port.out.OrderPersistencePort;
 import ordermanager.application.port.out.ReservationResult;
-import ordermanager.domain.model.*;
 import ordermanager.exception.EntityNotFoundException;
 import ordermanager.exception.InsufficientInventoryException;
 import ordermanager.exception.ValidationException;
+import ordermanager.infrastructure.store.persistence.entity.Item;
+import ordermanager.infrastructure.store.persistence.entity.Order;
+import ordermanager.infrastructure.store.persistence.entity.OrderItem;
+import ordermanager.domain.model.Utilities.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +62,7 @@ public class OrderService {
 
 
             draft.setReservation(inventoryReservationPort.FindReservationById(reservationId));
-            draft.setStatus(Utilities.Status.Pending);
+            draft.setStatus(Status.Pending);
             return Optional.of(orderPort.save(draft));
         } catch (RuntimeException ex) {
 

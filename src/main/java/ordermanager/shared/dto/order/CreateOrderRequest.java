@@ -1,9 +1,9 @@
 package ordermanager.shared.dto.order;
 
 
-import ordermanager.domain.model.Utilities;
 import ordermanager.shared.dto.orderitem.CreateOrderItemRequest;
 import ordermanager.shared.validation.EnumOrNull;
+import ordermanager.domain.model.Utilities.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -16,10 +16,10 @@ public record CreateOrderRequest(
         @NotNull UUID userId,
         @NotNull UUID addressId,
         UUID driverId,
-        @EnumOrNull(value = Utilities.Status.class)
-        Utilities.Status status,
-        @EnumOrNull(value = Utilities.DeliveryStatus.class)
-        Utilities.DeliveryStatus deliveryStatus,
+        @EnumOrNull(value = Status.class)
+        Status status,
+        @EnumOrNull(value = DeliveryStatus.class)
+        DeliveryStatus deliveryStatus,
         @Valid @NotEmpty List<CreateOrderItemRequest> items,
         @Size(max=255) String notes
 ) {}

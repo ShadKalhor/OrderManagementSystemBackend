@@ -1,7 +1,7 @@
 package ordermanager.adapter.in.web.controller;
 
 import ordermanager.application.service.DriverService;
-import ordermanager.domain.model.Driver;
+import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.shared.dto.driver.DriverResponse;
 import ordermanager.shared.mapper.DriverMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;

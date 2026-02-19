@@ -4,8 +4,8 @@ import ordermanager.shared.dto.driver.CreateDriverRequest;
 import ordermanager.shared.dto.driver.DriverResponse;
 import ordermanager.shared.dto.driver.UpdateDriverRequest;
 import org.mapstruct.*;
-import ordermanager.domain.model.Driver;
-import ordermanager.domain.model.User;
+import ordermanager.infrastructure.store.persistence.entity.Driver;
+import ordermanager.infrastructure.store.persistence.entity.User;
 
 @Mapper(
     componentModel = "spring",

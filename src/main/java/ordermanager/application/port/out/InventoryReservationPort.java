@@ -1,7 +1,7 @@
 package ordermanager.application.port.out;
 
-import ordermanager.domain.model.OrderItem;
-import ordermanager.domain.model.Reservation;
+import ordermanager.infrastructure.store.persistence.entity.OrderItem;
+import ordermanager.infrastructure.store.persistence.entity.Reservation;
 
 import java.util.List;
 import java.util.UUID;

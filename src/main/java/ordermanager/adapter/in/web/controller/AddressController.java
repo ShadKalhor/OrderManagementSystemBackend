@@ -1,6 +1,6 @@
 package ordermanager.adapter.in.web.controller;
 
-import ordermanager.domain.model.UserAddress;
+import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.application.service.AddressService;
 import ordermanager.shared.dto.useraddress.CreateUserAddressRequest;
 import ordermanager.shared.dto.useraddress.UpdateUserAddressRequest;
@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
