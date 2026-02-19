@@ -1,5 +1,6 @@
 package ordermanager.adapter.in.web.controller;
 
+import io.vavr.control.Option;
 import ordermanager.infrastructure.service.DriverService;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.web.controller.DriverController;
@@ -64,7 +65,7 @@ class DriverControllerTest {
             Driver entity = mkDriver(id, "Alex", "ABC-123", 30);
             DriverResponse dto = mkResponse(id, "Alex", "ABC-123", 30);
 
-            when(driverService.GetDriverById(id)).thenReturn(Optional.of(entity));
+            when(driverService.GetDriverById(id)).thenReturn(Option.of(entity));
             when(driverMapper.toResponse(entity)).thenReturn(dto);
 
             mockMvc.perform(get("/Driver/{id}", id))
@@ -80,7 +81,7 @@ class DriverControllerTest {
         @DisplayName("returns 400 when not found (matches current controller behavior)")
         void getDriver_notFound() throws Exception {
             UUID id = UUID.randomUUID();
-            when(driverService.GetDriverById(id)).thenReturn(Optional.empty());
+            when(driverService.GetDriverById(id)).thenReturn(Option.none());
 
             mockMvc.perform(get("/Driver/{id}", id))
                     .andExpect(status().isNotFound());
@@ -142,7 +143,7 @@ class DriverControllerTest {
                     .thenReturn(toCreate);
 
             when(driverService.CreateDriver(any(Driver.class)))
-                    .thenReturn(Optional.of(entityAfterSave));
+                    .thenReturn(Option.of(entityAfterSave));
 
             when(driverMapper.toResponse(entityAfterSave)).thenReturn(dto);
 
@@ -186,7 +187,7 @@ class DriverControllerTest {
               """.formatted(UUID.randomUUID());
 
             when(driverService.CreateDriver(any(Driver.class)))
-                    .thenReturn(Optional.empty());
+                    .thenReturn(Option.none());
 
             mockMvc.perform(post("/Driver")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -216,9 +217,9 @@ class DriverControllerTest {
             Driver updated = mkDriver(id, "Alex Updated", "CAR-456", 31);
             DriverResponse dto = mkResponse(id, "Alex Updated", "CAR-456", 31);
 
-            when(driverService.GetDriverById(id)).thenReturn(Optional.of(existing));
+            when(driverService.GetDriverById(id)).thenReturn(Option.of(existing));
             when(driverService.CreateDriver(any(Driver.class)))
-                    .thenReturn(Optional.of(updated));
+                    .thenReturn(Option.of(updated));
             when(driverMapper.toResponse(updated)).thenReturn(dto);
 
             mockMvc.perform(put("/Driver/{id}", id)
@@ -242,7 +243,7 @@ class DriverControllerTest {
               }
               """;
 
-            when(driverService.GetDriverById(id)).thenReturn(Optional.empty());
+            when(driverService.GetDriverById(id)).thenReturn(Option.none());
 
             mockMvc.perform(put("/Driver/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)

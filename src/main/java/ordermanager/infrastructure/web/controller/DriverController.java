@@ -31,22 +31,16 @@ public class DriverController {
         return driverService.CreateDriver(driver)
                 .map(driverMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+                .getOrElse(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/{driverId}")
     public ResponseEntity<DriverResponse> UpdateDriver(@PathVariable UUID driverId,@Valid @RequestBody UpdateDriverRequest driverBody){
 
-        var driverExists = driverService.GetDriverById(driverId).orElse(null);
-
-        if (driverExists == null)
-            return ResponseEntity.notFound().build();
-
-        driverMapper.update(driverExists, driverBody);
-        var updatedUser = driverService.CreateDriver(driverExists);
-        return updatedUser.map(driver -> ResponseEntity.ok(driverMapper.toResponse(driver))).orElseGet(() -> ResponseEntity.badRequest().build());
-
-
+        var driver = driverMapper.update(driverBody);
+        return driverService.UpdateDriver(driverId, driver).map(driverMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .getOrElse(ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/{driverId}")
@@ -55,7 +49,7 @@ public class DriverController {
         return driverService.GetDriverById(driverId)
                 .map(driverMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .getOrElse(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping

@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.service;
 
+import io.vavr.control.Option;
 import ordermanager.domain.port.out.DriverPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
@@ -20,20 +21,23 @@ public class DriverService {
     }
 
 
-    public Optional<Driver> CreateDriver(Driver driver) {
+    public Option<Driver> CreateDriver(Driver driver) {
         return driverPort.save(driver);
     }
 
-    public void UpdateDriver(UUID driverId, Driver driver){
+    public Option<Driver> UpdateDriver(UUID driverId, Driver driver){
 
-        Optional<Driver> driverExists = GetDriverById(driverId);
+
+
+
+        Option<Driver> driverExists = GetDriverById(driverId);
         if (driverExists.isEmpty())
             throw new EntityNotFoundException("Driver", driverId);
         driver.setId(driverId);
-        driverPort.save(driver);
+        return driverPort.save(driver);
     }
 
-    public Optional<Driver> GetDriverById(UUID driverId) {
+    public Option<Driver> GetDriverById(UUID driverId) {
         return driverPort.findById(driverId);
     }
 
@@ -47,6 +51,6 @@ public class DriverService {
                     driverPort.deleteById(driverId);
                     return true;
                 })
-                .orElse(false);
+                .getOrElse(false);
     }
 }

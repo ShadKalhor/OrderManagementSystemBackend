@@ -18,7 +18,6 @@ public interface UserAddressMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "userId", target = "user.id")
-    @Mapping(target = "primary", ignore = true) //temp solution
     UserAddress update(UpdateUserAddressRequest r);
 
     @Mapping(source = "user.id", target = "userId")

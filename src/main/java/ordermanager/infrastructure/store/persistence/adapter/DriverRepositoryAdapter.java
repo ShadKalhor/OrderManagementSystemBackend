@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Option;
 import ordermanager.domain.port.out.DriverPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import org.springframework.stereotype.Repository;
@@ -18,13 +19,13 @@ public class DriverRepositoryAdapter implements DriverPersistencePort {
 
 
     @Override
-    public Optional<Driver> save(Driver driver) {
-        return Optional.of(driverRepository.save(driver));
+    public Option<Driver> save(Driver driver) {
+        return Option.of(driverRepository.save(driver));
     }
 
     @Override
-    public Optional<Driver> findById(UUID driverId) {
-        return driverRepository.findById(driverId);
+    public Option<Driver> findById(UUID driverId) {
+        return driverRepository.findOptionById(driverId);
     }
 
     @Override

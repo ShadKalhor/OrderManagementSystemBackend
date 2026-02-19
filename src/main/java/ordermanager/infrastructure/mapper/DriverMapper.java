@@ -20,29 +20,10 @@ public interface DriverMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "accountId", target = "account.id")
-    void update(@MappingTarget Driver entity, UpdateDriverRequest r);
+    Driver update(UpdateDriverRequest r);
 
     @Mapping(target = "name", source = "account.name")
     DriverResponse toResponse(Driver entity);
-
-
-    /*@AfterMapping
-    default void fillAccountOnCreate(CreateDriverRequest r, @MappingTarget Driver entity) {
-        if (r == null) return;
-        if (r.name() != null) {
-            if (entity.getAccount() == null) entity.setAccount(new User());
-            entity.getAccount().setName(r.name());
-        }
-    }
-
-    @AfterMapping
-    default void fillAccountOnUpdate(UpdateDriverRequest r, @MappingTarget Driver entity) {
-        if (r == null) return;
-        if (r.name() != null) {
-            if (entity.getAccount() == null) entity.setAccount(new User());
-            entity.getAccount().setName(r.name());
-        }
-    }*/
 
     @AfterMapping
     default void fillAccountOnCreate(CreateDriverRequest r, @MappingTarget Driver entity) {
