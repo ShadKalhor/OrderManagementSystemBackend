@@ -1,4 +1,4 @@
-package ordermanager.shared.web;
+package ordermanager.infrastructure.exception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,13 +18,6 @@ public class ApiError {
     private String message;
     private String path;
     private List<FieldViolation> violations;
-
-    public Instant getTimestamp() { return timestamp; }
-    public int getStatus() { return status; }
-    public String getError() { return error; }
-    public String getMessage() { return message; }
-    public String getPath() { return path; }
-    public List<FieldViolation> getViolations() { return violations; }
 
     public ApiError(int status, String error, String message, String path) {
         this.status = status;

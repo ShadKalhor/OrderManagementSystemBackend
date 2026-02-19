@@ -2,7 +2,7 @@ package ordermanager.infrastructure.web.exception;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.exception.InsufficientInventoryException;
 import ordermanager.infrastructure.exception.ValidationException;
-import ordermanager.shared.web.ApiError;
+import ordermanager.infrastructure.exception.ApiError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

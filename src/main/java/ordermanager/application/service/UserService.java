@@ -5,8 +5,6 @@ import ordermanager.infrastructure.store.persistence.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import ordermanager.shared.extensions.RegexFormats;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -96,4 +94,10 @@ public class UserService {
                 .map(u -> u.stream().anyMatch(p -> user.getPhone().equals(p.getPhone()) && !(user.getId().equals(p.getId()))))
                 .orElse(false);
     }
+}
+class RegexFormats {
+    public String NameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ' -]{1,50}$";
+    public String PhoneRegex = "^07\\d{9}$";
+    public String PasswordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
 }
