@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.web.controller;
 
+import io.vavr.control.Option;
 import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.service.OrderService;
 import ordermanager.infrastructure.service.UserService;
@@ -110,12 +111,12 @@ public class UserController {
     @GetMapping("/{userId}/addresses")
     public ResponseEntity<List<UserAddressResponse>> GetUserById(@PathVariable("userId") UUID userId){
 
-        Optional<List<UserAddress>> result = addressService.GetUserAddresses(userId);
+        Option<List<UserAddress>> result = addressService.GetUserAddresses(userId);
         return result
                 .filter(list -> !list.isEmpty())
                 .map(list -> list.stream().map(userAddressMapper::toResponse).toList())
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .getOrElse(() -> ResponseEntity.notFound().build());
 
     }
 
