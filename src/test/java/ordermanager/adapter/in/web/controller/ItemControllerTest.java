@@ -1,5 +1,6 @@
 package ordermanager.adapter.in.web.controller;
 
+import io.vavr.control.Option;
 import ordermanager.infrastructure.service.ItemService;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.web.controller.ItemController;
@@ -84,7 +85,7 @@ class ItemControllerTest {
             ItemResponse dto = mkResp(id, "Burger", new BigDecimal("7.50"), "Juicy beef burger", "Large", BigDecimal.ZERO,true,20 );
 
             when(itemMapper.toDomain(any(CreateItemRequest.class))).thenReturn(toCreate);
-            when(itemService.CreateItem(any(Item.class))).thenReturn(Optional.of(saved));
+            when(itemService.CreateItem(any(Item.class))).thenReturn(Option.of(saved));
             when(itemMapper.toResponse(saved)).thenReturn(dto);
 
             mockMvc.perform(post("/item")
@@ -124,7 +125,7 @@ class ItemControllerTest {
             Item toCreate = mkItem(null, "Burger", new BigDecimal("7.50"), "Juicy beef burger");
 
             when(itemMapper.toDomain(any(CreateItemRequest.class))).thenReturn(toCreate);
-            when(itemService.CreateItem(any(Item.class))).thenReturn(Optional.empty());
+            when(itemService.CreateItem(any(Item.class))).thenReturn(Option.none());
 
             mockMvc.perform(post("/item")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -155,8 +156,8 @@ class ItemControllerTest {
             Item updated  = mkItem(id, "Burger Deluxe", new BigDecimal("8.75"), "Upgraded burger");
             ItemResponse dto = mkResp(id, "Burger Deluxe", new BigDecimal("8.75"), "Upgraded burger","No Size",BigDecimal.ZERO,true,100);
 
-            when(itemService.GetItemById(id)).thenReturn(Optional.of(existing));
-            when(itemService.CreateItem(existing)).thenReturn(Optional.of(updated));
+            when(itemService.GetItemById(id)).thenReturn(Option.of(existing));
+            when(itemService.CreateItem(existing)).thenReturn(Option.of(updated));
             when(itemMapper.toResponse(updated)).thenReturn(dto);
 
             mockMvc.perform(put("/item/{id}", id)
@@ -176,7 +177,7 @@ class ItemControllerTest {
               { "name": "X", "price": 1.0 }
               """;
 
-            when(itemService.GetItemById(id)).thenReturn(Optional.empty());
+            when(itemService.GetItemById(id)).thenReturn(Option.none());
 
             mockMvc.perform(put("/item/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -194,8 +195,8 @@ class ItemControllerTest {
               """;
 
             Item existing = mkItem(id, "Burger", new BigDecimal("7.50"), "Juicy beef burger");
-            when(itemService.GetItemById(id)).thenReturn(Optional.of(existing));
-            when(itemService.CreateItem(existing)).thenReturn(Optional.empty());
+            when(itemService.GetItemById(id)).thenReturn(Option.of(existing));
+            when(itemService.CreateItem(existing)).thenReturn(Option.none());
 
             mockMvc.perform(put("/item/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -215,7 +216,7 @@ class ItemControllerTest {
             Item entity = mkItem(id, "Burger", new BigDecimal("7.50"), "Juicy beef burger");
             ItemResponse dto = mkResp(id, "Burger", new BigDecimal("7.50"), "Juicy beef burger","No Size",BigDecimal.ZERO,true,100);
 
-            when(itemService.GetItemById(id)).thenReturn(Optional.of(entity));
+            when(itemService.GetItemById(id)).thenReturn(Option.of(entity));
             when(itemMapper.toResponse(entity)).thenReturn(dto);
 
             mockMvc.perform(get("/item/{id}", id))
@@ -229,7 +230,7 @@ class ItemControllerTest {
         @DisplayName("returns 404 when not found")
         void get_notFound() throws Exception {
             UUID id = UUID.randomUUID();
-            when(itemService.GetItemById(id)).thenReturn(Optional.empty());
+            when(itemService.GetItemById(id)).thenReturn(Option.none());
 
             mockMvc.perform(get("/item/{id}", id))
                     .andExpect(status().isNotFound());

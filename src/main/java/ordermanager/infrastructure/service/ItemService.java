@@ -1,6 +1,7 @@
 package ordermanager.infrastructure.service;
 
 
+import io.vavr.control.Option;
 import ordermanager.domain.port.out.ItemPersistencePort;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.entity.Item;
@@ -18,45 +19,21 @@ public class ItemService {
     public ItemService(ItemPersistencePort itemPort){
         this.itemPort = itemPort;
     }
-    
-    public Map<String, String> GetUnavailableItems(List<OrderItem> orderItems){
-        Map<String, String> unavailableItems = null;
 
-        for(OrderItem orderItem : orderItems){
-            Optional<Item> result = itemPort.findById(orderItem.getItem().getId());
-
-            if(result.isPresent()){
-                Item item = result.get();
-                if(item.getQuantity() < orderItem.getQuantity()) {
-                    if (unavailableItems == null)
-                        unavailableItems = new HashMap<>();
-                    unavailableItems.put(item.getName(), "inventory does not have" +
-                                orderItem.getQuantity() + " Of " + item.getName() + " Left.");
-                }
-            }
-            else {
-                if (unavailableItems == null)
-                    unavailableItems = new HashMap<>();
-                unavailableItems.put(orderItem.getItem().getId().toString(), "This order item with this item id is not available anymore.");
-            }
-        }
-        return unavailableItems;
+    public Option<Item> CreateItem(Item item) {
+        return itemPort.save(item);
     }
 
-    public Optional<Item> CreateItem(Item item) {
-        return Optional.of(itemPort.save(item));
-    }
+    public Option<Item> UpdateItem(UUID itemId, Item item){
 
-    public void UpdateItem(UUID itemId, Item item){
-
-        Optional<Item> itemExists = GetItemById(itemId);
+        Option<Item> itemExists = GetItemById(itemId);
         if(itemExists.isEmpty())
             throw new EntityNotFoundException("Item", itemId);
         item.setId(itemId);
-        itemPort.save(item);
+        return itemPort.save(item);
     }
 
-    public Optional<Item> GetItemById(UUID itemId) {
+    public Option<Item> GetItemById(UUID itemId) {
         return itemPort.findById(itemId);
     }
 
@@ -72,7 +49,7 @@ public class ItemService {
                     itemPort.deleteById(itemId);
                     return true;
                 })
-                .orElse(false);
+                .getOrElse(false);
     }
 
 }

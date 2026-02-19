@@ -163,7 +163,7 @@ public class OrderService {
             UUID itemId = oi.getItem().getId();
 
             Item item = itemService.GetItemById(itemId)
-                    .orElseThrow(() -> new EntityNotFoundException("Item", itemId));
+                    .getOrElseThrow(() -> new EntityNotFoundException("Item", itemId));
 
             oi.setItem(item);
         }

@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Option;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -23,4 +24,6 @@ public interface SpringDataItemRepository extends JpaRepository<Item, UUID> {
     @Query("update Item i set i.reserved = i.reserved + :delta where i.id = :itemId")
     void bumpReserved(@Param("itemId") UUID itemId, @Param("delta") int delta);
 
+
+    Option<Item> findOptionById(UUID id);
 }

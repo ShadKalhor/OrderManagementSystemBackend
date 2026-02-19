@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Option;
 import ordermanager.domain.port.out.ItemPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import org.springframework.stereotype.Repository;
@@ -18,13 +19,13 @@ public class ItemRepositoryAdapter implements ItemPersistencePort {
     }
 
     @Override
-    public Optional<Item> findById(UUID id) {
-        return itemRepository.findById(id);
+    public Option<Item> findById(UUID id) {
+        return itemRepository.findOptionById(id);
     }
 
     @Override
-    public Item save(Item item) {
-        return itemRepository.save(item);
+    public Option<Item> save(Item item) {
+        return Option.of(itemRepository.save(item));
     }
 
     @Override

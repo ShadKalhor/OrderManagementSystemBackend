@@ -32,20 +32,20 @@ public class ItemController {
         return itemService.CreateItem(item)
                 .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+                .getOrElse(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/{itemId}")
     public ResponseEntity<ItemResponse> UpdateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
 
-        var itemExists = itemService.GetItemById(itemId).orElse(null);
+        var itemExists = itemService.GetItemById(itemId).getOrNull();
 
         if (itemExists == null)
             return ResponseEntity.notFound().build();
 
         itemMapper.update(itemExists, itemBody);
         var updatedUser = itemService.CreateItem(itemExists);
-        return updatedUser.map(item -> ResponseEntity.ok(itemMapper.toResponse(item))).orElseGet(() -> ResponseEntity.badRequest().build());
+        return updatedUser.map(item -> ResponseEntity.ok(itemMapper.toResponse(item))).getOrElse(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/{itemId}")
@@ -54,7 +54,7 @@ public class ItemController {
         return itemService.GetItemById(itemId)
                 .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .getOrElse(() -> ResponseEntity.notFound().build());
 
     }
 
