@@ -1,8 +1,8 @@
 package ordermanager.infrastructure.web.controller;
 
-import ordermanager.application.service.AddressService;
-import ordermanager.application.service.OrderService;
-import ordermanager.application.service.UserService;
+import ordermanager.infrastructure.service.AddressService;
+import ordermanager.infrastructure.service.OrderService;
+import ordermanager.infrastructure.service.UserService;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.infrastructure.web.dto.order.OrderResponse;

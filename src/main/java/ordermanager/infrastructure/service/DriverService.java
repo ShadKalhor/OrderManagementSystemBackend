@@ -1,4 +1,4 @@
-package ordermanager.application.service;
+package ordermanager.infrastructure.service;
 
 import ordermanager.domain.port.out.DriverPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Driver;

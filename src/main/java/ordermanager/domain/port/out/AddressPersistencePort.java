@@ -1,5 +1,6 @@
 package ordermanager.domain.port.out;
 
+import io.vavr.control.Option;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 
 import java.util.List;
@@ -8,11 +9,11 @@ import java.util.UUID;
 
 public interface AddressPersistencePort {
     
-    Optional<List<UserAddress>> findAddressesByUserId(UUID userId);
+    Option<List<UserAddress>> findAddressesByUserId(UUID userId);
 
-    Optional<UserAddress> save(UserAddress userAddress);
+    Option<UserAddress> save(UserAddress userAddress);
 
-    Optional<UserAddress> findById(UUID uuid);
+    Option<UserAddress> findById(UUID uuid);
 
     void deleteById(UUID uuid);
 }

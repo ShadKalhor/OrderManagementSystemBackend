@@ -1,6 +1,6 @@
 package ordermanager.adapter.in.web.controller;
 
-import ordermanager.application.service.DriverService;
+import ordermanager.infrastructure.service.DriverService;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.web.controller.DriverController;
 import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;

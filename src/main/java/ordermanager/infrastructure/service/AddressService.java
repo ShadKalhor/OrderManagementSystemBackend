@@ -1,5 +1,6 @@
-package ordermanager.application.service;
+package ordermanager.infrastructure.service;
 
+import io.vavr.control.Option;
 import ordermanager.domain.port.out.AddressPersistencePort;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
@@ -17,24 +18,24 @@ public class AddressService {
         this.addressPort = addressPort;
     }
 
-    public Optional<UserAddress> CreateAddress(UserAddress userAddress){
+    public Option<UserAddress> CreateAddress(UserAddress userAddress){
         return addressPort.save(userAddress);
     }
 
-    public void UpdateAddress(UUID addressId, UserAddress userAddress){
-        Optional<UserAddress> addressExists = GetAddressById(addressId);
+    public Option<UserAddress> UpdateAddress(UUID addressId, UserAddress userAddress){
+        Option<UserAddress> addressExists = GetAddressById(addressId);
         if (addressExists.isEmpty())
             throw new EntityNotFoundException("Address",addressId);
         userAddress.setId(addressId);
-        addressPort.save(userAddress);
+        return addressPort.save(userAddress);
     }
 
 
-    public Optional<List<UserAddress>> GetUserAddresses(UUID userId){
+    public Option<List<UserAddress>> GetUserAddresses(UUID userId){
         return addressPort.findAddressesByUserId(userId);
     }
 
-    public Optional<UserAddress> GetAddressById(UUID uuid){
+    public Option<UserAddress> GetAddressById(UUID uuid){
         return addressPort.findById(uuid);
     }
 
@@ -44,8 +45,7 @@ public class AddressService {
                 .map(d -> {
                     addressPort.deleteById(addressId);
                     return true;
-                })
-                .orElse(false);
+                }).getOrElse(false);
 
     }
 

@@ -1,4 +1,4 @@
-package ordermanager.application.service;
+package ordermanager.infrastructure.service;
 
 import ordermanager.domain.port.out.UserPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.User;

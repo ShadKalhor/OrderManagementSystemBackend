@@ -2,6 +2,7 @@ package ordermanager.adapter.in.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ordermanager.infrastructure.mapper.UserMapper;
+import ordermanager.infrastructure.service.UserService;
 import ordermanager.infrastructure.web.controller.UserController;
 import ordermanager.infrastructure.web.dto.user.CreateUserRequest;
 import ordermanager.infrastructure.web.dto.user.UserResponse;
@@ -27,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ordermanager.domain.model.Utilities.*;
 import ordermanager.infrastructure.store.persistence.entity.User;
-import ordermanager.application.service.*;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {

@@ -1,6 +1,6 @@
 package ordermanager.infrastructure.web.controller;
 
-import ordermanager.application.service.ItemService;
+import ordermanager.infrastructure.service.ItemService;
 import ordermanager.infrastructure.web.dto.item.CreateItemRequest;
 import ordermanager.infrastructure.web.dto.item.ItemResponse;
 import ordermanager.infrastructure.web.dto.item.UpdateItemRequest;

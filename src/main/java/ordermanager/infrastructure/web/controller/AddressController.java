@@ -1,7 +1,7 @@
 package ordermanager.infrastructure.web.controller;
 
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
-import ordermanager.application.service.AddressService;
+import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
 import ordermanager.infrastructure.web.dto.useraddress.UpdateUserAddressRequest;
 import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
@@ -33,23 +33,17 @@ public class AddressController {
         return addressService.CreateAddress(address)
                 .map(addressMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+                .getOrElse(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/{addressId}")
     public ResponseEntity<UserAddressResponse> UpdateAddress(@PathVariable UUID addressId, @Valid @RequestBody UpdateUserAddressRequest addressBody){
-        /*Optional<UserAddress> result = addressService.CreateAddress(address);
-        return result.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    */
-        var addressExists = addressService.GetAddressById(addressId).orElse(null);
 
-        if (addressExists == null)
-            return ResponseEntity.notFound().build();
-
-        addressMapper.update(addressExists, addressBody);
-        var updatedUser = addressService.CreateAddress(addressExists);
-        return updatedUser.map(address -> ResponseEntity.ok(addressMapper.toResponse(address))).orElseGet(() -> ResponseEntity.badRequest().build());
+        var address = addressMapper.update(addressBody);
+        return addressService.UpdateAddress(addressId, address)
+                .map(addressMapper::toResponse)
+                .map(ResponseEntity::ok)
+                        .getOrElse(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/{addressId}")
@@ -58,7 +52,7 @@ public class AddressController {
         return addressService.GetAddressById(addressId)
                 .map(addressMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .getOrElse(() -> ResponseEntity.notFound().build());
 
     }
 

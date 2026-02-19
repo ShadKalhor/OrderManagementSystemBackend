@@ -1,5 +1,6 @@
 package ordermanager.adapter.in.web.controller;
 
+import io.vavr.control.Option;
 import ordermanager.infrastructure.web.controller.AddressController;
 import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
 import ordermanager.infrastructure.web.dto.useraddress.UpdateUserAddressRequest;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
-import ordermanager.application.service.AddressService;
+import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
 import ordermanager.infrastructure.mapper.UserAddressMapper;
 
@@ -73,7 +74,7 @@ class AddressControllerTest {
         );
 
         given(addressService.GetUserAddresses(userId))
-                .willReturn(Optional.of(List.of(a1, a2)));
+                .willReturn(Option.of(List.of(a1, a2)));
 
         given(addressMapper.toResponse(a1)).willReturn(r1);
         given(addressMapper.toResponse(a2)).willReturn(r2);
@@ -91,7 +92,7 @@ class AddressControllerTest {
     void getUserAddresses_notFound_whenOptionalEmpty() throws Exception {
         var userId = UUID.randomUUID();
 
-        given(addressService.GetUserAddresses(userId)).willReturn(Optional.empty());
+        given(addressService.GetUserAddresses(userId)).willReturn(Option.none());
 
         mvc.perform(get("/address/user/{userId}", userId))
                 .andExpect(status().isNotFound());
@@ -101,7 +102,7 @@ class AddressControllerTest {
     void getUserAddresses_notFound_whenListEmpty_andControllerTreatsEmptyAs404() throws Exception {
         var userId = UUID.randomUUID();
 
-        given(addressService.GetUserAddresses(userId)).willReturn(Optional.of(List.of()));
+        given(addressService.GetUserAddresses(userId)).willReturn(Option.of(List.of()));
 
         mvc.perform(get("/address/user/{userId}", userId))
                 .andExpect(status().isNotFound());
@@ -117,7 +118,7 @@ class AddressControllerTest {
         given(addressMapper.toDomain(request)).willReturn(entity);
 
         given(addressService.CreateAddress(any(UserAddress.class)))
-                .willReturn(Optional.of(entity));
+                .willReturn(Option.of(entity));
 
         given(addressMapper.toResponse(entity)).willReturn(response);
 
@@ -142,11 +143,11 @@ class AddressControllerTest {
         var response = new UserAddressResponse(id, UUID.randomUUID(), "LineX", "CityX", "StateX",
                 "ZipX", "", "", true);
 
-        given(addressService.GetAddressById(id)).willReturn(Optional.of(entity));
+        given(addressService.GetAddressById(id)).willReturn(Option.of(entity));
 
         //because of optional, TODO: Check if optional is needed when creating or updating entities.
         given(addressService.CreateAddress(any(UserAddress.class)))
-                .willReturn(Optional.of(updated));
+                .willReturn(Option.of(updated));
 /*
 
         given(addressService.CreateAddress(entity)).willReturn(updated);
@@ -169,7 +170,7 @@ class AddressControllerTest {
         var updateRequest = new UpdateUserAddressRequest(UUID.randomUUID(), "CityX", "StateX", "ZipX",
                 "", "", "",true);
 
-        given(addressService.GetAddressById(id)).willReturn(Optional.empty());
+        given(addressService.GetAddressById(id)).willReturn(Option.none());
 
         mvc.perform(put("/address/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
