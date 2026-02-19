@@ -1,7 +1,8 @@
 package ordermanager.adapter.in.web.controller;
 
-import ordermanager.shared.dto.useraddress.CreateUserAddressRequest;
-import ordermanager.shared.dto.useraddress.UpdateUserAddressRequest;
+import ordermanager.infrastructure.web.controller.AddressController;
+import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
+import ordermanager.infrastructure.web.dto.useraddress.UpdateUserAddressRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,8 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.application.service.AddressService;
-import ordermanager.shared.dto.useraddress.UserAddressResponse;
-import ordermanager.shared.mapper.UserAddressMapper;
+import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
+import ordermanager.infrastructure.mapper.UserAddressMapper;
 
 @WebMvcTest(AddressController.class)
 class AddressControllerTest {

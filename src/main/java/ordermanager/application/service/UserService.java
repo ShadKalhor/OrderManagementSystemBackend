@@ -1,6 +1,6 @@
 package ordermanager.application.service;
 
-import ordermanager.application.port.out.UserPersistencePort;
+import ordermanager.domain.port.out.UserPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

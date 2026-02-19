@@ -1,6 +1,11 @@
 package ordermanager.adapter.in.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ordermanager.infrastructure.mapper.UserMapper;
+import ordermanager.infrastructure.web.controller.UserController;
+import ordermanager.infrastructure.web.dto.user.CreateUserRequest;
+import ordermanager.infrastructure.web.dto.user.UserResponse;
+import ordermanager.infrastructure.web.dto.user.UserSummary;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,11 +25,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-import ordermanager.shared.dto.user.*;
 import ordermanager.domain.model.Utilities.*;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import ordermanager.application.service.*;
-import ordermanager.shared.mapper.*;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {

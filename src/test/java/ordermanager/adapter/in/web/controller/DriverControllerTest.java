@@ -2,8 +2,10 @@ package ordermanager.adapter.in.web.controller;
 
 import ordermanager.application.service.DriverService;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
-import ordermanager.shared.dto.driver.DriverResponse;
-import ordermanager.shared.mapper.DriverMapper;
+import ordermanager.infrastructure.web.controller.DriverController;
+import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;
+import ordermanager.infrastructure.web.dto.driver.DriverResponse;
+import ordermanager.infrastructure.mapper.DriverMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -136,7 +138,7 @@ class DriverControllerTest {
             Driver entityAfterSave = mkDriver(id, "Alex", "ABC-123", 30);
             DriverResponse dto = mkResponse(id, "Alex", "ABC-123", 30);
 
-            when(driverMapper.toDomain(any(ordermanager.shared.dto.driver.CreateDriverRequest.class)))
+            when(driverMapper.toDomain(any(CreateDriverRequest.class)))
                     .thenReturn(toCreate);
 
             when(driverService.CreateDriver(any(Driver.class)))

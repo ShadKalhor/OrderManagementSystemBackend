@@ -1,11 +1,12 @@
 package ordermanager.application.service;
 
-import ordermanager.application.port.out.InventoryReservationPort;
-import ordermanager.application.port.out.OrderPersistencePort;
-import ordermanager.application.port.out.ReservationResult;
-import ordermanager.exception.EntityNotFoundException;
-import ordermanager.exception.InsufficientInventoryException;
-import ordermanager.exception.ValidationException;
+import ordermanager.domain.port.out.InventoryReservationPort;
+import ordermanager.domain.port.out.OrderPersistencePort;
+import ordermanager.domain.port.out.ReservationResult;
+import ordermanager.infrastructure.store.persistence.entity.*;
+import ordermanager.infrastructure.exception.EntityNotFoundException;
+import ordermanager.infrastructure.exception.InsufficientInventoryException;
+import ordermanager.infrastructure.exception.ValidationException;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;

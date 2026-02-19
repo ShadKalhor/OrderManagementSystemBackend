@@ -2,9 +2,10 @@ package ordermanager.adapter.in.web.controller;
 
 import ordermanager.application.service.OrderService;
 import ordermanager.infrastructure.store.persistence.entity.Order;
-import ordermanager.shared.dto.order.CreateOrderRequest;
-import ordermanager.shared.dto.order.OrderResponse;
-import ordermanager.shared.mapper.OrderMapper;
+import ordermanager.infrastructure.web.controller.OrderController;
+import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
+import ordermanager.infrastructure.web.dto.order.OrderResponse;
+import ordermanager.infrastructure.mapper.OrderMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

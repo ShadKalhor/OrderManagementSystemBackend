@@ -1,8 +1,8 @@
 package ordermanager.application.service;
 
-import ordermanager.application.port.out.DriverPersistencePort;
+import ordermanager.domain.port.out.DriverPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
-import ordermanager.exception.EntityNotFoundException;
+import ordermanager.infrastructure.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

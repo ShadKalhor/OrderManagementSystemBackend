@@ -1,8 +1,8 @@
 package ordermanager.application.service;
 
 
-import ordermanager.application.port.out.ItemPersistencePort;
-import ordermanager.exception.EntityNotFoundException;
+import ordermanager.domain.port.out.ItemPersistencePort;
+import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 import org.springframework.stereotype.Service;
