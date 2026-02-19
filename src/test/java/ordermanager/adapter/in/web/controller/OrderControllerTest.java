@@ -1,5 +1,6 @@
 package ordermanager.adapter.in.web.controller;
 
+import io.vavr.control.Option;
 import ordermanager.infrastructure.service.OrderService;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.web.controller.OrderController;
@@ -94,7 +95,7 @@ class OrderControllerTest {
             OrderResponse dto = mkResp(id);
 
             when(orderMapper.toDomain(any(CreateOrderRequest.class))).thenReturn(toCreate);
-            when(orderService.CreateOrder(any(Order.class))).thenReturn(Optional.of(saved));
+            when(orderService.CreateOrder(any(Order.class))).thenReturn(Option.of(saved));
             when(orderMapper.toResponse(saved)).thenReturn(dto);
 
             mockMvc.perform(post("/order")
@@ -139,7 +140,7 @@ class OrderControllerTest {
             Order toCreate = mkOrder(null);
 
             when(orderMapper.toDomain(any(CreateOrderRequest.class))).thenReturn(toCreate);
-            when(orderService.CreateOrder(any(Order.class))).thenReturn(Optional.empty());
+            when(orderService.CreateOrder(any(Order.class))).thenReturn(Option.none());
 
             mockMvc.perform(post("/order")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -172,9 +173,9 @@ class OrderControllerTest {
             Order updated  = mkOrder(id);
             OrderResponse dto = mkResp(id);
 
-            when(orderService.GetOrderById(id)).thenReturn(Optional.of(existing));
+            when(orderService.GetOrderById(id)).thenReturn(Option.of(existing));
 
-            when(orderService.CreateOrder(existing)).thenReturn(Optional.of(updated));
+            when(orderService.CreateOrder(existing)).thenReturn(Option.of(updated));
             when(orderMapper.toResponse(updated)).thenReturn(dto);
 
             mockMvc.perform(put("/order/{orderId}", id)
@@ -197,7 +198,7 @@ class OrderControllerTest {
               }
               """.formatted(UUID.randomUUID());
 
-            when(orderService.GetOrderById(id)).thenReturn(Optional.empty());
+            when(orderService.GetOrderById(id)).thenReturn(Option.none());
 
             mockMvc.perform(put("/order/{orderId}", id)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -219,8 +220,8 @@ class OrderControllerTest {
               """.formatted(UUID.randomUUID());
 
             Order existing = mkOrder(id);
-            when(orderService.GetOrderById(id)).thenReturn(Optional.of(existing));
-            when(orderService.CreateOrder(existing)).thenReturn(Optional.empty());
+            when(orderService.GetOrderById(id)).thenReturn(Option.of(existing));
+            when(orderService.CreateOrder(existing)).thenReturn(Option.none());
 
             mockMvc.perform(put("/order/{orderId}", id)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -241,7 +242,7 @@ class OrderControllerTest {
             Order entity = mkOrder(id);
             OrderResponse dto = mkResp(id);
 
-            when(orderService.GetOrderById(id)).thenReturn(Optional.of(entity));
+            when(orderService.GetOrderById(id)).thenReturn(Option.of(entity));
             when(orderMapper.toResponse(entity)).thenReturn(dto);
 
             mockMvc.perform(get("/order/{Id}", id))
@@ -254,7 +255,7 @@ class OrderControllerTest {
         @DisplayName("returns 404 when not found")
         void get_notFound() throws Exception {
             UUID id = UUID.randomUUID();
-            when(orderService.GetOrderById(id)).thenReturn(Optional.empty());
+            when(orderService.GetOrderById(id)).thenReturn(Option.none());
 
             mockMvc.perform(get("/order/{Id}", id))
                     .andExpect(status().isNotFound());
@@ -306,7 +307,7 @@ class OrderControllerTest {
             OrderResponse r1 = mkResp(o1);
             OrderResponse r2 = mkResp(o2);
 
-            when(orderService.GetByUserId(userId)).thenReturn(Optional.of(List.of(e1, e2)));
+            when(orderService.GetByUserId(userId)).thenReturn(Option.of(List.of(e1, e2)));
             when(orderMapper.toResponse(e1)).thenReturn(r1);
             when(orderMapper.toResponse(e2)).thenReturn(r2);
 
@@ -320,7 +321,7 @@ class OrderControllerTest {
         @DisplayName("returns 404 when empty")
         void byUser_notFound() throws Exception {
             UUID userId = UUID.randomUUID();
-            when(orderService.GetByUserId(userId)).thenReturn(Optional.empty());
+            when(orderService.GetByUserId(userId)).thenReturn(Option.none());
 
             mockMvc.perform(get("/order/findbyuserid/{Id}", userId))
                     .andExpect(status().isNotFound());

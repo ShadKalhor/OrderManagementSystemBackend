@@ -57,18 +57,18 @@ public class UserController {
         return userService.SaveUser(user)
                 .map(userMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+                .getOrElse(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponse> UpdateUser(@PathVariable UUID userId, @Valid @RequestBody UpdateUserRequest userBody){
 
-        var userExists = userService.GetUserById(userId).orElse(null);
+        var userExists = userService.GetUserById(userId).getOrNull();
         if(userExists == null)
             return ResponseEntity.notFound().build();
         userMapper.update(userExists, userBody);
         var updatedUser = userService.SaveUser(userExists);
-        return updatedUser.map(user -> ResponseEntity.ok(userMapper.toResponse(user))).orElseGet(() -> ResponseEntity.badRequest().build());
+        return updatedUser.map(user -> ResponseEntity.ok(userMapper.toResponse(user))).getOrElse(() -> ResponseEntity.badRequest().build());
     }
 
 
@@ -78,7 +78,7 @@ public class UserController {
         return userService.GetUserById(userId)
                 .map(userMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .getOrElse(() -> ResponseEntity.notFound().build());
 
     }
 
@@ -88,19 +88,19 @@ public class UserController {
         return userService.GetUserByPhoneNumber(phoneNumber)
                 .map(userMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .getOrElse(() -> ResponseEntity.notFound().build());
     }
 
 
     @GetMapping("/{userId}/orders")
     public ResponseEntity<List<OrderResponse>> GetOrders(@PathVariable("userId") UUID userId){
 
-        Optional<List<Order>> result = orderService.GetByUserId(userId);
+        Option<List<Order>> result = orderService.GetByUserId(userId);
         return result
                 .filter(list -> !list.isEmpty())
                 .map(list -> list.stream().map(orderMapper::toResponse).toList())
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .getOrElse(() -> ResponseEntity.notFound().build());
     }
 
 

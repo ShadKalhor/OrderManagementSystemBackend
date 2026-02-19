@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Option;
 import ordermanager.domain.port.out.UserPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import org.springframework.stereotype.Repository;
@@ -18,12 +19,12 @@ public class UserRepositoryAdapter implements UserPersistencePort {
     }
 
     @Override
-    public Optional<User> findById(UUID userId) {
-        return userRepository.findById(userId);
+    public Option<User> findById(UUID userId) {
+        return userRepository.findOptionById(userId);
     }
 
     @Override
-    public Optional<User> findByName(String name) {
+    public Option<User> findByName(String name) {
         return userRepository.findByName(name);
     }
 
@@ -33,13 +34,13 @@ public class UserRepositoryAdapter implements UserPersistencePort {
     }
 
     @Override
-    public Optional<User> findByPhone(String phoneNumber) {
+    public Option<User> findByPhone(String phoneNumber) {
         return userRepository.findByPhone(phoneNumber);
     }
 
     @Override
-    public User save(User user) {
-        return userRepository.save(user);
+    public Option<User> save(User user) {
+        return Option.of(userRepository.save(user));
     }
 
     @Override

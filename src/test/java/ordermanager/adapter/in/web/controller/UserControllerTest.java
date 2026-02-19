@@ -1,6 +1,7 @@
 package ordermanager.adapter.in.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vavr.control.Option;
 import ordermanager.infrastructure.mapper.UserMapper;
 import ordermanager.infrastructure.service.UserService;
 import ordermanager.infrastructure.web.controller.UserController;
@@ -50,7 +51,7 @@ class UserControllerTest {
         var entity = new User(); entity.setId(id);
         var dto = new UserResponse(id, "Alice", "alice@example.com", UserRoles.Member, Genders.Female);
 
-        given(userService.GetUserById(id)).willReturn(Optional.of(entity));
+        given(userService.GetUserById(id)).willReturn(Option.of(entity));
         given(userMapper.toResponse(entity)).willReturn(dto);
 
         mvc.perform(get("/user/{id}", id))
@@ -63,7 +64,7 @@ class UserControllerTest {
     @Test
     void getUser_notFound() throws Exception {
         var id = UUID.randomUUID();
-        given(userService.GetUserById(id)).willReturn(Optional.empty());
+        given(userService.GetUserById(id)).willReturn(Option.none());
 
         mvc.perform(get("/user/{id}", id))
                 .andExpect(status().isNotFound());
@@ -103,7 +104,7 @@ class UserControllerTest {
         var response = new UserResponse(saved.getId(), "Alice", "alice@example.com", UserRoles.Member, Genders.Female);
 
         given(userMapper.toDomain(any(CreateUserRequest.class))).willReturn(entity);
-        given(userService.SaveUser(entity)).willReturn(Optional.of(saved));
+        given(userService.SaveUser(entity)).willReturn(Option.of(saved));
         given(userMapper.toResponse(saved)).willReturn(response);
 
         mvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(body))
@@ -123,8 +124,8 @@ class UserControllerTest {
         var saved = new User(); saved.setId(id);
         var response = new UserResponse(id, "Alice Updated", "alice@example.com", UserRoles.Member,Genders.Female);
 
-        given(userService.GetUserById(id)).willReturn(Optional.of(existing));
-        given(userService.SaveUser(existing)).willReturn(Optional.of(saved));
+        given(userService.GetUserById(id)).willReturn(Option.of(existing));
+        given(userService.SaveUser(existing)).willReturn(Option.of(saved));
         given(userMapper.toResponse(saved)).willReturn(response);
 
         mvc.perform(put("/user/{userId}", id).contentType(MediaType.APPLICATION_JSON).content(body))
@@ -135,7 +136,7 @@ class UserControllerTest {
     @Test
     void updateUser_notFound() throws Exception {
         var id = UUID.randomUUID();
-        given(userService.GetUserById(id)).willReturn(Optional.empty());
+        given(userService.GetUserById(id)).willReturn(Option.none());
 
         mvc.perform(put("/user/{userId}", id)
                         .contentType(MediaType.APPLICATION_JSON)

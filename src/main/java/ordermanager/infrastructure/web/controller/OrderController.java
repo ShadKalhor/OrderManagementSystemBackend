@@ -35,21 +35,21 @@ public class OrderController {
         return orderService.CreateOrder(order)
                 .map(orderMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+                .getOrElse(() -> ResponseEntity.badRequest().build());
 
     }
 
     @PutMapping("/{orderId}")
     public ResponseEntity<OrderResponse> UpdateOrder(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderRequest orderBody){
 
-        var orderExists = orderService.GetOrderById(orderId).orElse(null);
+        var orderExists = orderService.GetOrderById(orderId).getOrNull();
 
         if (orderExists == null)
             return ResponseEntity.notFound().build();
 
         orderMapper.update(orderExists, orderBody);
         var updatedUser = orderService.CreateOrder(orderExists);
-        return updatedUser.map(order -> ResponseEntity.ok(orderMapper.toResponse(order))).orElseGet(() -> ResponseEntity.badRequest().build());
+        return updatedUser.map(order -> ResponseEntity.ok(orderMapper.toResponse(order))).getOrElse(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/{orderId}")
@@ -58,7 +58,7 @@ public class OrderController {
         return orderService.GetOrderById(orderId)
                 .map(orderMapper::toResponse)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .getOrElse(() -> ResponseEntity.notFound().build());
 
     }
 

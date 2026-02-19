@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Option;
 import ordermanager.domain.port.out.OrderPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import org.springframework.stereotype.Repository;
@@ -18,8 +19,8 @@ public class OrderRepositoryAdapter implements OrderPersistencePort {
     }
 
     @Override
-    public Order save(Order order) {
-        return orderRepository.save(order);
+    public Option<Order> save(Order order) {
+        return Option.of(orderRepository.save(order));
     }
 
     @Override
@@ -28,8 +29,8 @@ public class OrderRepositoryAdapter implements OrderPersistencePort {
     }
 
     @Override
-    public Optional<Order> findById(UUID orderId) {
-        return orderRepository.findById(orderId);
+    public Option<Order> findById(UUID orderId) {
+        return orderRepository.findOptionById(orderId);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class OrderRepositoryAdapter implements OrderPersistencePort {
     }
 
     @Override
-    public Optional<List<Order>> findByUserId(UUID userId) {
+    public Option<List<Order>> findByUserId(UUID userId) {
         return orderRepository.findByUserId(userId);
     }
 }

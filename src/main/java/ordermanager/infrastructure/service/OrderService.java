@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.service;
 
+import io.vavr.control.Option;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
 import ordermanager.domain.port.out.ReservationResult;
@@ -10,6 +11,7 @@ import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 import ordermanager.domain.model.Utilities.*;
+import org.aspectj.util.IStructureModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +47,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Optional<Order> CreateOrder(Order draft) {
+    public Option<Order> CreateOrder(Order draft) {
         hydrateItems(draft);
         validateDraft(draft);
 
@@ -63,7 +65,7 @@ public class OrderService {
 
             draft.setReservation(inventoryReservationPort.FindReservationById(reservationId));
             draft.setStatus(Status.Pending);
-            return Optional.of(orderPort.save(draft));
+            return orderPort.save(draft);
         } catch (RuntimeException ex) {
 
             inventoryReservationPort.releaseReservation(reservationId);
@@ -76,7 +78,7 @@ public class OrderService {
     @Transactional
     public Order UpdateOrder(UUID orderId, Order patchedOrder){
 
-        Optional<Order> orderExists = orderPort.findById(orderId);
+        Option<Order> orderExists = orderPort.findById(orderId);
         if(orderExists.isEmpty())
             throw new EntityNotFoundException("Order Not Found with Id ", orderId);
         Order order = orderExists.get();
@@ -86,7 +88,7 @@ public class OrderService {
         order.setStatus(patchedOrder.getStatus());
         order.setDeliveryStatus(patchedOrder.getDeliveryStatus());
         order.setNotes(patchedOrder.getNotes());
-        return orderPort.save(order);
+        return orderPort.save(order).getOrElseThrow(() -> new EntityNotFoundException("order", order.getId()));
     }
 
 
@@ -95,14 +97,14 @@ public class OrderService {
     }
 
 
-    public Optional<Order> GetOrderById(UUID orderId){
-        Optional<Order> order = orderPort.findById(orderId);
+    public Option<Order> GetOrderById(UUID orderId){
+        Option<Order> order = orderPort.findById(orderId);
         return order;
     }
 
 
-    public Optional<List<Order>> GetByUserId(UUID userId) {
-        Optional<List<Order>> orders = orderPort.findByUserId(userId);
+    public Option<List<Order>> GetByUserId(UUID userId) {
+        Option<List<Order>> orders = orderPort.findByUserId(userId);
         return orders;
     }
 
@@ -113,7 +115,7 @@ public class OrderService {
                     orderPort.deleteById(orderId);
                     return true;
                 })
-                .orElse(false);
+                .getOrElse(false);
 
     }
 

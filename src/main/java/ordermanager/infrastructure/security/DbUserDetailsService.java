@@ -19,7 +19,7 @@ public class DbUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
         System.out.println(">>> UserDetailsService input phone = [" + phone + "]");
         User u = userRepository.findByPhone(phone)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + phone));
+                .getOrElseThrow(() -> new UsernameNotFoundException("User not found: " + phone));
 
         List<SimpleGrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority("Member"));
