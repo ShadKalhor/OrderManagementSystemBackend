@@ -18,7 +18,7 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "authorities", ignore = true) //temp solution
-    void update(@MappingTarget User entity, UpdateUserRequest r);
+    User update(UpdateUserRequest r);
 
     UserResponse toResponse(User entity);
     UserSummary toSummary(User entity);

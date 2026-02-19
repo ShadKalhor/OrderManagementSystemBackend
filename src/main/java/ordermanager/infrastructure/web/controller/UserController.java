@@ -63,13 +63,12 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponse> UpdateUser(@PathVariable UUID userId, @Valid @RequestBody UpdateUserRequest userBody){
 
-        var userExists = userService.GetUserById(userId).getOrNull();
-        if(userExists == null)
-            return ResponseEntity.notFound().build();
-        userMapper.update(userExists, userBody);
-        var updatedUser = userService.SaveUser(userExists);
-        return updatedUser.map(user -> ResponseEntity.ok(userMapper.toResponse(user))).getOrElse(() -> ResponseEntity.badRequest().build());
-    }
+        var user = userMapper.update(userBody);
+        return userService.UpdateUser(userId, user)
+                .map(userMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .getOrElse(ResponseEntity.badRequest().build());
+        }
 
 
     @GetMapping("/{userId}")

@@ -2,6 +2,8 @@ package ordermanager.infrastructure.service;
 
 import io.vavr.control.Option;
 import ordermanager.domain.port.out.UserPersistencePort;
+import ordermanager.infrastructure.exception.EntityNotFoundException;
+import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,9 +38,18 @@ public class UserService {
 
     public Option<User> SaveUser(User user) {
 
-        user = checkInput(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userPort.save(user);
+    }
+
+    public Option<User> UpdateUser(UUID userId, User user){
+
+        Option<User> itemExists = GetUserById(userId);
+        if(itemExists.isEmpty())
+            throw new EntityNotFoundException("User", userId);
+        user.setId(userId);
+        return userPort.save(user);
+
     }
 
     public boolean DeleteUser(UUID userId) {
@@ -51,18 +62,4 @@ public class UserService {
     }
 
 
-    private User checkInput(User user) {
-        if(user.getId() == null || user.getId().equals(new UUID(0L, 0L)))
-            user.setId(UUID.randomUUID());
-
-        return user;
-
-    }
-    private boolean isDuplicatePhone(User user) {
-
-        return Option.of(userPort.findAll())
-                .filter(u -> !u.isEmpty())
-                .map(u -> u.stream().anyMatch(p -> user.getPhone().equals(p.getPhone()) && !(user.getId().equals(p.getId()))))
-                .getOrElse(false);
-    }
 }
