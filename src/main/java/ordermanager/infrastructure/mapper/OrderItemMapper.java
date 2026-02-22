@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.mapper;
 
+import liquibase.pro.packaged.M;
 import ordermanager.domain.dto.order.OrderDto;
 import ordermanager.domain.dto.orderitem.CreateOrderItemRequest;
 import ordermanager.domain.dto.orderitem.OrderItemDto;
@@ -33,6 +34,8 @@ public interface OrderItemMapper {
 
     OrderItemDto toOrderDto(OrderItem entity);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "order", ignore = true)
     OrderItem toEntity(OrderItemDto orderItemDto);
 
 

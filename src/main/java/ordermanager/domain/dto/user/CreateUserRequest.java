@@ -1,8 +1,9 @@
 package ordermanager.domain.dto.user;
 
+import ordermanager.infrastructure.store.persistence.entity.Genders;
+import ordermanager.infrastructure.store.persistence.entity.UserRoles;
 import ordermanager.infrastructure.validation.Password;
 import ordermanager.infrastructure.validation.PhoneNumber;
-import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

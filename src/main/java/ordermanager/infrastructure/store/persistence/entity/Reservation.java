@@ -5,7 +5,6 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.UUID;
-import ordermanager.infrastructure.store.persistence.entity.Utilities.ReservationStatus;
 
 import org.hibernate.annotations.Type;
 

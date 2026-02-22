@@ -1,9 +1,6 @@
 package ordermanager.infrastructure.mapper;
 
-import ordermanager.domain.dto.item.CreateItemRequest;
-import ordermanager.domain.dto.item.ItemResponse;
-import ordermanager.domain.dto.item.ItemSummary;
-import ordermanager.domain.dto.item.UpdateItemRequest;
+import ordermanager.domain.dto.item.*;
 import ordermanager.domain.dto.orderitem.OrderItemDto;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 import org.mapstruct.*;
@@ -29,8 +26,15 @@ public interface ItemMapper {
 
     ItemSummary toSummary(Item entity);
 
-    OrderItemDto toOrderDto(OrderItem entity);
+    ItemDto toOrderDto(Item entity);
 
-    OrderItem toEntity(OrderItemDto orderItemDto);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "description", ignore = true)
+    @Mapping(target = "size", ignore = true)
+    @Mapping(target = "isAvailable", ignore = true)
+    @Mapping(target = "quantity", ignore = true)
+    @Mapping(target = "reserved", ignore = true)
+    Item toEntity(ItemDto ItemDto);
 
 }

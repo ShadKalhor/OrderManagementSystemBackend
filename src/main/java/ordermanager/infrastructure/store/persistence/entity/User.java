@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import lombok.*;
-import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 import org.hibernate.annotations.Type;
 
 import org.springframework.security.core.GrantedAuthority;

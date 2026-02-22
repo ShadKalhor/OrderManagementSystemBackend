@@ -49,6 +49,15 @@ public interface OrderMapper {
 
     OrderDto toOrderDto(Order entity);
 
+
+    @Mapping(target = "id",ignore = true)
+    @Mapping(target = "user",ignore = true)
+    @Mapping(target = "address",ignore = true)
+    @Mapping(target = "driver",ignore = true)
+    @Mapping(target = "status",ignore = true)
+    @Mapping(target = "deliveryStatus",ignore = true)
+    @Mapping(target = "reservation",ignore = true)
+    @Mapping(target = "notes",ignore = true)
     Order toEntity(OrderDto orderDto);
 
     @AfterMapping

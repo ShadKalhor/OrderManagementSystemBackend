@@ -32,8 +32,9 @@ public class OrderPricingService {
     private BigDecimal calculateSubtotal(List<OrderItemDto> orderItemDtos){
          return orderItemDtos.stream()
                 .map(this::lineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .setScale(MONEY_SCALE, ROUNDING);
+                 .map(OrderItemDto::totalPrice)
+                 .reduce(BigDecimal.ZERO, BigDecimal::add)
+                 .setScale(MONEY_SCALE, ROUNDING);
 
     }
 
@@ -53,13 +54,13 @@ public class OrderPricingService {
                 .setScale(MONEY_SCALE, ROUNDING);
     }
 
-    private BigDecimal lineTotal(OrderItemDto oi) {
+    private OrderItemDto lineTotal(OrderItemDto oi) {
         ItemDto item = oi.item();
         BigDecimal price = safe(item.price());
         BigDecimal discount = roundDiscountWithinRange(safe(item.discount()));
         BigDecimal qty = BigDecimal.valueOf(oi.quantity());
         BigDecimal unitNet = price.multiply(BigDecimal.ONE.subtract(discount));
-        return unitNet.multiply(qty);
+        return new OrderItemDto(oi.item(), oi.quantity(), unitNet.multiply(qty));
     }
 
 

@@ -2,7 +2,6 @@ package ordermanager.infrastructure.service;
 
 import io.vavr.control.Option;
 import ordermanager.domain.dto.order.OrderDto;
-import ordermanager.domain.dto.orderitem.OrderItemDto;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
 import ordermanager.domain.port.out.ReservationResult;
@@ -13,10 +12,9 @@ import ordermanager.infrastructure.mapper.OrderMapper;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
-import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Status;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 

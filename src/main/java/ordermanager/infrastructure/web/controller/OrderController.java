@@ -5,9 +5,9 @@ import ordermanager.domain.dto.order.CreateOrderRequest;
 import ordermanager.domain.dto.order.OrderResponse;
 import ordermanager.domain.dto.order.UpdateOrderRequest;
 import ordermanager.infrastructure.mapper.OrderMapper;
+import ordermanager.infrastructure.store.persistence.entity.Status;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import javax.validation.Valid;
 import java.util.List;

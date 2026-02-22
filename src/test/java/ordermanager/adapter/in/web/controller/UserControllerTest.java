@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Option;
 import ordermanager.infrastructure.mapper.UserMapper;
 import ordermanager.infrastructure.service.UserService;
+import ordermanager.infrastructure.store.persistence.entity.Genders;
+import ordermanager.infrastructure.store.persistence.entity.UserRoles;
 import ordermanager.infrastructure.web.controller.UserController;
 import ordermanager.domain.dto.user.CreateUserRequest;
 import ordermanager.domain.dto.user.UserResponse;
@@ -26,7 +28,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 import ordermanager.infrastructure.store.persistence.entity.User;
 
 @WebMvcTest(UserController.class)
