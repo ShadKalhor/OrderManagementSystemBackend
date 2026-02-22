@@ -3,7 +3,7 @@ package ordermanager.infrastructure.web.dto.order;
 
 import ordermanager.infrastructure.web.dto.orderitem.CreateOrderItemRequest;
 import ordermanager.infrastructure.validation.EnumOrNull;
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;

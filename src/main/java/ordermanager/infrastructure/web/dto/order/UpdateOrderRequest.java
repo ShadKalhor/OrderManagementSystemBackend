@@ -1,7 +1,7 @@
 package ordermanager.infrastructure.web.dto.order;
 
 import ordermanager.infrastructure.validation.EnumOrNull;
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import javax.validation.constraints.Size;
 import java.util.UUID;

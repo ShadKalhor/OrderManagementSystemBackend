@@ -47,11 +47,6 @@ public interface OrderMapper {
     OrderResponse toResponse(Order entity);
 
 
-    ordermanager.domain.model.Order toDomain(Order order);
-
-    Order toInfrastructure(ordermanager.domain.model.Order order);
-
-
     @AfterMapping
     default void fillNestedOnCreate(CreateOrderRequest r, @MappingTarget Order entity) {
         if (r == null) return;

@@ -1,7 +1,7 @@
 package ordermanager.infrastructure.store.persistence.entity;
 
 import lombok.*;
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

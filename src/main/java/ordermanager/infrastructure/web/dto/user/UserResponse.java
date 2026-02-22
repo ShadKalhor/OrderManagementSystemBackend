@@ -1,6 +1,6 @@
 package ordermanager.infrastructure.web.dto.user;
 
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import java.util.UUID;
 

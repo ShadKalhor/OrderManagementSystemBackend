@@ -23,10 +23,5 @@ public interface UserMapper {
     UserSummary toSummary(User entity);
 
 
-    ordermanager.domain.model.User toDomain(User user);
-
-    User toInfrastructure(ordermanager.domain.model.User user);
-
-
 
 }

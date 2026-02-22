@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 import ordermanager.infrastructure.store.persistence.entity.User;
 
 @WebMvcTest(UserController.class)

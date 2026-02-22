@@ -1,4 +1,4 @@
-package ordermanager.domain.model;
+package ordermanager.infrastructure.store.persistence.entity;
 
 public class Utilities {
     public enum Genders{

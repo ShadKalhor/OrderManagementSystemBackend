@@ -7,19 +7,13 @@ import ordermanager.domain.port.out.ReservationResult;
 import ordermanager.domain.service.OrderPricingService;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.exception.InsufficientInventoryException;
-import ordermanager.infrastructure.exception.ValidationException;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
-import ordermanager.domain.model.Utilities.*;
-import org.aspectj.util.IStructureModel;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

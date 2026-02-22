@@ -6,7 +6,6 @@ import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -20,7 +19,9 @@ public class AddressRepositoryAdapter implements AddressPersistencePort {
 
     @Override
     public Option<List<UserAddress>> findAddressesByUserId(UUID userId) {
+
         return addressRepository.findAddressesByUserId(userId);
+
     }
 
     @Override

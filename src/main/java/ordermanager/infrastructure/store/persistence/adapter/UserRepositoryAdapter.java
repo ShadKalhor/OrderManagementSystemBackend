@@ -2,11 +2,11 @@ package ordermanager.infrastructure.store.persistence.adapter;
 
 import io.vavr.control.Option;
 import ordermanager.domain.port.out.UserPersistencePort;
+import ordermanager.infrastructure.mapper.UserMapper;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -14,13 +14,14 @@ public class UserRepositoryAdapter implements UserPersistencePort {
 
     private final SpringDataUserRepository userRepository;
 
+
     public UserRepositoryAdapter(SpringDataUserRepository userRepository){
         this.userRepository = userRepository;
     }
 
     @Override
     public Option<User> findById(UUID userId) {
-        return userRepository.findOptionById(userId);
+                return userRepository.findOptionById(userId);
     }
 
     @Override
@@ -44,9 +45,5 @@ public class UserRepositoryAdapter implements UserPersistencePort {
     }
 
     @Override
-    public void deleteById(UUID userId) {
-
-        userRepository.deleteById(userId);
-
-    }
+    public void deleteById(UUID userId) {userRepository.deleteById(userId);}
 }

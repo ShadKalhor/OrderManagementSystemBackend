@@ -4,7 +4,6 @@ import io.vavr.control.Option;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface ItemPersistencePort {

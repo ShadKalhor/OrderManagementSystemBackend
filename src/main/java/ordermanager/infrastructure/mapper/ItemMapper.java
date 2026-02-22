@@ -27,10 +27,4 @@ public interface ItemMapper {
 
     ItemSummary toSummary(Item entity);
 
-
-    ordermanager.domain.model.Item toDomain(Item item);
-
-    @Mapping(target = "isAvailable", source = "available")
-    Item toInfrastructure(ordermanager.domain.model.Item item);
-
 }

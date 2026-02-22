@@ -5,7 +5,7 @@ import ordermanager.infrastructure.web.dto.driver.DriverResponse;
 import ordermanager.infrastructure.web.dto.orderitem.OrderItemResponse;
 import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
 import ordermanager.infrastructure.web.dto.user.UserSummary;
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import java.math.BigDecimal;
 import java.util.List;

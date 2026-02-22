@@ -29,9 +29,4 @@ public interface OrderItemMapper {
     OrderItemResponse toResponse(OrderItem entity);
 
 
-    ordermanager.domain.model.OrderItem toDomain(OrderItem orderItem);
-
-    OrderItem toInfrastructure(ordermanager.domain.model.OrderItem orderItem);
-
-
 }

@@ -25,9 +25,6 @@ public interface UserAddressMapper {
     UserAddressResponse toResponse(UserAddress entity);
 
 
-    ordermanager.domain.model.UserAddress toDomain(UserAddress userAddress);
-
-    UserAddress toInfrastructure(ordermanager.domain.model.UserAddress userAddress);
 
 
 }

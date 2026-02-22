@@ -2,7 +2,7 @@ package ordermanager.infrastructure.web.dto.user;
 
 import ordermanager.infrastructure.validation.Password;
 import ordermanager.infrastructure.validation.PhoneNumber;
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import javax.validation.constraints.Size;
 

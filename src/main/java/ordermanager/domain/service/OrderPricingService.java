@@ -1,9 +1,6 @@
 package ordermanager.domain.service;
 
-import ordermanager.infrastructure.store.persistence.entity.Item;
-import ordermanager.infrastructure.store.persistence.entity.Order;
-import ordermanager.infrastructure.store.persistence.entity.OrderItem;
-
+import ordermanager.domain.model.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 

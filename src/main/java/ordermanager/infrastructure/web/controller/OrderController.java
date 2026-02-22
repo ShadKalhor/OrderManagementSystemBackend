@@ -7,7 +7,7 @@ import ordermanager.infrastructure.web.dto.order.UpdateOrderRequest;
 import ordermanager.infrastructure.mapper.OrderMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import javax.validation.Valid;
 import java.util.List;

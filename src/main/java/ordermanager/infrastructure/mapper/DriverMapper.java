@@ -27,10 +27,6 @@ public interface DriverMapper {
     DriverResponse toResponse(Driver entity);
 
 
-    ordermanager.domain.model.Driver toDomain(Driver driver);
-
-    Driver toInfrastructure(ordermanager.domain.model.Driver driver);
-
     @AfterMapping
     default void fillAccountOnCreate(CreateDriverRequest r, @MappingTarget Driver entity) {
         if (r == null) return;

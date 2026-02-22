@@ -7,7 +7,7 @@ import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 import ordermanager.infrastructure.store.persistence.entity.Reservation;
 import ordermanager.infrastructure.store.persistence.entity.ReservationLine;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
-import ordermanager.domain.model.Utilities.*;
+import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
