@@ -1,18 +1,22 @@
 package ordermanager.infrastructure.service;
 
 import io.vavr.control.Option;
+import ordermanager.domain.dto.order.OrderDto;
+import ordermanager.domain.dto.orderitem.OrderItemDto;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
 import ordermanager.domain.port.out.ReservationResult;
 import ordermanager.domain.service.OrderPricingService;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.exception.InsufficientInventoryException;
+import ordermanager.infrastructure.mapper.OrderMapper;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,12 +27,17 @@ public class OrderService {
     private final OrderPricingService orderPricingService;
     private final OrderPersistencePort orderPort;
     private final InventoryReservationPort inventoryReservationPort;
+    private final OrderMapper orderMapper;
 
-    public OrderService( ItemService itemService, OrderPricingService orderPricingService, OrderPersistencePort orderPort, InventoryReservationPort inventoryReservationPort){
+
+    public OrderService( ItemService itemService, OrderPricingService orderPricingService,
+                         OrderPersistencePort orderPort,
+                         InventoryReservationPort inventoryReservationPort, OrderMapper orderMapper){
         this.itemService = itemService;
         this.orderPricingService = orderPricingService;
         this.orderPort = orderPort;
         this.inventoryReservationPort = inventoryReservationPort;
+        this.orderMapper = orderMapper;
     }
 
 
@@ -43,7 +52,13 @@ public class OrderService {
         var reservationId = ((ReservationResult.Success) result).reservationId();
 
         try {
-            orderPricingService.ApplyPricing(draft);
+            OrderDto orderDto = orderMapper.toOrderDto(draft);
+            OrderDto calculationResult = orderPricingService.ApplyPricing(orderDto);
+
+            draft.setSubTotal(calculationResult.subTotal());
+            draft.setDeliveryFee(calculationResult.deliveryFee());
+            draft.setTax(calculationResult.tax());
+            draft.setTotalPrice(calculationResult.totalPrice());
 
             draft.setReservation(inventoryReservationPort.FindReservationById(reservationId));
             draft.setStatus(Status.Pending);

@@ -1,10 +1,10 @@
-package ordermanager.infrastructure.web.dto.order;
+package ordermanager.domain.dto.order;
 
 
-import ordermanager.infrastructure.web.dto.driver.DriverResponse;
-import ordermanager.infrastructure.web.dto.orderitem.OrderItemResponse;
-import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
-import ordermanager.infrastructure.web.dto.user.UserSummary;
+import ordermanager.domain.dto.driver.DriverResponse;
+import ordermanager.domain.dto.orderitem.OrderItemResponse;
+import ordermanager.domain.dto.useraddress.UserAddressResponse;
+import ordermanager.domain.dto.user.UserSummary;
 import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 
 import java.math.BigDecimal;

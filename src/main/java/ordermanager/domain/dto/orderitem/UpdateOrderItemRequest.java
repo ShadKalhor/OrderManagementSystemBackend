@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.orderitem;
+package ordermanager.domain.dto.orderitem;
 
 
 import javax.validation.constraints.Min;

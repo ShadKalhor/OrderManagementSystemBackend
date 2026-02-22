@@ -1,9 +1,9 @@
 package ordermanager.infrastructure.web.controller;
 
 import ordermanager.infrastructure.service.DriverService;
-import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;
-import ordermanager.infrastructure.web.dto.driver.DriverResponse;
-import ordermanager.infrastructure.web.dto.driver.UpdateDriverRequest;
+import ordermanager.domain.dto.driver.CreateDriverRequest;
+import ordermanager.domain.dto.driver.DriverResponse;
+import ordermanager.domain.dto.driver.UpdateDriverRequest;
 import ordermanager.infrastructure.mapper.DriverMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

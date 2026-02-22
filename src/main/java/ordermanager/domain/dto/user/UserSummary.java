@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.user;
+package ordermanager.domain.dto.user;
 
 import java.util.UUID;
 import ordermanager.infrastructure.store.persistence.entity.Utilities.*;

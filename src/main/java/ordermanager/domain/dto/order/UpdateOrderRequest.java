@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.order;
+package ordermanager.domain.dto.order;
 
 import ordermanager.infrastructure.validation.EnumOrNull;
 import ordermanager.infrastructure.store.persistence.entity.Utilities.*;

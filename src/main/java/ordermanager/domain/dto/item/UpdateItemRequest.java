@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.item;
+package ordermanager.domain.dto.item;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;

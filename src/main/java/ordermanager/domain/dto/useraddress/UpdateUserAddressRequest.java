@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.useraddress;
+package ordermanager.domain.dto.useraddress;
 
 
 import java.util.UUID;

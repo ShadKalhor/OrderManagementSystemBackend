@@ -1,8 +1,13 @@
 package ordermanager.domain.service;
 
-import ordermanager.domain.model.*;
+import ordermanager.domain.dto.item.ItemDto;
+import ordermanager.domain.dto.order.OrderDto;
+import ordermanager.domain.dto.orderitem.OrderItemDto;
+import ordermanager.infrastructure.store.persistence.entity.OrderItem;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 public class OrderPricingService {
 
@@ -14,32 +19,45 @@ public class OrderPricingService {
     private static final RoundingMode ROUNDING = RoundingMode.HALF_UP;
 
 
-    public void ApplyPricing(Order order) {
+    public OrderDto ApplyPricing(OrderDto orderDto) {
 
-        BigDecimal subtotal = order.getItems().stream()
+        BigDecimal subtotal = calculateSubtotal(orderDto.items());
+        BigDecimal deliveryFee = calculateDeliveryFee(subtotal);
+        BigDecimal tax = calculateTax(subtotal);
+        BigDecimal total = calculateTotal(subtotal,deliveryFee,tax);
+
+        return new OrderDto(orderDto.items(), subtotal, deliveryFee,tax,total);
+    }
+
+    private BigDecimal calculateSubtotal(List<OrderItemDto> orderItemDtos){
+         return orderItemDtos.stream()
                 .map(this::lineTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(MONEY_SCALE, ROUNDING);
-        order.setSubTotal(subtotal);
 
-        BigDecimal deliveryFee = subtotal.multiply(DELIVERY_FEE_PCT)
+    }
+
+    private BigDecimal calculateDeliveryFee(BigDecimal subtotal){
+        return subtotal.multiply(DELIVERY_FEE_PCT)
                 .max(MIN_DELIVERY_FEE)
                 .setScale(MONEY_SCALE, ROUNDING);
-        order.setDeliveryFee(deliveryFee);
-
-        BigDecimal tax = subtotal.multiply(TAX_PCT)
-                .setScale(MONEY_SCALE, ROUNDING);
-        order.setTax(tax);
-
-        BigDecimal total = subtotal.add(deliveryFee).add(tax)
-                .setScale(MONEY_SCALE, ROUNDING);
-        order.setTotalPrice(total);
     }
-    private BigDecimal lineTotal(OrderItem oi) {
-        Item item = oi.getItem();
-        BigDecimal price = safe(item.getPrice());
-        BigDecimal discount = roundDiscountWithinRange(safe(item.getDiscount()));
-        BigDecimal qty = BigDecimal.valueOf(oi.getQuantity());
+
+    private BigDecimal calculateTax(BigDecimal subtotal){
+        return subtotal.multiply(TAX_PCT)
+                .setScale(MONEY_SCALE, ROUNDING);
+    }
+
+    private BigDecimal calculateTotal(BigDecimal subtotal, BigDecimal deliveryFee, BigDecimal tax){
+        return subtotal.add(deliveryFee).add(tax)
+                .setScale(MONEY_SCALE, ROUNDING);
+    }
+
+    private BigDecimal lineTotal(OrderItemDto oi) {
+        ItemDto item = oi.item();
+        BigDecimal price = safe(item.price());
+        BigDecimal discount = roundDiscountWithinRange(safe(item.discount()));
+        BigDecimal qty = BigDecimal.valueOf(oi.quantity());
         BigDecimal unitNet = price.multiply(BigDecimal.ONE.subtract(discount));
         return unitNet.multiply(qty);
     }

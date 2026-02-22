@@ -1,9 +1,9 @@
 package ordermanager.infrastructure.web.controller;
 
 import ordermanager.infrastructure.service.ItemService;
-import ordermanager.infrastructure.web.dto.item.CreateItemRequest;
-import ordermanager.infrastructure.web.dto.item.ItemResponse;
-import ordermanager.infrastructure.web.dto.item.UpdateItemRequest;
+import ordermanager.domain.dto.item.CreateItemRequest;
+import ordermanager.domain.dto.item.ItemResponse;
+import ordermanager.domain.dto.item.UpdateItemRequest;
 import ordermanager.infrastructure.mapper.ItemMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

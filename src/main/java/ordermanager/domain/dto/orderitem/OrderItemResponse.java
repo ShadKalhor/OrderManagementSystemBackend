@@ -1,7 +1,7 @@
-package ordermanager.infrastructure.web.dto.orderitem;
+package ordermanager.domain.dto.orderitem;
 
 
-import ordermanager.infrastructure.web.dto.item.ItemSummary;
+import ordermanager.domain.dto.item.ItemSummary;
 
 import java.math.BigDecimal;
 import java.util.UUID;

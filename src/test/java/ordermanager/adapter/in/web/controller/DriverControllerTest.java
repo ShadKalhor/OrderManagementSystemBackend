@@ -4,8 +4,8 @@ import io.vavr.control.Option;
 import ordermanager.infrastructure.service.DriverService;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.web.controller.DriverController;
-import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;
-import ordermanager.infrastructure.web.dto.driver.DriverResponse;
+import ordermanager.domain.dto.driver.CreateDriverRequest;
+import ordermanager.domain.dto.driver.DriverResponse;
 import ordermanager.infrastructure.mapper.DriverMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -139,7 +138,7 @@ class DriverControllerTest {
             Driver entityAfterSave = mkDriver(id, "Alex", "ABC-123", 30);
             DriverResponse dto = mkResponse(id, "Alex", "ABC-123", 30);
 
-            when(driverMapper.toDomain(any(CreateDriverRequest.class)))
+            when(driverMapper.create(any(CreateDriverRequest.class)))
                     .thenReturn(toCreate);
 
             when(driverService.CreateDriver(any(Driver.class)))

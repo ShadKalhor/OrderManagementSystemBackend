@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.driver;
+package ordermanager.domain.dto.driver;
 
 import ordermanager.infrastructure.validation.ZeroOrAdult;
 

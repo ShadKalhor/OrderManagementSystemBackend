@@ -1,6 +1,6 @@
-package ordermanager.infrastructure.web.dto.driver;
+package ordermanager.domain.dto.driver;
 
-import ordermanager.infrastructure.web.dto.user.UserResponse;
+import ordermanager.domain.dto.user.UserResponse;
 
 import java.util.UUID;
 

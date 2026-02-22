@@ -4,8 +4,8 @@ import io.vavr.control.Option;
 import ordermanager.infrastructure.service.OrderService;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.web.controller.OrderController;
-import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
-import ordermanager.infrastructure.web.dto.order.OrderResponse;
+import ordermanager.domain.dto.order.CreateOrderRequest;
+import ordermanager.domain.dto.order.OrderResponse;
 import ordermanager.infrastructure.mapper.OrderMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -94,7 +93,7 @@ class OrderControllerTest {
             Order saved    = mkOrder(id);         // post-persist
             OrderResponse dto = mkResp(id);
 
-            when(orderMapper.toDomain(any(CreateOrderRequest.class))).thenReturn(toCreate);
+            when(orderMapper.create(any(CreateOrderRequest.class))).thenReturn(toCreate);
             when(orderService.CreateOrder(any(Order.class))).thenReturn(Option.of(saved));
             when(orderMapper.toResponse(saved)).thenReturn(dto);
 
@@ -139,7 +138,7 @@ class OrderControllerTest {
 
             Order toCreate = mkOrder(null);
 
-            when(orderMapper.toDomain(any(CreateOrderRequest.class))).thenReturn(toCreate);
+            when(orderMapper.create(any(CreateOrderRequest.class))).thenReturn(toCreate);
             when(orderService.CreateOrder(any(Order.class))).thenReturn(Option.none());
 
             mockMvc.perform(post("/order")

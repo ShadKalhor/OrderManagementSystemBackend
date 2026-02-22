@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.auth;
+package ordermanager.domain.dto.auth;
 
 
 public record LoginRequest(String phone, String password) {}

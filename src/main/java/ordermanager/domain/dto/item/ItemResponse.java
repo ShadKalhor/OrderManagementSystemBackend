@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.item;
+package ordermanager.domain.dto.item;
 
 import java.math.BigDecimal;
 import java.util.UUID;

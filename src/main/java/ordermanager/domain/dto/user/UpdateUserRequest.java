@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.user;
+package ordermanager.domain.dto.user;
 
 import ordermanager.infrastructure.validation.Password;
 import ordermanager.infrastructure.validation.PhoneNumber;

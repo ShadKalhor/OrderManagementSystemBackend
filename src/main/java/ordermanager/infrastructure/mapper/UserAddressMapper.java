@@ -1,8 +1,8 @@
 package ordermanager.infrastructure.mapper;
 
-import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
-import ordermanager.infrastructure.web.dto.useraddress.UpdateUserAddressRequest;
-import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
+import ordermanager.domain.dto.useraddress.CreateUserAddressRequest;
+import ordermanager.domain.dto.useraddress.UpdateUserAddressRequest;
+import ordermanager.domain.dto.useraddress.UserAddressResponse;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 

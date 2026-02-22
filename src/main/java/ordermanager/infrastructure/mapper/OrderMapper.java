@@ -3,9 +3,10 @@ package ordermanager.infrastructure.mapper;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
-import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
-import ordermanager.infrastructure.web.dto.order.OrderResponse;
-import ordermanager.infrastructure.web.dto.order.UpdateOrderRequest;
+import ordermanager.domain.dto.order.CreateOrderRequest;
+import ordermanager.domain.dto.order.OrderDto;
+import ordermanager.domain.dto.order.OrderResponse;
+import ordermanager.domain.dto.order.UpdateOrderRequest;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 
@@ -46,6 +47,9 @@ public interface OrderMapper {
 
     OrderResponse toResponse(Order entity);
 
+    OrderDto toOrderDto(Order entity);
+
+    Order toEntity(OrderDto orderDto);
 
     @AfterMapping
     default void fillNestedOnCreate(CreateOrderRequest r, @MappingTarget Order entity) {

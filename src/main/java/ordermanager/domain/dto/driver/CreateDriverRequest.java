@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.web.dto.driver;
+package ordermanager.domain.dto.driver;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;

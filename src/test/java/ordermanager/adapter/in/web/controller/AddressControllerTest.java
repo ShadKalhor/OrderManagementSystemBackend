@@ -2,8 +2,8 @@ package ordermanager.adapter.in.web.controller;
 
 import io.vavr.control.Option;
 import ordermanager.infrastructure.web.controller.AddressController;
-import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
-import ordermanager.infrastructure.web.dto.useraddress.UpdateUserAddressRequest;
+import ordermanager.domain.dto.useraddress.CreateUserAddressRequest;
+import ordermanager.domain.dto.useraddress.UpdateUserAddressRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -24,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.infrastructure.service.AddressService;
-import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
+import ordermanager.domain.dto.useraddress.UserAddressResponse;
 import ordermanager.infrastructure.mapper.UserAddressMapper;
 
 @WebMvcTest(AddressController.class)
@@ -115,7 +114,7 @@ class AddressControllerTest {
         var entity = new UserAddress(); entity.setId(UUID.randomUUID());
         var response = new UserAddressResponse(entity.getId(), UUID.randomUUID(), "Line1", "City", "State", "Zip", "street1", "234", false);
 
-        given(addressMapper.toDomain(request)).willReturn(entity);
+        given(addressMapper.create(request)).willReturn(entity);
 
         given(addressService.CreateAddress(any(UserAddress.class)))
                 .willReturn(Option.of(entity));

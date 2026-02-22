@@ -4,8 +4,8 @@ import io.vavr.control.Option;
 import ordermanager.infrastructure.service.ItemService;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.web.controller.ItemController;
-import ordermanager.infrastructure.web.dto.item.CreateItemRequest;
-import ordermanager.infrastructure.web.dto.item.ItemResponse;
+import ordermanager.domain.dto.item.CreateItemRequest;
+import ordermanager.domain.dto.item.ItemResponse;
 import ordermanager.infrastructure.mapper.ItemMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -84,7 +83,7 @@ class ItemControllerTest {
             Item saved    = mkItem(id,   "Burger", new BigDecimal("7.50"), "Juicy beef burger");
             ItemResponse dto = mkResp(id, "Burger", new BigDecimal("7.50"), "Juicy beef burger", "Large", BigDecimal.ZERO,true,20 );
 
-            when(itemMapper.toDomain(any(CreateItemRequest.class))).thenReturn(toCreate);
+            when(itemMapper.create(any(CreateItemRequest.class))).thenReturn(toCreate);
             when(itemService.CreateItem(any(Item.class))).thenReturn(Option.of(saved));
             when(itemMapper.toResponse(saved)).thenReturn(dto);
 
@@ -124,7 +123,7 @@ class ItemControllerTest {
 
             Item toCreate = mkItem(null, "Burger", new BigDecimal("7.50"), "Juicy beef burger");
 
-            when(itemMapper.toDomain(any(CreateItemRequest.class))).thenReturn(toCreate);
+            when(itemMapper.create(any(CreateItemRequest.class))).thenReturn(toCreate);
             when(itemService.CreateItem(any(Item.class))).thenReturn(Option.none());
 
             mockMvc.perform(post("/item")

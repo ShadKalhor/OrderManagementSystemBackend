@@ -1,7 +1,7 @@
-package ordermanager.infrastructure.web.dto.order;
+package ordermanager.domain.dto.order;
 
 
-import ordermanager.infrastructure.web.dto.orderitem.CreateOrderItemRequest;
+import ordermanager.domain.dto.orderitem.CreateOrderItemRequest;
 import ordermanager.infrastructure.validation.EnumOrNull;
 import ordermanager.infrastructure.store.persistence.entity.Utilities.*;
 

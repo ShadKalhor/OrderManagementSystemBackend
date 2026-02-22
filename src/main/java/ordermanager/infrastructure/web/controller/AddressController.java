@@ -2,9 +2,9 @@ package ordermanager.infrastructure.web.controller;
 
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.infrastructure.service.AddressService;
-import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
-import ordermanager.infrastructure.web.dto.useraddress.UpdateUserAddressRequest;
-import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
+import ordermanager.domain.dto.useraddress.CreateUserAddressRequest;
+import ordermanager.domain.dto.useraddress.UpdateUserAddressRequest;
+import ordermanager.domain.dto.useraddress.UserAddressResponse;
 
 import ordermanager.infrastructure.mapper.UserAddressMapper;
 import org.springframework.http.ResponseEntity;

@@ -5,9 +5,9 @@ import io.vavr.control.Option;
 import ordermanager.infrastructure.mapper.UserMapper;
 import ordermanager.infrastructure.service.UserService;
 import ordermanager.infrastructure.web.controller.UserController;
-import ordermanager.infrastructure.web.dto.user.CreateUserRequest;
-import ordermanager.infrastructure.web.dto.user.UserResponse;
-import ordermanager.infrastructure.web.dto.user.UserSummary;
+import ordermanager.domain.dto.user.CreateUserRequest;
+import ordermanager.domain.dto.user.UserResponse;
+import ordermanager.domain.dto.user.UserSummary;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -102,7 +102,7 @@ class UserControllerTest {
         var saved = new User(); saved.setId(UUID.randomUUID());
         var response = new UserResponse(saved.getId(), "Alice", "alice@example.com", UserRoles.Member, Genders.Female);
 
-        given(userMapper.toDomain(any(CreateUserRequest.class))).willReturn(entity);
+        given(userMapper.create(any(CreateUserRequest.class))).willReturn(entity);
         given(userService.SaveUser(entity)).willReturn(Option.of(saved));
         given(userMapper.toResponse(saved)).willReturn(response);
 
