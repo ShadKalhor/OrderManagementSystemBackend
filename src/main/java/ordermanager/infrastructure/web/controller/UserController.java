@@ -49,7 +49,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserResponse> CreateUser(@Valid @RequestBody CreateUserRequest userBody){
 
-        var user = userMapper.toDomain(userBody);
+        var user = userMapper.create(userBody);
 
         return userService.SaveUser(user)
                 .map(userMapper::toResponse)
