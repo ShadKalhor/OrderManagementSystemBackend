@@ -26,10 +26,6 @@ public class DriverService {
     }
 
     public Option<Driver> UpdateDriver(UUID driverId, Driver driver){
-
-
-
-
         Option<Driver> driverExists = GetDriverById(driverId);
         if (driverExists.isEmpty())
             throw new EntityNotFoundException("Driver", driverId);
