@@ -10,6 +10,7 @@ import ordermanager.infrastructure.store.persistence.entity.Item;
 @Mapper(
     componentModel = "spring",
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+
 )
 public interface ItemMapper {
 
@@ -19,7 +20,6 @@ public interface ItemMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "reserved", ignore = true)
-    @Mapping(source = "isAvailable", target = "available")
     Item update(UpdateItemRequest r);
 
     @Mapping(source = "available", target = "isAvailable")
@@ -30,6 +30,7 @@ public interface ItemMapper {
 
     ordermanager.domain.model.Item toDomain(Item item);
 
+    @Mapping(target = "isAvailable", source = "available")
     Item toInfrastructure(ordermanager.domain.model.Item item);
 
 }
