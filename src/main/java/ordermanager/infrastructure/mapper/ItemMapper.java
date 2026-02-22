@@ -20,7 +20,7 @@ public interface ItemMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "reserved", ignore = true)
     @Mapping(source = "isAvailable", target = "available")
-    void update(@MappingTarget Item entity, UpdateItemRequest r);
+    Item update(UpdateItemRequest r);
 
     @Mapping(source = "available", target = "isAvailable")
     ItemResponse toResponse(Item entity);

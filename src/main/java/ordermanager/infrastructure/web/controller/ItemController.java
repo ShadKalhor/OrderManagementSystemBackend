@@ -37,15 +37,11 @@ public class ItemController {
 
     @PutMapping("/{itemId}")
     public ResponseEntity<ItemResponse> UpdateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
-
-        var itemExists = itemService.GetItemById(itemId).getOrNull();
-
-        if (itemExists == null)
-            return ResponseEntity.notFound().build();
-
-        itemMapper.update(itemExists, itemBody);
-        var updatedUser = itemService.CreateItem(itemExists);
-        return updatedUser.map(item -> ResponseEntity.ok(itemMapper.toResponse(item))).getOrElse(() -> ResponseEntity.badRequest().build());
+        var item = itemMapper.update(itemBody);
+        return itemService.UpdateItem(itemId, item)
+                .map(itemMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .getOrElse(ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/{itemId}")
