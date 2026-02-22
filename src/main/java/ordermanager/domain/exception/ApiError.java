@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.exception;
+package ordermanager.domain.exception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
