@@ -16,7 +16,8 @@ public interface DriverMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "accountId", target = "account.id")
-    Driver toDomain(CreateDriverRequest r);
+    Driver create(CreateDriverRequest r);
+
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "accountId", target = "account.id")
@@ -24,6 +25,11 @@ public interface DriverMapper {
 
     @Mapping(target = "name", source = "account.name")
     DriverResponse toResponse(Driver entity);
+
+
+    ordermanager.domain.model.Driver toDomain(Driver driver);
+
+    Driver toInfrastructure(ordermanager.domain.model.Driver driver);
 
     @AfterMapping
     default void fillAccountOnCreate(CreateDriverRequest r, @MappingTarget Driver entity) {

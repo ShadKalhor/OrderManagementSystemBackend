@@ -29,7 +29,7 @@ public interface OrderMapper {
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "reservation", ignore = true)
-    Order toDomain(CreateOrderRequest r);
+    Order create(CreateOrderRequest r);
 
     @Mapping(target = "user.id", ignore = true)
     @Mapping(source = "addressId", target = "address.id")
@@ -45,6 +45,12 @@ public interface OrderMapper {
 
 
     OrderResponse toResponse(Order entity);
+
+
+    ordermanager.domain.model.Order toDomain(Order order);
+
+    Order toInfrastructure(ordermanager.domain.model.Order order);
+
 
     @AfterMapping
     default void fillNestedOnCreate(CreateOrderRequest r, @MappingTarget Order entity) {

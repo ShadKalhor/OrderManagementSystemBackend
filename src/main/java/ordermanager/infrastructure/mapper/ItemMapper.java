@@ -15,7 +15,7 @@ public interface ItemMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "reserved", ignore = true)
-    Item toDomain(CreateItemRequest r);
+    Item create(CreateItemRequest r);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "reserved", ignore = true)
@@ -26,4 +26,10 @@ public interface ItemMapper {
     ItemResponse toResponse(Item entity);
 
     ItemSummary toSummary(Item entity);
+
+
+    ordermanager.domain.model.Item toDomain(Item item);
+
+    Item toInfrastructure(ordermanager.domain.model.Item item);
+
 }

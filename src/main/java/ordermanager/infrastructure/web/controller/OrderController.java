@@ -30,7 +30,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponse> CreateOrder(@Valid @RequestBody CreateOrderRequest orderBody){
 
-        var order = orderMapper.toDomain(orderBody);
+        var order = orderMapper.create(orderBody);
         order.setStatus(Status.NotProccessed);//Temp, pashan regaki chaktr lo chakrdni status dadanre.
         return orderService.CreateOrder(order)
                 .map(orderMapper::toResponse)

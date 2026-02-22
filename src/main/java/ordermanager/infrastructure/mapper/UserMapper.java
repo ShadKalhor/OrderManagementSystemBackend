@@ -14,7 +14,7 @@ import ordermanager.infrastructure.store.persistence.entity.User;
 public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
-    User toDomain(CreateUserRequest r);
+    User create(CreateUserRequest r);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "authorities", ignore = true) //temp solution
@@ -22,4 +22,12 @@ public interface UserMapper {
 
     UserResponse toResponse(User entity);
     UserSummary toSummary(User entity);
+
+
+    ordermanager.domain.model.User toDomain(User user);
+
+    User toInfrastructure(ordermanager.domain.model.User user);
+
+
+
 }

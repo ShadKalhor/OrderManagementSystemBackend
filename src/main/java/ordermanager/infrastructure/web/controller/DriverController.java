@@ -27,7 +27,7 @@ public class DriverController {
     @PostMapping
     public ResponseEntity<DriverResponse> CreateDriver(@Valid @RequestBody CreateDriverRequest driverBody){
 
-        var driver = driverMapper.toDomain(driverBody);
+        var driver = driverMapper.create(driverBody);
         return driverService.CreateDriver(driver)
                 .map(driverMapper::toResponse)
                 .map(ResponseEntity::ok)

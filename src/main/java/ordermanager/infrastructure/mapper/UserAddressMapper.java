@@ -14,7 +14,7 @@ public interface UserAddressMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "userId", target = "user.id")
-    UserAddress toDomain(CreateUserAddressRequest r);
+    UserAddress create(CreateUserAddressRequest r);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "userId", target = "user.id")
@@ -23,4 +23,11 @@ public interface UserAddressMapper {
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "primary", target = "isPrimary")
     UserAddressResponse toResponse(UserAddress entity);
+
+
+    ordermanager.domain.model.UserAddress toDomain(UserAddress userAddress);
+
+    UserAddress toInfrastructure(ordermanager.domain.model.UserAddress userAddress);
+
+
 }

@@ -29,7 +29,7 @@ public class AddressController {
     @PostMapping
     public ResponseEntity<UserAddressResponse> CreateAddress(@Valid @RequestBody CreateUserAddressRequest addressBody){
 
-        UserAddress address = addressMapper.toDomain(addressBody);
+        UserAddress address = addressMapper.create(addressBody);
         return addressService.CreateAddress(address)
                 .map(addressMapper::toResponse)
                 .map(ResponseEntity::ok)

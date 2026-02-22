@@ -17,7 +17,7 @@ public interface OrderItemMapper {
     @Mapping(source = "itemId", target = "item.id")
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "order", ignore = true)
-    OrderItem toDomain(CreateOrderItemRequest r);
+    OrderItem create(CreateOrderItemRequest r);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "item", ignore = true)
@@ -26,5 +26,11 @@ public interface OrderItemMapper {
     void update(@MappingTarget OrderItem entity, UpdateOrderItemRequest r);
 
     OrderItemResponse toResponse(OrderItem entity);
+
+
+    ordermanager.domain.model.OrderItem toDomain(OrderItem orderItem);
+
+    OrderItem toInfrastructure(ordermanager.domain.model.OrderItem orderItem);
+
 
 }

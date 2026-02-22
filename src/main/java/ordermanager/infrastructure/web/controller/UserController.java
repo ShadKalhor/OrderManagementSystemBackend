@@ -16,13 +16,10 @@ import ordermanager.infrastructure.mapper.OrderMapper;
 import ordermanager.infrastructure.mapper.UserAddressMapper;
 import ordermanager.infrastructure.mapper.UserMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 

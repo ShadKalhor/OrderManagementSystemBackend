@@ -28,7 +28,7 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<ItemResponse> CreateItem(@Valid @RequestBody CreateItemRequest itemBody){
 
-        var item = itemMapper.toDomain(itemBody);
+        var item = itemMapper.create(itemBody);
         return itemService.CreateItem(item)
                 .map(itemMapper::toResponse)
                 .map(ResponseEntity::ok)
