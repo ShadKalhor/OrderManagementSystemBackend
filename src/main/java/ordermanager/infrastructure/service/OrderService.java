@@ -4,6 +4,7 @@ import io.vavr.control.Option;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
 import ordermanager.domain.port.out.ReservationResult;
+import ordermanager.domain.service.OrderPricingService;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.exception.InsufficientInventoryException;
 import ordermanager.infrastructure.exception.ValidationException;
@@ -24,32 +25,21 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
-    private static final BigDecimal DELIVERY_FEE_PCT = new BigDecimal("0.05");
-    private static final BigDecimal MIN_DELIVERY_FEE = new BigDecimal("2.00");
-    private static final BigDecimal TAX_PCT = new BigDecimal("0.10");
-    private static final int MONEY_SCALE = 2;//lo nishan krdini point y Currency.
-    private static final RoundingMode ROUNDING = RoundingMode.HALF_UP;
-
-
-
-
     private final ItemService itemService;
-
-
+    private final OrderPricingService orderPricingService;
     private final OrderPersistencePort orderPort;
-
     private final InventoryReservationPort inventoryReservationPort;
 
-    public OrderService(OrderPersistencePort orderPort, ItemService itemService, InventoryReservationPort inventoryReservationPort){
+    public OrderService( ItemService itemService, OrderPricingService orderPricingService, OrderPersistencePort orderPort, InventoryReservationPort inventoryReservationPort){
         this.itemService = itemService;
+        this.orderPricingService = orderPricingService;
         this.orderPort = orderPort;
         this.inventoryReservationPort = inventoryReservationPort;
     }
 
-    @Transactional
+
     public Option<Order> CreateOrder(Order draft) {
         hydrateItems(draft);
-        validateDraft(draft);
 
         //reserve y item akan daka gar hatu item habu unavailable bu result dabta instance ak la ReservationResult.Failure
         var result = inventoryReservationPort.reserveItems(draft.getItems());
@@ -59,9 +49,7 @@ public class OrderService {
         var reservationId = ((ReservationResult.Success) result).reservationId();
 
         try {
-
-            applyPricing(draft);
-
+            orderPricingService.ApplyPricing(draft);
 
             draft.setReservation(inventoryReservationPort.FindReservationById(reservationId));
             draft.setStatus(Status.Pending);
@@ -75,7 +63,6 @@ public class OrderService {
 
 
     //dastkari item&price detail nakre.
-    @Transactional
     public Option<Order> UpdateOrder(UUID orderId, Order patchedOrder){
 
         Option<Order> orderExists = orderPort.findById(orderId);
@@ -121,47 +108,6 @@ public class OrderService {
 
     }
 
-    private void applyPricing(Order order) {
-
-        BigDecimal subtotal = order.getItems().stream()
-                .map(this::lineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .setScale(MONEY_SCALE, ROUNDING);
-        order.setSubTotal(subtotal);
-
-        BigDecimal deliveryFee = subtotal.multiply(DELIVERY_FEE_PCT)
-                .max(MIN_DELIVERY_FEE)
-                .setScale(MONEY_SCALE, ROUNDING);
-        order.setDeliveryFee(deliveryFee);
-
-        BigDecimal tax = subtotal.multiply(TAX_PCT)
-                .setScale(MONEY_SCALE, ROUNDING);
-        order.setTax(tax);
-
-        BigDecimal total = subtotal.add(deliveryFee).add(tax)
-                .setScale(MONEY_SCALE, ROUNDING);
-        order.setTotalPrice(total);
-    }
-    private BigDecimal lineTotal(OrderItem oi) {
-        Item item = oi.getItem();
-        BigDecimal price = safe(item.getPrice());
-        BigDecimal discount = roundDiscountWithinRange(safe(item.getDiscount()));
-        BigDecimal qty = BigDecimal.valueOf(oi.getQuantity());
-        BigDecimal unitNet = price.multiply(BigDecimal.ONE.subtract(discount));
-        return unitNet.multiply(qty);
-    }
-
-    private BigDecimal safe(BigDecimal v) {
-        return v == null ? BigDecimal.ZERO : v;
-    }
-
-    private BigDecimal roundDiscountWithinRange(BigDecimal v) {
-        if (v.compareTo(BigDecimal.ZERO) < 0) return BigDecimal.ZERO;
-        if (v.compareTo(BigDecimal.ONE) > 0) return BigDecimal.ONE;
-        return v;
-    }
-
-
     private void hydrateItems(Order order) {
         for (OrderItem oi : order.getItems()) {
             UUID itemId = oi.getItem().getId();
@@ -170,27 +116,6 @@ public class OrderService {
                     .getOrElseThrow(() -> new EntityNotFoundException("Item", itemId));
 
             oi.setItem(item);
-        }
-    }
-
-
-    private void validateDraft(Order order) {
-        if (order.getItems() == null || order.getItems().isEmpty()) {
-            throw new ValidationException("Order must contain at least one item");
-        }
-
-        for (OrderItem oi : order.getItems()) {
-            if (oi.getQuantity() <= 0) {
-                throw new ValidationException("Quantity must be greater than 0 for item "
-                        + oi.getItem().getId());
-            }
-            if (oi.getItem() == null || oi.getItem().getId() == null) {
-                throw new ValidationException("Each order item must reference a valid item ID");
-            }
-        }
-
-        if (order.getUser().getId() == null) {
-            throw new ValidationException("Order must be linked to a user");
         }
     }
 
