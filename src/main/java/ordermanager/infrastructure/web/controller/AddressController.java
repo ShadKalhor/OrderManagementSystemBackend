@@ -1,8 +1,5 @@
 package ordermanager.infrastructure.web.controller;
 
-import io.vavr.control.Try;
-import ordermanager.domain.exception.ErrorType;
-import ordermanager.domain.exception.StructuredError;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.infrastructure.service.AddressService;
 import ordermanager.domain.dto.useraddress.CreateUserAddressRequest;
@@ -11,9 +8,7 @@ import ordermanager.domain.dto.useraddress.UserAddressResponse;
 
 import ordermanager.infrastructure.mapper.UserAddressMapper;
 import ordermanager.infrastructure.web.exception.ErrorStructureException;
-import ordermanager.infrastructure.web.exception.GlobalExceptionHandler;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
