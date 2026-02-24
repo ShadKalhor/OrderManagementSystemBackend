@@ -66,7 +66,7 @@ public class AddressController {
 
     @DeleteMapping("/{addressId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Void DeleteAddress(@PathVariable("addressId") UUID addressId){
-        return addressService.DeleteAddress(addressId).getOrElseThrow(ErrorStructureException::new);
+    public void DeleteAddress(@PathVariable("addressId") UUID addressId){
+        addressService.DeleteAddress(addressId).getOrElseThrow(ErrorStructureException::new);
     }
 }
