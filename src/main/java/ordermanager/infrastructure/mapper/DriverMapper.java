@@ -1,8 +1,8 @@
 package ordermanager.infrastructure.mapper;
 
-import ordermanager.domain.dto.driver.CreateDriverRequest;
-import ordermanager.domain.dto.driver.DriverResponse;
-import ordermanager.domain.dto.driver.UpdateDriverRequest;
+import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;
+import ordermanager.infrastructure.web.dto.driver.DriverResponse;
+import ordermanager.infrastructure.web.dto.driver.UpdateDriverRequest;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.store.persistence.entity.User;

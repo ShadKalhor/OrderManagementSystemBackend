@@ -1,9 +1,9 @@
 package ordermanager.infrastructure.mapper;
 
-import ordermanager.domain.dto.user.CreateUserRequest;
-import ordermanager.domain.dto.user.UpdateUserRequest;
-import ordermanager.domain.dto.user.UserResponse;
-import ordermanager.domain.dto.user.UserSummary;
+import ordermanager.infrastructure.web.dto.user.CreateUserRequest;
+import ordermanager.infrastructure.web.dto.user.UpdateUserRequest;
+import ordermanager.infrastructure.web.dto.user.UserResponse;
+import ordermanager.infrastructure.web.dto.user.UserSummary;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.User;
 

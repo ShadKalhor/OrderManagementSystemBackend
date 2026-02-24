@@ -1,9 +1,8 @@
 package ordermanager.domain.service;
 
-import ordermanager.domain.dto.item.ItemDto;
-import ordermanager.domain.dto.order.OrderDto;
-import ordermanager.domain.dto.orderitem.OrderItemDto;
-import ordermanager.infrastructure.store.persistence.entity.OrderItem;
+import ordermanager.infrastructure.web.dto.item.ItemDto;
+import ordermanager.infrastructure.web.dto.order.OrderDto;
+import ordermanager.infrastructure.web.dto.orderitem.OrderItemDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

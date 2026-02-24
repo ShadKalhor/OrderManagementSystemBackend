@@ -1,7 +1,7 @@
 package ordermanager.infrastructure.service;
 
 import io.vavr.control.Option;
-import ordermanager.domain.dto.order.OrderDto;
+import ordermanager.infrastructure.web.dto.order.OrderDto;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
 import ordermanager.domain.port.out.ReservationResult;

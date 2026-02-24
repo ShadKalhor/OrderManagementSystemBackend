@@ -1,12 +1,9 @@
 package ordermanager.infrastructure.mapper;
 
-import liquibase.pro.packaged.M;
-import ordermanager.domain.dto.order.OrderDto;
-import ordermanager.domain.dto.orderitem.CreateOrderItemRequest;
-import ordermanager.domain.dto.orderitem.OrderItemDto;
-import ordermanager.domain.dto.orderitem.OrderItemResponse;
-import ordermanager.domain.dto.orderitem.UpdateOrderItemRequest;
-import ordermanager.infrastructure.store.persistence.entity.Order;
+import ordermanager.infrastructure.web.dto.orderitem.CreateOrderItemRequest;
+import ordermanager.infrastructure.web.dto.orderitem.OrderItemDto;
+import ordermanager.infrastructure.web.dto.orderitem.OrderItemResponse;
+import ordermanager.infrastructure.web.dto.orderitem.UpdateOrderItemRequest;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 

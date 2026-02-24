@@ -1,13 +1,12 @@
 package ordermanager.infrastructure.web.controller;
 
 import ordermanager.infrastructure.service.ItemService;
-import ordermanager.domain.dto.item.CreateItemRequest;
-import ordermanager.domain.dto.item.ItemResponse;
-import ordermanager.domain.dto.item.UpdateItemRequest;
+import ordermanager.infrastructure.web.dto.item.CreateItemRequest;
+import ordermanager.infrastructure.web.dto.item.ItemResponse;
+import ordermanager.infrastructure.web.dto.item.UpdateItemRequest;
 import ordermanager.infrastructure.mapper.ItemMapper;
 import ordermanager.infrastructure.web.exception.ErrorStructureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

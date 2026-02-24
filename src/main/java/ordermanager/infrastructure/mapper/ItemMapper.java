@@ -1,8 +1,6 @@
 package ordermanager.infrastructure.mapper;
 
-import ordermanager.domain.dto.item.*;
-import ordermanager.domain.dto.orderitem.OrderItemDto;
-import ordermanager.infrastructure.store.persistence.entity.OrderItem;
+import ordermanager.infrastructure.web.dto.item.*;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 

@@ -3,10 +3,10 @@ package ordermanager.infrastructure.mapper;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
-import ordermanager.domain.dto.order.CreateOrderRequest;
-import ordermanager.domain.dto.order.OrderDto;
-import ordermanager.domain.dto.order.OrderResponse;
-import ordermanager.domain.dto.order.UpdateOrderRequest;
+import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
+import ordermanager.infrastructure.web.dto.order.OrderDto;
+import ordermanager.infrastructure.web.dto.order.OrderResponse;
+import ordermanager.infrastructure.web.dto.order.UpdateOrderRequest;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 

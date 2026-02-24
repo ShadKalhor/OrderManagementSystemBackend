@@ -1,9 +1,9 @@
 package ordermanager.infrastructure.web.controller;
 
 import ordermanager.infrastructure.service.OrderService;
-import ordermanager.domain.dto.order.CreateOrderRequest;
-import ordermanager.domain.dto.order.OrderResponse;
-import ordermanager.domain.dto.order.UpdateOrderRequest;
+import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
+import ordermanager.infrastructure.web.dto.order.OrderResponse;
+import ordermanager.infrastructure.web.dto.order.UpdateOrderRequest;
 import ordermanager.infrastructure.mapper.OrderMapper;
 import ordermanager.infrastructure.store.persistence.entity.Status;
 import org.springframework.http.ResponseEntity;

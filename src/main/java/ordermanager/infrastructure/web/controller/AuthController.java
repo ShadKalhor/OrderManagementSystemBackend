@@ -1,7 +1,7 @@
 package ordermanager.infrastructure.web.controller;
 
 import ordermanager.infrastructure.security.JwtService;
-import ordermanager.domain.dto.auth.LoginRequest;
+import ordermanager.infrastructure.web.dto.auth.LoginRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
