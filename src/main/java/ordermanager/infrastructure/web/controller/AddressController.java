@@ -33,10 +33,7 @@ public class AddressController {
 
         UserAddress address = addressMapper.create(addressBody);
         return addressService.CreateAddress(address)
-                .map(output -> new UserAddressResponse(output.getId(),output.getUser().getId(),
-                        output.getName(), output.getCity(), output.getDescription(),
-                        output.getType(), output.getStreet(), output.getResidentialNo(),
-                        output.isPrimary()))
+                .map(addressMapper::toResponse)
                 .getOrElseThrow(ErrorStructureException::new);
     }
 
