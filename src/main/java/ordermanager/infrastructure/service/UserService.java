@@ -1,6 +1,9 @@
 package ordermanager.infrastructure.service;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.UserPersistencePort;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.entity.Item;
@@ -36,13 +39,13 @@ public class UserService {
         return userPort.findByPhone(phoneNumber);
     }
 
-    public Option<User> SaveUser(User user) {
+    public Either<StructuredError, User> SaveUser(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userPort.save(user);
     }
 
-    public Option<User> UpdateUser(UUID userId, User user){
+    public Either<StructuredError, User> UpdateUser(UUID userId, User user){
 
         Option<User> itemExists = GetUserById(userId);
         if(itemExists.isEmpty())
@@ -52,13 +55,11 @@ public class UserService {
 
     }
 
-    public boolean DeleteUser(UUID userId) {
-        return userPort.findById(userId)
-                .map(d -> {
-                    userPort.deleteById(userId);
-                    return true;
-                })
-                .getOrElse(false);
+    public Either<StructuredError, Void> DeleteUser(UUID userId) {
+        return userPort.findById(userId).toEither(new StructuredError("Could Not Find User With Specified Id", ErrorType.NOT_FOUND_ERROR)).map(existing -> {
+            userPort.deleteById(userId);
+            return null;
+        });
     }
 
 
