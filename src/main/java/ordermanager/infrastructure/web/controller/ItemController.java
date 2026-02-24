@@ -5,6 +5,8 @@ import ordermanager.domain.dto.item.CreateItemRequest;
 import ordermanager.domain.dto.item.ItemResponse;
 import ordermanager.domain.dto.item.UpdateItemRequest;
 import ordermanager.infrastructure.mapper.ItemMapper;
+import ordermanager.infrastructure.web.exception.ErrorStructureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,49 +28,43 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemResponse> CreateItem(@Valid @RequestBody CreateItemRequest itemBody){
+    @ResponseStatus(HttpStatus.CREATED)
+    public ItemResponse CreateItem(@Valid @RequestBody CreateItemRequest itemBody){
 
         var item = itemMapper.create(itemBody);
-        return itemService.CreateItem(item)
-                .map(itemMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .getOrElse(() -> ResponseEntity.badRequest().build());
+        return itemService.CreateItem(item).map(itemMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
     }
 
     @PutMapping("/{itemId}")
-    public ResponseEntity<ItemResponse> UpdateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ItemResponse UpdateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
         var item = itemMapper.update(itemBody);
-        return itemService.UpdateItem(itemId, item)
-                .map(itemMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .getOrElse(ResponseEntity.badRequest().build());
+
+        return itemService.UpdateItem(itemId,item).map(itemMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemResponse> GetItemById(@PathVariable("itemId") UUID itemId){
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ItemResponse GetItemById(@PathVariable("itemId") UUID itemId){
 
-        return itemService.GetItemById(itemId)
-                .map(itemMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .getOrElse(() -> ResponseEntity.notFound().build());
+        return itemService.GetItemById(itemId).map(itemMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
     @GetMapping()
-    public ResponseEntity<List<ItemResponse>> GetAllItems(){
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<ItemResponse> GetAllItems(){
 
-        var items = itemService.GetAllItems().stream()
+        return itemService.GetAllItems().stream()
                 .map(itemMapper::toResponse)
                 .toList();
-        return ResponseEntity.ok(items);
+
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<Void> DeleteItem(@PathVariable("itemId") UUID itemId){
-        boolean isDeleted = itemService.DeleteItem(itemId);
-        if(isDeleted)
-            return ResponseEntity.noContent().build();
-        else
-            return ResponseEntity.badRequest().build();
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void DeleteItem(@PathVariable("itemId") UUID itemId){
+        itemService.DeleteItem(itemId).getOrElseThrow(ErrorStructureException::new);
     }
 }
