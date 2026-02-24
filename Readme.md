@@ -176,7 +176,7 @@ Validation errors are formatted through `ApiError`.
 
 ---
 
-## ▶ Running the Project
+##  Running the Project
 
 ### 1️ Clone the repository
 
