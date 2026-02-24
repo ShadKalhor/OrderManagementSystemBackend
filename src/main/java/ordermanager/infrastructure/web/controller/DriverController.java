@@ -5,7 +5,9 @@ import ordermanager.domain.dto.driver.CreateDriverRequest;
 import ordermanager.domain.dto.driver.DriverResponse;
 import ordermanager.domain.dto.driver.UpdateDriverRequest;
 import ordermanager.infrastructure.mapper.DriverMapper;
-import org.springframework.http.ResponseEntity;
+import ordermanager.infrastructure.store.persistence.entity.Driver;
+import ordermanager.infrastructure.web.exception.ErrorStructureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,51 +27,51 @@ public class DriverController {
     }
 
     @PostMapping
-    public ResponseEntity<DriverResponse> CreateDriver(@Valid @RequestBody CreateDriverRequest driverBody){
+    @ResponseStatus(HttpStatus.CREATED)
+    public DriverResponse CreateDriver(@Valid @RequestBody CreateDriverRequest driverBody){
 
-        var driver = driverMapper.create(driverBody);
+        Driver driver = driverMapper.create(driverBody);
         return driverService.CreateDriver(driver)
                 .map(driverMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .getOrElse(() -> ResponseEntity.badRequest().build());
+                .getOrElseThrow(ErrorStructureException::new);
+
     }
 
     @PutMapping("/{driverId}")
-    public ResponseEntity<DriverResponse> UpdateDriver(@PathVariable UUID driverId,@Valid @RequestBody UpdateDriverRequest driverBody){
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public DriverResponse UpdateDriver(@PathVariable UUID driverId,@Valid @RequestBody UpdateDriverRequest driverBody){
 
         var driver = driverMapper.update(driverBody);
-        return driverService.UpdateDriver(driverId, driver).map(driverMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .getOrElse(ResponseEntity.badRequest().build());
+        return driverService.UpdateDriver(driverId,driver).map(driverMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+
     }
 
     @GetMapping("/{driverId}")
-    public ResponseEntity<DriverResponse> GetDriver(@PathVariable UUID driverId){
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public DriverResponse GetDriver(@PathVariable UUID driverId){
 
-        return driverService.GetDriverById(driverId)
-                .map(driverMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .getOrElse(() -> ResponseEntity.notFound().build());
+        return driverService.GetDriverById(driverId).map(driverMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+
     }
 
-    @GetMapping
-    public ResponseEntity<List<DriverResponse>> GetAllDrivers(){
 
-        var drivers = driverService.GetAllDrivers().stream()
+    //TODO:Double Check Endpoint Later.
+    @GetMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<DriverResponse> GetAllDrivers(){
+
+        return driverService.GetAllDrivers().stream()
                 .map(driverMapper::toResponse)
                 .toList();
-        return ResponseEntity.ok(drivers);
-
     }
 
 
     @DeleteMapping("/{driverId}")
-    public ResponseEntity<Void> DeleteDriver(@PathVariable UUID driverId){
-        boolean isDeleted = driverService.DeleteDriver(driverId);
-        if(isDeleted)
-            return ResponseEntity.noContent().build();
-        else
-            return ResponseEntity.badRequest().build();
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void DeleteDriver(@PathVariable UUID driverId){
+
+        driverService.DeleteDriver(driverId).getOrElseThrow(ErrorStructureException::new);
+
     }
 
 }
