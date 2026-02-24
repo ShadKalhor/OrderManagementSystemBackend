@@ -1,6 +1,8 @@
 package ordermanager.domain.port.out;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 
 import java.util.List;
@@ -10,9 +12,9 @@ public interface ItemPersistencePort {
 
     Option<Item> findById(UUID id);
 
-    Option<Item> save(Item item);
+    Either<StructuredError, Item> save(Item item);
 
     List<Item> findAll();
 
-    void deleteById(UUID itemId);
+    Either<StructuredError, Void> deleteById(UUID itemId);
 }
