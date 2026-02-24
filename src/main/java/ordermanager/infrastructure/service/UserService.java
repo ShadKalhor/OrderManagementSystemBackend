@@ -39,7 +39,7 @@ public class UserService {
         return userPort.findByPhone(phoneNumber);
     }
 
-    public Either<StructuredError, User> SaveUser(User user) {
+    public Either<StructuredError, User> CreateUser(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userPort.save(user);
