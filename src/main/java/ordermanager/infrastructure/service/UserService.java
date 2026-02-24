@@ -27,16 +27,16 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Option<User> GetUserById(UUID userId){
-        return userPort.findById(userId);
+    public Either<StructuredError, User> GetUserById(UUID userId){
+        return userPort.findById(userId).toEither(() -> new StructuredError("Could Not Find User With Specified UserId", ErrorType.NOT_FOUND_ERROR));
     }
 
     public List<User> GetAllUsers(){
         return userPort.findAll();
     }
 
-    public Option<User> GetUserByPhoneNumber(String phoneNumber) {
-        return userPort.findByPhone(phoneNumber);
+    public Either<StructuredError, User> GetUserByPhoneNumber(String phoneNumber) {
+        return userPort.findByPhone(phoneNumber).toEither(new StructuredError("Could Not Find User With Specified Phone Number", ErrorType.NOT_FOUND_ERROR));
     }
 
     public Either<StructuredError, User> CreateUser(User user) {
@@ -47,12 +47,10 @@ public class UserService {
 
     public Either<StructuredError, User> UpdateUser(UUID userId, User user){
 
-        Option<User> itemExists = GetUserById(userId);
-        if(itemExists.isEmpty())
-            throw new EntityNotFoundException("User", userId);
-        user.setId(userId);
-        return userPort.save(user);
-
+        return GetUserById(userId).flatMap(existing ->{
+            user.setId(userId);
+            return userPort.save(user);
+        });
     }
 
     public Either<StructuredError, Void> DeleteUser(UUID userId) {
