@@ -2,8 +2,8 @@ package ordermanager.infrastructure.store.persistence.adapter;
 
 import io.vavr.control.Option;
 import ordermanager.domain.port.out.UserPersistencePort;
-import ordermanager.infrastructure.mapper.UserMapper;
 import ordermanager.infrastructure.store.persistence.entity.User;
+import ordermanager.infrastructure.store.persistence.jpa.SpringDataUserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

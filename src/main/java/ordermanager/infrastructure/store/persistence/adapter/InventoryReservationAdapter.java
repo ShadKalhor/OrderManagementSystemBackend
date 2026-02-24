@@ -4,6 +4,9 @@ import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.ReservationResult;
 import ordermanager.infrastructure.store.persistence.entity.*;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
+import ordermanager.infrastructure.store.persistence.jpa.SpringDataItemRepository;
+import ordermanager.infrastructure.store.persistence.jpa.SpringDataReservationLineRepository;
+import ordermanager.infrastructure.store.persistence.jpa.SpringDataReservationRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

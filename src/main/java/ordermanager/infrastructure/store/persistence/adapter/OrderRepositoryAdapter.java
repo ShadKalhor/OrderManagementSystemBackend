@@ -3,10 +3,10 @@ package ordermanager.infrastructure.store.persistence.adapter;
 import io.vavr.control.Option;
 import ordermanager.domain.port.out.OrderPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Order;
+import ordermanager.infrastructure.store.persistence.jpa.SpringDataOrderRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository

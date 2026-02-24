@@ -7,6 +7,7 @@ import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.AddressPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
+import ordermanager.infrastructure.store.persistence.jpa.SpringDataAddressRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -7,6 +7,7 @@ import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.ItemPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Item;
+import ordermanager.infrastructure.store.persistence.jpa.SpringDataItemRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

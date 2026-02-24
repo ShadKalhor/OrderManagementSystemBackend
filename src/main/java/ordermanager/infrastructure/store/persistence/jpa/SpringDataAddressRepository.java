@@ -1,4 +1,4 @@
-package ordermanager.infrastructure.store.persistence.adapter;
+package ordermanager.infrastructure.store.persistence.jpa;
 
 import io.vavr.control.Option;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
