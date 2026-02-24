@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public interface ItemPersistencePort {
 
+
     Option<Item> findById(UUID id);
 
     Either<StructuredError, Item> save(Item item);
