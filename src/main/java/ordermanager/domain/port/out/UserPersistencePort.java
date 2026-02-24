@@ -1,6 +1,8 @@
 package ordermanager.domain.port.out;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.infrastructure.store.persistence.entity.User;
 
 import java.util.List;
@@ -14,7 +16,7 @@ public interface UserPersistencePort {
 
     Option<User> findByPhone(String phoneNumber);
 
-    Option<User> save(User user);
+    Either<StructuredError, User> save(User user);
 
-    void deleteById(UUID userId);
+    Either<StructuredError, Void> deleteById(UUID userId);
 }
