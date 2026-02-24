@@ -175,29 +175,72 @@ Uses:
 Validation errors are formatted through `ApiError`.
 
 ---
+You're right — that was my mistake.
 
-##  Running the Project
+If your project **is not Maven**, then it’s almost certainly **Gradle** (since Spring Initializr defaults to either Maven or Gradle).
 
-### 1️ Clone the repository
+Here’s the corrected README section for a **Gradle-based** project 👇
+
+---
+
+# Order Management System (Hexagonal Architecture)
+
+A Spring Boot backend project built using:
+
+* Hexagonal Architecture (Ports & Adapters)
+* Domain-Driven Design principles
+* Spring Boot
+* MapStruct
+* Vavr
+* JPA / Hibernate
+* Gradle
+
+---
+
+## ⚙️ Technologies Used
+
+* Java 17+
+* Spring Boot
+* Spring Web
+* Spring Data JPA
+* Hibernate
+* MapStruct
+* Vavr
+* Lombok
+* H2 / PostgreSQL
+* **Gradle**
+
+---
+
+##  Running the Project (Gradle)
+
+### 1️ Build the project
+
+If using Gradle Wrapper:
 
 ```bash
-git clone <your-repo-url>
+./gradlew build
 ```
 
-### 2️ Build
+On Windows:
 
 ```bash
-mvn clean install
+gradlew.bat build
 ```
 
-### 3️ Run
+---
+
+### 2️ Run the application
 
 ```bash
-mvn spring-boot:run
+./gradlew bootRun
 ```
 
-Or run from your IDE.
+On Windows:
 
+```bash
+gradlew.bat bootRun
+```
 ---
 
 ## Design Principles Applied
