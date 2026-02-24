@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface SpringDataOrderRepository extends JpaRepository<Order, UUID> {
 
-    Option<List<Order>> findByUserId(UUID userId);
+    List<Order> findByUserId(UUID userId);
     Option<Order> findOptionById(UUID uuid);
 }
