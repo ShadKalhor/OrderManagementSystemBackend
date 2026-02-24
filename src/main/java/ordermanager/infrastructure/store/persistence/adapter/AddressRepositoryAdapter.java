@@ -1,6 +1,10 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.AddressPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import org.springframework.stereotype.Repository;
@@ -18,15 +22,15 @@ public class AddressRepositoryAdapter implements AddressPersistencePort {
     }
 
     @Override
-    public Option<List<UserAddress>> findAddressesByUserId(UUID userId) {
+    public List<UserAddress> findAddressesByUserId(UUID userId) {
 
         return addressRepository.findAddressesByUserId(userId);
 
     }
 
     @Override
-    public Option<UserAddress> save(UserAddress userAddress) {
-        return Option.of(addressRepository.save(userAddress));
+    public Either<StructuredError, UserAddress> save(UserAddress userAddress) {
+        return Try.of(() -> addressRepository.save(userAddress)).toEither().mapLeft(throwable -> new StructuredError("Failed while storing address", ErrorType.SERVER_ERROR));
     }
 
     @Override
@@ -35,7 +39,10 @@ public class AddressRepositoryAdapter implements AddressPersistencePort {
     }
 
     @Override
-    public void deleteById(UUID uuid) {
-        addressRepository.deleteById(uuid);
+    public Either<StructuredError, Void> deleteById(UUID uuid) {
+        return Try.run(() -> addressRepository.deleteById(uuid))
+                .toEither()
+                .mapLeft(throwable -> new StructuredError("Delete failed", ErrorType.NOT_FOUND_ERROR))
+                .map(nothing -> (Void) null);
     }
 }

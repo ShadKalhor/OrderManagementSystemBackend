@@ -1,12 +1,12 @@
 package ordermanager.infrastructure.service;
 
-import io.vavr.control.Option;
+import io.vavr.control.Either;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.AddressPersistencePort;
-import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,35 +18,38 @@ public class AddressService {
         this.addressPort = addressPort;
     }
 
-    public Option<UserAddress> CreateAddress(UserAddress userAddress){
+    public Either<StructuredError, UserAddress> CreateAddress(UserAddress userAddress){
         return addressPort.save(userAddress);
     }
 
-    public Option<UserAddress> UpdateAddress(UUID addressId, UserAddress userAddress){
-        Option<UserAddress> addressExists = GetAddressById(addressId);
-        if (addressExists.isEmpty())
-            throw new EntityNotFoundException("Address",addressId);
-        userAddress.setId(addressId);
-        return addressPort.save(userAddress);
+    public Either<StructuredError, UserAddress> UpdateAddress(UUID addressId, UserAddress userAddress){
+
+        return GetAddressById(addressId).flatMap(existing -> {
+                    userAddress.setId(addressId);
+                    return addressPort.save(userAddress);
+                });
     }
 
 
-    public Option<List<UserAddress>> GetUserAddresses(UUID userId){
+    public List<UserAddress> GetUserAddresses(UUID userId){
         return addressPort.findAddressesByUserId(userId);
     }
 
-    public Option<UserAddress> GetAddressById(UUID uuid){
-        return addressPort.findById(uuid);
+    public Either<StructuredError, UserAddress> GetAddressById(UUID uuid){
+        return addressPort.findById(uuid).toEither(new StructuredError("Address Not Found", ErrorType.NOT_FOUND_ERROR));
     }
 
+    public Either<StructuredError, Void> DeleteAddress(UUID addressId){
 
-    public boolean DeleteAddress(UUID addressId){
         return addressPort.findById(addressId)
-                .map(d -> {
+                .toEither(new StructuredError(
+                        "Address not found",
+                        ErrorType.NOT_FOUND_ERROR
+                ))
+                .map(address -> {
                     addressPort.deleteById(addressId);
-                    return true;
-                }).getOrElse(false);
-
+                    return null;
+                });
     }
 
 }

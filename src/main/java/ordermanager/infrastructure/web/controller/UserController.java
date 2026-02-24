@@ -100,15 +100,11 @@ public class UserController {
     }
 
 
+    //TODO:Refactor this to be compatible with addressService.
     @GetMapping("/{userId}/addresses")
-    public ResponseEntity<List<UserAddressResponse>> GetUserById(@PathVariable("userId") UUID userId){
-
-        Option<List<UserAddress>> result = addressService.GetUserAddresses(userId);
-        return result
-                .filter(list -> !list.isEmpty())
-                .map(list -> list.stream().map(userAddressMapper::toResponse).toList())
-                .map(ResponseEntity::ok)
-                .getOrElse(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<List<UserAddressResponse>> GetAddressById(@PathVariable("userId") UUID userId){
+        List<UserAddress> result = addressService.GetUserAddresses(userId);
+        return ResponseEntity.ok(result.stream().map(userAddressMapper::toResponse).toList());
 
     }
 
