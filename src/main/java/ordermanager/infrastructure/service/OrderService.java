@@ -1,6 +1,10 @@
 package ordermanager.infrastructure.service;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.infrastructure.web.dto.order.OrderDto;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
@@ -39,7 +43,7 @@ public class OrderService {
     }
 
 
-    public Option<Order> CreateOrder(Order draft) {
+    public Either<StructuredError, Order> CreateOrder(Order draft) {
         hydrateItems(draft);
 
         //reserve y item akan daka gar hatu item habu unavailable bu result dabta instance ak la ReservationResult.Failure
@@ -49,7 +53,7 @@ public class OrderService {
         }
         var reservationId = ((ReservationResult.Success) result).reservationId();
 
-        try {
+        return Try.of(()->{
             OrderDto orderDto = orderMapper.toOrderDto(draft);
             OrderDto calculationResult = orderPricingService.ApplyPricing(orderDto);
 
@@ -61,16 +65,14 @@ public class OrderService {
             draft.setReservation(inventoryReservationPort.FindReservationById(reservationId));
             draft.setStatus(Status.Pending);
             return orderPort.save(draft);
-        } catch (RuntimeException ex) {
+        }).onFailure(ex -> inventoryReservationPort.releaseReservation(reservationId))
+            .getOrElseGet(ex -> Either.left(new StructuredError(ex.getMessage(), ErrorType.SERVER_ERROR)));
 
-            inventoryReservationPort.releaseReservation(reservationId);
-            throw ex;
-        }
     }
 
 
     //dastkari item&price detail nakre.
-    public Option<Order> UpdateOrder(UUID orderId, Order patchedOrder){
+    public Either<StructuredError, Order> UpdateOrder(UUID orderId, Order patchedOrder){
 
         Option<Order> orderExists = orderPort.findById(orderId);
         if(orderExists.isEmpty())
@@ -83,8 +85,7 @@ public class OrderService {
         order.setDeliveryStatus(patchedOrder.getDeliveryStatus());
         order.setNotes(patchedOrder.getNotes());
 
-        var newOrder  = orderPort.save(order).getOrElseThrow(() -> new EntityNotFoundException("order", order.getId()));
-        return Option.of(newOrder);
+        return orderPort.save(order);
     }
 
 
@@ -93,26 +94,21 @@ public class OrderService {
     }
 
 
-    public Option<Order> GetOrderById(UUID orderId){
-        Option<Order> order = orderPort.findById(orderId);
-        return order;
+    public Either<StructuredError, Order> GetOrderById(UUID orderId){
+        return orderPort.findById(orderId).toEither(() -> new StructuredError("Order Not Found", ErrorType.NOT_FOUND_ERROR));
     }
 
 
-    public Option<List<Order>> GetByUserId(UUID userId) {
-        Option<List<Order>> orders = orderPort.findByUserId(userId);
-        return orders;
+    public List<Order> GetByUserId(UUID userId) {
+        return orderPort.findByUserId(userId);
     }
 
 
-    public boolean DeleteOrder(UUID orderId){
-        return orderPort.findById(orderId)
-                .map(d -> {
-                    orderPort.deleteById(orderId);
-                    return true;
-                })
-                .getOrElse(false);
-
+    public Either<StructuredError, Void> DeleteOrder(UUID orderId){
+        return orderPort.findById(orderId).toEither(() -> new StructuredError("Order Not Found", ErrorType.NOT_FOUND_ERROR)).map(existing -> {
+            orderPort.deleteById(orderId);
+            return null;
+        });
     }
 
     private void hydrateItems(Order order) {

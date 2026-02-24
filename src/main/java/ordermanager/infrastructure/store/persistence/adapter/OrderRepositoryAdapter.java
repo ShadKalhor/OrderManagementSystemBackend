@@ -1,6 +1,10 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.OrderPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.jpa.SpringDataOrderRepository;
@@ -19,8 +23,9 @@ public class OrderRepositoryAdapter implements OrderPersistencePort {
     }
 
     @Override
-    public Option<Order> save(Order order) {
-        return Option.of(orderRepository.save(order));
+    public Either<StructuredError, Order> save(Order order) {
+
+        return Try.of(() -> orderRepository.save(order)).toEither(new StructuredError("Could Not Save Order", ErrorType.SERVER_ERROR));
     }
 
     @Override
@@ -34,12 +39,12 @@ public class OrderRepositoryAdapter implements OrderPersistencePort {
     }
 
     @Override
-    public void deleteById(UUID orderId) {
-        orderRepository.deleteById(orderId);
+    public Either<StructuredError, Void> deleteById(UUID orderId) {
+        return Try.run(() -> orderRepository.deleteById(orderId)).toEither(new StructuredError("Could Not Delete Order",ErrorType.SERVER_ERROR));
     }
 
     @Override
-    public Option<List<Order>> findByUserId(UUID userId) {
+    public List<Order> findByUserId(UUID userId) {
         return orderRepository.findByUserId(userId);
     }
 }
