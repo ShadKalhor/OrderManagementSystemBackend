@@ -97,7 +97,7 @@ ordermanager
 * MapStruct
 * Vavr
 * Lombok
-* H2 / PostgreSQL (configurable)
+* H2 / MSSQL (configurable)
 * Maven
 
 ---
@@ -207,7 +207,7 @@ A Spring Boot backend project built using:
 * MapStruct
 * Vavr
 * Lombok
-* H2 / PostgreSQL
+* H2 / MSSQL
 * **Gradle**
 
 ---
