@@ -1,7 +1,10 @@
 package ordermanager.infrastructure.service;
 
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.ItemPersistencePort;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.entity.Item;
@@ -20,36 +23,37 @@ public class ItemService {
         this.itemPort = itemPort;
     }
 
-    public Option<Item> CreateItem(Item item) {
+    public Either<StructuredError, Item> CreateItem(Item item) {
         return itemPort.save(item);
     }
 
-    public Option<Item> UpdateItem(UUID itemId, Item item){
+    public Either<StructuredError, Item> UpdateItem(UUID itemId, Item item){
 
-        Option<Item> itemExists = GetItemById(itemId);
-        if(itemExists.isEmpty())
-            throw new EntityNotFoundException("Item", itemId);
-        item.setId(itemId);
-        return itemPort.save(item);
+        return GetItemById(itemId).flatMap(existing -> {
+            item.setId(itemId);
+            return itemPort.save(item);
+        });
+
     }
 
-    public Option<Item> GetItemById(UUID itemId) {
-        return itemPort.findById(itemId);
+    public Either<StructuredError, Item> GetItemById(UUID itemId) {
+
+        return itemPort.findById(itemId).toEither(new StructuredError("Could Not Find Item", ErrorType.NOT_FOUND_ERROR));
     }
+
 
 
     public List<Item> GetAllItems() {
         return itemPort.findAll();
     }
 
-    public boolean DeleteItem(UUID itemId) {
+    public Either<StructuredError, Void> DeleteItem(UUID itemId) {
 
-        return itemPort.findById(itemId)
-                .map(d -> {
-                    itemPort.deleteById(itemId);
-                    return true;
-                })
-                .getOrElse(false);
+        return itemPort.findById(itemId).toEither(new StructuredError("Could Not Find Item", ErrorType.NOT_FOUND_ERROR)).map(existing -> {
+            itemPort.deleteById(itemId);
+            return null;
+        });
+
     }
 
 }
