@@ -1,12 +1,15 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.ItemPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -24,8 +27,8 @@ public class ItemRepositoryAdapter implements ItemPersistencePort {
     }
 
     @Override
-    public Option<Item> save(Item item) {
-        return Option.of(itemRepository.save(item));
+    public Either<StructuredError, Item> save(Item item) {
+        return Try.of(() -> itemRepository.save(item)).toEither().mapLeft(throwable -> new StructuredError("Could Not Save Item", ErrorType.SERVER_ERROR));
     }
 
     @Override
@@ -34,8 +37,8 @@ public class ItemRepositoryAdapter implements ItemPersistencePort {
     }
 
     @Override
-    public void deleteById(UUID itemId) {
-
-        itemRepository.deleteById(itemId);
+    public Either<StructuredError, Void> deleteById(UUID itemId) {
+        return Try.run(() -> itemRepository.deleteById(itemId)).toEither()
+                .mapLeft(throwable -> new StructuredError("Could Not Delete Item", ErrorType.SERVER_ERROR)).map(nothing -> (Void) nothing);
     }
 }
