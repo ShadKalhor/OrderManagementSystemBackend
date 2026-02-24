@@ -1,6 +1,10 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.port.out.DriverPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import org.springframework.stereotype.Repository;
@@ -19,8 +23,9 @@ public class DriverRepositoryAdapter implements DriverPersistencePort {
 
 
     @Override
-    public Option<Driver> save(Driver driver) {
-        return Option.of(driverRepository.save(driver));
+    public Either<StructuredError, Driver> save(Driver driver) {
+        return Try.of(() -> driverRepository.save(driver)).toEither().mapLeft(throwable -> new StructuredError("Failed while storing driver", ErrorType.SERVER_ERROR));
+
     }
 
     @Override
@@ -34,9 +39,10 @@ public class DriverRepositoryAdapter implements DriverPersistencePort {
     }
 
     @Override
-    public void deleteById(UUID driverId) {
-
-        driverRepository.deleteById(driverId);
-
+    public Either<StructuredError, Void> deleteById(UUID driverId) {
+        return Try.run(() -> driverRepository.deleteById(driverId))
+                .toEither()
+                .mapLeft(throwable -> new StructuredError("Delete failed", ErrorType.NOT_FOUND_ERROR))
+                .map(nothing -> (Void) null);
     }
 }
