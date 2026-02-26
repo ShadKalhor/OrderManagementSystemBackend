@@ -5,7 +5,7 @@ import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
 import ordermanager.infrastructure.web.dto.order.OrderResponse;
 import ordermanager.infrastructure.web.dto.order.UpdateOrderRequest;
 import ordermanager.infrastructure.mapper.OrderMapper;
-import ordermanager.infrastructure.store.persistence.entity.Status;
+import ordermanager.domain.model.Status;
 import ordermanager.infrastructure.web.exception.ErrorStructureException;
 import org.springframework.http.HttpStatus;
 

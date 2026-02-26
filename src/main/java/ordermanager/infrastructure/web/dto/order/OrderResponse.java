@@ -5,8 +5,8 @@ import ordermanager.infrastructure.web.dto.driver.DriverResponse;
 import ordermanager.infrastructure.web.dto.orderitem.OrderItemResponse;
 import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
 import ordermanager.infrastructure.web.dto.user.UserSummary;
-import ordermanager.infrastructure.store.persistence.entity.DeliveryStatus;
-import ordermanager.infrastructure.store.persistence.entity.Status;
+import ordermanager.domain.model.DeliveryStatus;
+import ordermanager.domain.model.Status;
 
 import java.math.BigDecimal;
 import java.util.List;

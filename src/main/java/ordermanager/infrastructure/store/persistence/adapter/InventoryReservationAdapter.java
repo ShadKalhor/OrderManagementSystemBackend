@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import ordermanager.domain.model.ReservationStatus;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.ReservationResult;
 import ordermanager.infrastructure.store.persistence.entity.*;

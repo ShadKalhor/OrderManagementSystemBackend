@@ -1,11 +1,14 @@
 package ordermanager.infrastructure.mapper;
 
+import ordermanager.domain.model.DriverDomain;
 import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;
 import ordermanager.infrastructure.web.dto.driver.DriverResponse;
 import ordermanager.infrastructure.web.dto.driver.UpdateDriverRequest;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.store.persistence.entity.User;
+
+import java.util.UUID;
 
 @Mapper(
     componentModel = "spring",
@@ -15,16 +18,42 @@ import ordermanager.infrastructure.store.persistence.entity.User;
 public interface DriverMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "accountId", target = "account.id")
+    @Mapping(source = "accountId", target = "account")
     Driver create(CreateDriverRequest r);
 
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "accountId", target = "account.id")
+    @Mapping(source = "accountId", target = "account")
     Driver update(UpdateDriverRequest r);
 
     @Mapping(target = "name", source = "account.name")
     DriverResponse toResponse(Driver entity);
+
+    @Mapping(source = "account", target = "accountId")
+    DriverDomain toDomain(Driver entity);
+
+    @Mapping(source = "accountId", target = "account")
+    Driver toEntity(DriverDomain domain);
+
+
+
+    default UUID map(User account)    {
+        return account == null ? null : account.getId();
+    }
+
+    default User map(UUID id) {
+        if (id == null) return null;
+
+        User account = new User();
+        account.setId(id);
+        return account;
+    }
+
+
+    default String nameMap(User account)    {
+        return account == null ? null : account.getName();
+    }
+
 
 
     @AfterMapping

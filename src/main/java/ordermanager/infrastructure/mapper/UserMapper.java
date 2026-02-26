@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.mapper;
 
+import ordermanager.domain.model.UserDomain;
 import ordermanager.infrastructure.web.dto.user.CreateUserRequest;
 import ordermanager.infrastructure.web.dto.user.UpdateUserRequest;
 import ordermanager.infrastructure.web.dto.user.UserResponse;
@@ -21,6 +22,11 @@ public interface UserMapper {
 
     UserResponse toResponse(User entity);
     UserSummary toSummary(User entity);
+
+
+    UserDomain toDomain(User entity);
+
+    User toEntity(UserDomain domain);
 
 
 

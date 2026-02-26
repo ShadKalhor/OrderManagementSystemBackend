@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import lombok.*;
+import ordermanager.domain.model.Genders;
+import ordermanager.domain.model.UserRoles;
 import org.hibernate.annotations.Type;
 
 import org.springframework.security.core.GrantedAuthority;

@@ -1,14 +1,13 @@
 package ordermanager.infrastructure.mapper;
 
-import ordermanager.infrastructure.store.persistence.entity.Driver;
-import ordermanager.infrastructure.store.persistence.entity.User;
-import ordermanager.infrastructure.store.persistence.entity.UserAddress;
+import ordermanager.domain.model.OrderDomain;
+import ordermanager.infrastructure.store.persistence.entity.*;
 import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
 import ordermanager.infrastructure.web.dto.order.OrderDto;
 import ordermanager.infrastructure.web.dto.order.OrderResponse;
 import ordermanager.infrastructure.web.dto.order.UpdateOrderRequest;
 import org.mapstruct.*;
-import ordermanager.infrastructure.store.persistence.entity.Order;
+import org.springframework.jmx.export.annotation.ManagedOperation;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -50,15 +49,35 @@ public interface OrderMapper {
     OrderDto toOrderDto(Order entity);
 
 
-    @Mapping(target = "id",ignore = true)
-    @Mapping(target = "user",ignore = true)
-    @Mapping(target = "address",ignore = true)
-    @Mapping(target = "driver",ignore = true)
-    @Mapping(target = "status",ignore = true)
-    @Mapping(target = "deliveryStatus",ignore = true)
-    @Mapping(target = "reservation",ignore = true)
-    @Mapping(target = "notes",ignore = true)
-    Order toEntity(OrderDto orderDto);
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "address.id", target = "addressId")
+    @Mapping(source = "driver.id", target = "driverId")
+    @Mapping(source = "items", target = "itemIds")
+    @Mapping(source = "reservation.id", target = "reservationId")
+    OrderDomain toDomain(Order entity);
+
+
+    @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "addressId", target = "address.id")
+    @Mapping(source = "driverId", target = "driver.id")
+    @Mapping(source = "itemIds", target = "items")
+    @Mapping(source = "reservationId", target = "reservation.id")
+    Order toEntity(OrderDomain domain);
+
+
+
+    default UUID map(OrderItem item)    {
+        return item == null ? null : item.getId();
+    }
+
+    default OrderItem map(UUID id) {
+        if (id == null) return null;
+
+        OrderItem item = new OrderItem();
+        item.setId(id);
+        return item;
+    }
+
 
     @AfterMapping
     default void fillNestedOnCreate(CreateOrderRequest r, @MappingTarget Order entity) {

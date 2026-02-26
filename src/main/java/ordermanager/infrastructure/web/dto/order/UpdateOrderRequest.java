@@ -1,7 +1,7 @@
 package ordermanager.infrastructure.web.dto.order;
 
-import ordermanager.infrastructure.store.persistence.entity.DeliveryStatus;
-import ordermanager.infrastructure.store.persistence.entity.Status;
+import ordermanager.domain.model.DeliveryStatus;
+import ordermanager.domain.model.Status;
 import ordermanager.infrastructure.validation.EnumOrNull;
 
 import javax.validation.constraints.Size;

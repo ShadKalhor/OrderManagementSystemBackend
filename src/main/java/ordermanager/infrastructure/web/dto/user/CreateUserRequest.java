@@ -1,7 +1,7 @@
 package ordermanager.infrastructure.web.dto.user;
 
-import ordermanager.infrastructure.store.persistence.entity.Genders;
-import ordermanager.infrastructure.store.persistence.entity.UserRoles;
+import ordermanager.domain.model.Genders;
+import ordermanager.domain.model.UserRoles;
 import ordermanager.infrastructure.validation.Password;
 import ordermanager.infrastructure.validation.PhoneNumber;
 

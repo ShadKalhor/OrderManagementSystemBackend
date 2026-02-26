@@ -1,6 +1,8 @@
 package ordermanager.infrastructure.store.persistence.entity;
 
 import lombok.*;
+import ordermanager.domain.model.DeliveryStatus;
+import ordermanager.domain.model.Status;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.UUID;
 
+import ordermanager.domain.model.ReservationStatus;
 import org.hibernate.annotations.Type;
 
 @Entity

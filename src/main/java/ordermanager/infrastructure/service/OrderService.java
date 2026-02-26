@@ -16,7 +16,7 @@ import ordermanager.infrastructure.mapper.OrderMapper;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
-import ordermanager.infrastructure.store.persistence.entity.Status;
+import ordermanager.domain.model.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

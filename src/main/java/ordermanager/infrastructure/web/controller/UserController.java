@@ -85,10 +85,7 @@ public class UserController {
     @GetMapping("/{userId}/orders")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<OrderResponse> GetOrders(@PathVariable("userId") UUID userId){
-
-        //TODO:Move this function from order Service to User Service.
         return orderService.GetByUserId(userId).stream().map(orderMapper::toResponse).toList();
-
     }
 
 

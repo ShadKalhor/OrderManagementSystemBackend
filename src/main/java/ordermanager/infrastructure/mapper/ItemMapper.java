@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.mapper;
 
+import ordermanager.domain.model.ItemDomain;
 import ordermanager.infrastructure.web.dto.item.*;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.Item;
@@ -26,13 +27,10 @@ public interface ItemMapper {
 
     ItemDto toOrderDto(Item entity);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "name", ignore = true)
-    @Mapping(target = "description", ignore = true)
-    @Mapping(target = "size", ignore = true)
-    @Mapping(target = "isAvailable", ignore = true)
-    @Mapping(target = "quantity", ignore = true)
-    @Mapping(target = "reserved", ignore = true)
-    Item toEntity(ItemDto ItemDto);
+
+    ItemDomain toDomain(Item entity);
+
+    Item toEntity(ItemDomain domain);
+
 
 }
