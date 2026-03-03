@@ -4,6 +4,7 @@ import io.vavr.control.Either;
 import io.vavr.control.Option;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.DriverDomain;
 import ordermanager.domain.port.out.DriverPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
@@ -24,11 +25,11 @@ public class DriverService {
     }
 
 
-    public Either<StructuredError, Driver> CreateDriver(Driver driver) {
+    public Either<StructuredError, DriverDomain> CreateDriver(DriverDomain driver) {
         return driverPort.save(driver);
     }
 
-    public Either<StructuredError, Driver> UpdateDriver(UUID driverId, Driver driver){
+    public Either<StructuredError, DriverDomain> UpdateDriver(UUID driverId, DriverDomain driver){
 
 
         return GetDriverById(driverId).flatMap(existing -> {
@@ -38,12 +39,12 @@ public class DriverService {
 
     }
 
-    public Either<StructuredError, Driver> GetDriverById(UUID driverId) {
+    public Either<StructuredError, DriverDomain> GetDriverById(UUID driverId) {
 
         return driverPort.findById(driverId).toEither(new StructuredError("Driver Not Found", ErrorType.NOT_FOUND_ERROR));
     }
 
-    public List<Driver> GetAllDrivers() {
+    public List<DriverDomain> GetAllDrivers() {
         return driverPort.findAll();
     }
 

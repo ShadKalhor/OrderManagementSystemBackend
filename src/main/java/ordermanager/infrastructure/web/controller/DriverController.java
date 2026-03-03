@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.web.controller;
 
+import ordermanager.domain.model.DriverDomain;
 import ordermanager.infrastructure.service.DriverService;
 import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;
 import ordermanager.infrastructure.web.dto.driver.DriverResponse;
@@ -30,9 +31,9 @@ public class DriverController {
     @ResponseStatus(HttpStatus.CREATED)
     public DriverResponse CreateDriver(@Valid @RequestBody CreateDriverRequest driverBody){
 
-        Driver driver = driverMapper.create(driverBody);
+        DriverDomain driver = driverMapper.createDomain(driverBody);
         return driverService.CreateDriver(driver)
-                .map(driverMapper::toResponse)
+                .map(driverMapper::domainToResponse)
                 .getOrElseThrow(ErrorStructureException::new);
 
     }
@@ -41,8 +42,8 @@ public class DriverController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public DriverResponse UpdateDriver(@PathVariable UUID driverId,@Valid @RequestBody UpdateDriverRequest driverBody){
 
-        var driver = driverMapper.update(driverBody);
-        return driverService.UpdateDriver(driverId,driver).map(driverMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        DriverDomain driver = driverMapper.updateDomain(driverBody);
+        return driverService.UpdateDriver(driverId,driver).map(driverMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
@@ -50,7 +51,7 @@ public class DriverController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public DriverResponse GetDriver(@PathVariable UUID driverId){
 
-        return driverService.GetDriverById(driverId).map(driverMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        return driverService.GetDriverById(driverId).map(driverMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
@@ -61,7 +62,7 @@ public class DriverController {
     public List<DriverResponse> GetAllDrivers(){
 
         return driverService.GetAllDrivers().stream()
-                .map(driverMapper::toResponse)
+                .map(driverMapper::domainToResponse)
                 .toList();
     }
 

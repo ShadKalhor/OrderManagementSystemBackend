@@ -21,6 +21,12 @@ public interface DriverMapper {
     @Mapping(source = "accountId", target = "account")
     Driver create(CreateDriverRequest r);
 
+    @Mapping(target = "id", ignore = true)
+    DriverDomain createDomain(CreateDriverRequest r);
+
+    @Mapping(target = "id", ignore = true)
+    DriverDomain updateDomain(UpdateDriverRequest r);
+
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "accountId", target = "account")
@@ -28,6 +34,8 @@ public interface DriverMapper {
 
     @Mapping(target = "name", source = "account.name")
     DriverResponse toResponse(Driver entity);
+
+    DriverResponse domainToResponse(DriverDomain domain);
 
     @Mapping(source = "account", target = "accountId")
     DriverDomain toDomain(Driver entity);
