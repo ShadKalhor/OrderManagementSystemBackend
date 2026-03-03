@@ -5,7 +5,9 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.UserDomain;
 import ordermanager.domain.port.out.UserPersistencePort;
+import ordermanager.infrastructure.mapper.UserMapper;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import ordermanager.infrastructure.store.persistence.jpa.SpringDataUserRepository;
 import org.springframework.stereotype.Repository;
@@ -17,36 +19,38 @@ import java.util.UUID;
 public class UserRepositoryAdapter implements UserPersistencePort {
 
     private final SpringDataUserRepository userRepository;
+    private UserMapper userMapper;
 
-
-    public UserRepositoryAdapter(SpringDataUserRepository userRepository){
+    public UserRepositoryAdapter(SpringDataUserRepository userRepository, UserMapper userMapper){
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
-    public Option<User> findById(UUID userId) {
-                return userRepository.findOptionById(userId);
+    public Option<UserDomain> findById(UUID userId) {
+                return userRepository.findOptionById(userId).map(userMapper::toDomain);
     }
 
     @Override
-    public Option<User> findByName(String name) {
-        return userRepository.findByName(name);
+    public Option<UserDomain> findByName(String name) {
+        return userRepository.findByName(name).map(userMapper::toDomain);
     }
 
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDomain> findAll() {
+        return userRepository.findAll()
+                .stream().map(userMapper::toDomain).toList();
     }
 
     @Override
-    public Option<User> findByPhone(String phoneNumber) {
-        return userRepository.findByPhone(phoneNumber);
+    public Option<UserDomain> findByPhone(String phoneNumber) {
+        return userRepository.findByPhone(phoneNumber).map(userMapper::toDomain);
     }
 
     @Override
-    public Either<StructuredError, User> save(User user) {
-
-        return Try.of(() -> userRepository.save(user)).toEither(new StructuredError("Could Not Save User", ErrorType.SERVER_ERROR));
+    public Either<StructuredError, UserDomain> save(UserDomain domain) {
+        User user = userMapper.toEntity(domain);
+        return Try.of(() -> userRepository.save(user)).map(userMapper::toDomain).toEither(new StructuredError("Could Not Save User", ErrorType.SERVER_ERROR));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ordermanager.domain.model;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Setter
 @Getter
 @Builder
+@AllArgsConstructor
 public class OrderDomain {
 
     private UUID id;
@@ -31,4 +33,13 @@ public class OrderDomain {
     private String notes;
 
 
+    public OrderDomain(List<UUID> itemIds, BigDecimal subtotal,
+                       BigDecimal deliveryFee, BigDecimal tax, BigDecimal total) {
+        this.itemIds = itemIds;
+        this.subTotal = subtotal;
+        this.deliveryFee = deliveryFee;
+        this.tax = tax;
+        this.totalPrice = total;
+
+    }
 }

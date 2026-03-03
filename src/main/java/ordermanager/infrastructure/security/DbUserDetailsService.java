@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.security;
 
+import ordermanager.domain.model.UserDomain;
 import ordermanager.infrastructure.store.persistence.adapter.UserRepositoryAdapter;
 import ordermanager.infrastructure.store.persistence.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class DbUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
         System.out.println(">>> UserDetailsService input phone = [" + phone + "]");
-        User u = userRepository.findByPhone(phone)
+        UserDomain u = userRepository.findByPhone(phone)
                 .getOrElseThrow(() -> new UsernameNotFoundException("User not found: " + phone));
 
         List<SimpleGrantedAuthority> authorities =

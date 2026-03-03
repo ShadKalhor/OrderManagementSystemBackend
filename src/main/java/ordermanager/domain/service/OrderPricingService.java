@@ -1,15 +1,20 @@
 package ordermanager.domain.service;
 
-import ordermanager.infrastructure.web.dto.item.ItemDto;
-import ordermanager.infrastructure.web.dto.order.OrderDto;
-import ordermanager.infrastructure.web.dto.orderitem.OrderItemDto;
+import ordermanager.domain.model.ItemDomain;
+import ordermanager.domain.model.OrderDomain;
+import ordermanager.domain.model.OrderItemDomain;
+import ordermanager.domain.port.out.ItemPersistencePort;
+import ordermanager.domain.port.out.OrderItemPersistencePort;
+import ordermanager.infrastructure.store.persistence.entity.OrderItem;
+
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
 import java.util.List;
+import java.util.UUID;
 
 public class OrderPricingService {
-
 
     private static final BigDecimal DELIVERY_FEE_PCT = new BigDecimal("0.05");
     private static final BigDecimal MIN_DELIVERY_FEE = new BigDecimal("2.00");
@@ -17,21 +22,25 @@ public class OrderPricingService {
     private static final int MONEY_SCALE = 2;//lo nishan krdini point y Currency.
     private static final RoundingMode ROUNDING = RoundingMode.HALF_UP;
 
+    private OrderItemPersistencePort orderItemPort;
+    private ItemPersistencePort itemPort;
 
-    public OrderDto ApplyPricing(OrderDto orderDto) {
+    public OrderDomain ApplyPricing(OrderDomain orderDomain) {
 
-        BigDecimal subtotal = calculateSubtotal(orderDto.items());
+        BigDecimal subtotal = calculateSubtotal(orderDomain.getItemIds());
         BigDecimal deliveryFee = calculateDeliveryFee(subtotal);
         BigDecimal tax = calculateTax(subtotal);
         BigDecimal total = calculateTotal(subtotal,deliveryFee,tax);
 
-        return new OrderDto(orderDto.items(), subtotal, deliveryFee,tax,total);
+        return new OrderDomain(orderDomain.getItemIds(), subtotal, deliveryFee,tax,total);
     }
 
-    private BigDecimal calculateSubtotal(List<OrderItemDto> orderItemDtos){
-         return orderItemDtos.stream()
+    private BigDecimal calculateSubtotal(List<UUID> orderItemIds){
+
+        List<OrderItemDomain> orderItemDomains = orderItemPort.GetOrderItemsByIds(orderItemIds);
+         return orderItemDomains.stream()
                 .map(this::lineTotal)
-                 .map(OrderItemDto::totalPrice)
+                 .map(OrderItemDomain::getTotalPrice)
                  .reduce(BigDecimal.ZERO, BigDecimal::add)
                  .setScale(MONEY_SCALE, ROUNDING);
 
@@ -53,13 +62,13 @@ public class OrderPricingService {
                 .setScale(MONEY_SCALE, ROUNDING);
     }
 
-    private OrderItemDto lineTotal(OrderItemDto oi) {
-        ItemDto item = oi.item();
-        BigDecimal price = safe(item.price());
-        BigDecimal discount = roundDiscountWithinRange(safe(item.discount()));
-        BigDecimal qty = BigDecimal.valueOf(oi.quantity());
+    private OrderItemDomain lineTotal(OrderItemDomain oi) {
+        ItemDomain item = itemPort.findById(oi.getItemId()).get();
+        BigDecimal price = safe(item.getPrice());
+        BigDecimal discount = roundDiscountWithinRange(safe(item.getDiscount()));
+        BigDecimal qty = BigDecimal.valueOf(oi.getQuantity());
         BigDecimal unitNet = price.multiply(BigDecimal.ONE.subtract(discount));
-        return new OrderItemDto(oi.item(), oi.quantity(), unitNet.multiply(qty));
+        return new OrderItemDomain(UUID.randomUUID(), oi.getItemId(), oi.getQuantity(), unitNet.multiply(qty));
     }
 
 

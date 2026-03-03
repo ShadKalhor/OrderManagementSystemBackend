@@ -18,9 +18,20 @@ public interface UserMapper {
     User create(CreateUserRequest r);
 
     @Mapping(target = "id", ignore = true)
+    UserDomain createDomain(CreateUserRequest r);
+
+    @Mapping(target = "id", ignore = true)
+    UserDomain updateDomain(UpdateUserRequest r);
+
+    @Mapping(target = "id", ignore = true)
     User update(UpdateUserRequest r);
 
     UserResponse toResponse(User entity);
+
+    UserResponse domainToResponse(UserDomain domain);
+
+    UserSummary domainToSummary(UserDomain domain);
+
     UserSummary toSummary(User entity);
 
 

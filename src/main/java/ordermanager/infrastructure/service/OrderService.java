@@ -5,6 +5,10 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.ItemDomain;
+import ordermanager.domain.model.OrderDomain;
+import ordermanager.domain.model.OrderItemDomain;
+import ordermanager.domain.port.out.OrderItemPersistencePort;
 import ordermanager.infrastructure.web.dto.order.OrderDto;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
@@ -20,6 +24,7 @@ import ordermanager.domain.model.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -30,39 +35,45 @@ public class OrderService {
     private final OrderPersistencePort orderPort;
     private final InventoryReservationPort inventoryReservationPort;
     private final OrderMapper orderMapper;
-
+    private final OrderItemPersistencePort orderItemPort;
 
     public OrderService( ItemService itemService, OrderPricingService orderPricingService,
                          OrderPersistencePort orderPort,
-                         InventoryReservationPort inventoryReservationPort, OrderMapper orderMapper){
+                         InventoryReservationPort inventoryReservationPort,
+                         OrderMapper orderMapper,
+                         OrderItemPersistencePort orderItemPort){
         this.itemService = itemService;
         this.orderPricingService = orderPricingService;
         this.orderPort = orderPort;
         this.inventoryReservationPort = inventoryReservationPort;
         this.orderMapper = orderMapper;
+        this.orderItemPort = orderItemPort;
     }
 
 
-    public Either<StructuredError, Order> CreateOrder(Order draft) {
-        hydrateItems(draft);
+    public Either<StructuredError, OrderDomain> CreateOrder(OrderDomain draft) {
+        List<OrderItem> orderItems = Objects.requireNonNull(hydrateItems(draft))
+                .toEither(new StructuredError("OrderItems Not Found",
+                        ErrorType.NOT_FOUND_ERROR)).get();
+
 
         //reserve y item akan daka gar hatu item habu unavailable bu result dabta instance ak la ReservationResult.Failure
-        var result = inventoryReservationPort.reserveItems(draft.getItems());
+        var result = inventoryReservationPort.reserveItems(orderItems);
         if (result instanceof ReservationResult.Failure f) {
             throw new InsufficientInventoryException(f.lines());
         }
         var reservationId = ((ReservationResult.Success) result).reservationId();
 
         return Try.of(()->{
-            OrderDto orderDto = orderMapper.toOrderDto(draft);
-            OrderDto calculationResult = orderPricingService.ApplyPricing(orderDto);
 
-            draft.setSubTotal(calculationResult.subTotal());
-            draft.setDeliveryFee(calculationResult.deliveryFee());
-            draft.setTax(calculationResult.tax());
-            draft.setTotalPrice(calculationResult.totalPrice());
+            OrderDomain calculationResult = orderPricingService.ApplyPricing(draft);
 
-            draft.setReservation(inventoryReservationPort.FindReservationById(reservationId));
+            draft.setSubTotal(calculationResult.getSubTotal());
+            draft.setDeliveryFee(calculationResult.getDeliveryFee());
+            draft.setTax(calculationResult.getTax());
+            draft.setTotalPrice(calculationResult.getTotalPrice());
+
+            draft.setReservationId(inventoryReservationPort.FindReservationById(reservationId).getId());
             draft.setStatus(Status.Pending);
             return orderPort.save(draft);
         }).onFailure(ex -> inventoryReservationPort.releaseReservation(reservationId))
@@ -72,15 +83,15 @@ public class OrderService {
 
 
     //dastkari item&price detail nakre.
-    public Either<StructuredError, Order> UpdateOrder(UUID orderId, Order patchedOrder){
+    public Either<StructuredError, OrderDomain> UpdateOrder(UUID orderId, Order patchedOrder){
 
-        Option<Order> orderExists = orderPort.findById(orderId);
+        Option<OrderDomain> orderExists = orderPort.findById(orderId);
         if(orderExists.isEmpty())
             throw new EntityNotFoundException("Order Not Found with Id ", orderId);
-        Order order = orderExists.get();
+        OrderDomain order = orderExists.get();
 
-        order.setAddress(patchedOrder.getAddress());
-        order.setDriver(patchedOrder.getDriver());
+        order.setAddressId(patchedOrder.getAddress().getId());
+        order.setDriverId(patchedOrder.getDriver().getId());
         order.setStatus(patchedOrder.getStatus());
         order.setDeliveryStatus(patchedOrder.getDeliveryStatus());
         order.setNotes(patchedOrder.getNotes());
@@ -89,17 +100,17 @@ public class OrderService {
     }
 
 
-    public List<Order> GetAllOrders(){
+    public List<OrderDomain> GetAllOrders(){
         return orderPort.findAll();
     }
 
 
-    public Either<StructuredError, Order> GetOrderById(UUID orderId){
+    public Either<StructuredError, OrderDomain> GetOrderById(UUID orderId){
         return orderPort.findById(orderId).toEither(() -> new StructuredError("Order Not Found", ErrorType.NOT_FOUND_ERROR));
     }
 
 
-    public List<Order> GetByUserId(UUID userId) {
+    public List<OrderDomain> GetByUserId(UUID userId) {
         return orderPort.findByUserId(userId);
     }
 
@@ -111,15 +122,19 @@ public class OrderService {
         });
     }
 
-    private void hydrateItems(Order order) {
-        for (OrderItem oi : order.getItems()) {
-            UUID itemId = oi.getItem().getId();
+    private Either<StructuredError, List<OrderItem>> hydrateItems(OrderDomain order) {
+        for (UUID orderItemId : order.getItemIds()) {
+            OrderItemDomain orderItemDomain = orderItemPort.GetById(orderItemId).getOrNull();
+            if (orderItemDomain == null)
+                return Either.left(new StructuredError("Order Not Found",ErrorType.NOT_FOUND_ERROR));
+            UUID itemId = orderItemDomain.getItemId();
 
-            Item item = itemService.GetItemById(itemId)
+            ItemDomain item = itemService.GetItemById(itemId)
                     .getOrElseThrow(() -> new EntityNotFoundException("Item", itemId));
 
-            oi.setItem(item);
+            orderItemDomain.setItemId(item.getId());
         }
+        return null;
     }
 
 }

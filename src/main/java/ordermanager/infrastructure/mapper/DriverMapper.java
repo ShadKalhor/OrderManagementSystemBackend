@@ -1,9 +1,11 @@
 package ordermanager.infrastructure.mapper;
 
 import ordermanager.domain.model.DriverDomain;
+import ordermanager.infrastructure.service.DriverEnrichmentService;
 import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;
 import ordermanager.infrastructure.web.dto.driver.DriverResponse;
 import ordermanager.infrastructure.web.dto.driver.UpdateDriverRequest;
+import ordermanager.infrastructure.web.dto.user.UserResponse;
 import org.mapstruct.*;
 import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.store.persistence.entity.User;
@@ -35,6 +37,8 @@ public interface DriverMapper {
     @Mapping(target = "name", source = "account.name")
     DriverResponse toResponse(Driver entity);
 
+    @Mapping(target = "name",ignore = true)
+    @Mapping(target = "account", ignore = true)
     DriverResponse domainToResponse(DriverDomain domain);
 
     @Mapping(source = "account", target = "accountId")
@@ -106,5 +110,6 @@ public interface DriverMapper {
     private boolean notBlank(String s) {
         return s != null && !s.trim().isEmpty();
     }
+
 
 }

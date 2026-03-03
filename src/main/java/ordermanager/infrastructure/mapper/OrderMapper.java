@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.mapper;
 
+
 import ordermanager.domain.model.OrderDomain;
 import ordermanager.infrastructure.store.persistence.entity.*;
 import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
@@ -7,7 +8,7 @@ import ordermanager.infrastructure.web.dto.order.OrderDto;
 import ordermanager.infrastructure.web.dto.order.OrderResponse;
 import ordermanager.infrastructure.web.dto.order.UpdateOrderRequest;
 import org.mapstruct.*;
-import org.springframework.jmx.export.annotation.ManagedOperation;
+
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -31,6 +32,29 @@ public interface OrderMapper {
     @Mapping(target = "reservation", ignore = true)
     Order create(CreateOrderRequest r);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(source ="items", target ="itemIds")
+    @Mapping(target = "reservationId", ignore = true)
+    @Mapping(target = "subTotal", ignore = true)
+    @Mapping(target = "deliveryFee", ignore = true)
+    @Mapping(target = "tax", ignore = true)
+    @Mapping(target = "totalPrice", ignore = true)
+    OrderDomain createDomain(CreateOrderRequest r);
+
+    @Mapping(target = "user.id", ignore = true)
+    @Mapping(source = "addressId", target = "addressId")
+    @Mapping(source = "driverId",  target = "driverId")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "subTotal", ignore = true)
+    @Mapping(target = "deliveryFee", ignore = true)
+    @Mapping(target = "tax", ignore = true)
+    @Mapping(target = "totalPrice", ignore = true)
+    @Mapping(target = "reservationId", ignore = true)
+    @Mapping(target = "itemIds", ignore = true)
+    @Mapping(target = "userId", ignore = true)
+    OrderDomain updateDomain(UpdateOrderRequest r);
+
+
     @Mapping(target = "user.id", ignore = true)
     @Mapping(source = "addressId", target = "address.id")
     @Mapping(source = "driverId",  target = "driver.id")
@@ -45,6 +69,9 @@ public interface OrderMapper {
 
 
     OrderResponse toResponse(Order entity);
+
+    //TODO:CHECK PASSING NESTED OBJECTS.
+    OrderResponse domainToResponse(OrderDomain domain);
 
     OrderDto toOrderDto(Order entity);
 
@@ -63,6 +90,8 @@ public interface OrderMapper {
     @Mapping(source = "itemIds", target = "items")
     @Mapping(source = "reservationId", target = "reservation.id")
     Order toEntity(OrderDomain domain);
+
+
 
 
 

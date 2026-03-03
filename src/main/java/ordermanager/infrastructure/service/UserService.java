@@ -4,6 +4,7 @@ import io.vavr.control.Either;
 import io.vavr.control.Option;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.UserDomain;
 import ordermanager.domain.port.out.UserPersistencePort;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.entity.Item;
@@ -27,25 +28,25 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Either<StructuredError, User> GetUserById(UUID userId){
+    public Either<StructuredError, UserDomain> GetUserById(UUID userId){
         return userPort.findById(userId).toEither(() -> new StructuredError("Could Not Find User With Specified UserId", ErrorType.NOT_FOUND_ERROR));
     }
 
-    public List<User> GetAllUsers(){
+    public List<UserDomain> GetAllUsers(){
         return userPort.findAll();
     }
 
-    public Either<StructuredError, User> GetUserByPhoneNumber(String phoneNumber) {
+    public Either<StructuredError, UserDomain> GetUserByPhoneNumber(String phoneNumber) {
         return userPort.findByPhone(phoneNumber).toEither(new StructuredError("Could Not Find User With Specified Phone Number", ErrorType.NOT_FOUND_ERROR));
     }
 
-    public Either<StructuredError, User> CreateUser(User user) {
+    public Either<StructuredError, UserDomain> CreateUser(UserDomain user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userPort.save(user);
     }
 
-    public Either<StructuredError, User> UpdateUser(UUID userId, User user){
+    public Either<StructuredError, UserDomain> UpdateUser(UUID userId, UserDomain user){
 
         return GetUserById(userId).flatMap(existing ->{
             user.setId(userId);

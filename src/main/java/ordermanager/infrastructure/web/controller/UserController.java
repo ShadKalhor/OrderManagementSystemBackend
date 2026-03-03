@@ -1,6 +1,7 @@
 package ordermanager.infrastructure.web.controller;
 
 import io.vavr.control.Option;
+import ordermanager.domain.model.UserDomain;
 import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.service.OrderService;
 import ordermanager.infrastructure.service.UserService;
@@ -52,16 +53,16 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse CreateUser(@Valid @RequestBody CreateUserRequest userBody){
 
-        var user = userMapper.create(userBody);
-        return userService.CreateUser(user).map(userMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        UserDomain user = userMapper.createDomain(userBody);
+        return userService.CreateUser(user).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
     }
 
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public UserResponse UpdateUser(@PathVariable UUID userId, @Valid @RequestBody UpdateUserRequest userBody){
 
-        var user = userMapper.update(userBody);
-        return userService.UpdateUser(userId,user).map(userMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        UserDomain user = userMapper.updateDomain(userBody);
+        return userService.UpdateUser(userId,user).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
     }
 
 
@@ -69,7 +70,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public UserResponse GetById(@PathVariable("userId") UUID userId){
 
-        return userService.GetUserById(userId).map(userMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        return userService.GetUserById(userId).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
@@ -77,7 +78,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public UserResponse GetByPhoneNumber(@RequestParam(required = false) String phoneNumber){
 
-        return userService.GetUserByPhoneNumber(phoneNumber).map(userMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        return userService.GetUserByPhoneNumber(phoneNumber).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
@@ -85,7 +86,7 @@ public class UserController {
     @GetMapping("/{userId}/orders")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<OrderResponse> GetOrders(@PathVariable("userId") UUID userId){
-        return orderService.GetByUserId(userId).stream().map(orderMapper::toResponse).toList();
+        return orderService.GetByUserId(userId).stream().map(orderMapper::domainToResponse).toList();
     }
 
 
@@ -104,7 +105,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<UserSummary> GetAllUsers(){
 
-        return userService.GetAllUsers().stream().map(userMapper::toSummary).toList();
+        return userService.GetAllUsers().stream().map(userMapper::domainToSummary).toList();
 
 
     }
