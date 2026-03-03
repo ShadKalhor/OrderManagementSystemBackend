@@ -34,19 +34,16 @@ public class OrderService {
     private final OrderPricingService orderPricingService;
     private final OrderPersistencePort orderPort;
     private final InventoryReservationPort inventoryReservationPort;
-    private final OrderMapper orderMapper;
     private final OrderItemPersistencePort orderItemPort;
 
     public OrderService( ItemService itemService, OrderPricingService orderPricingService,
                          OrderPersistencePort orderPort,
                          InventoryReservationPort inventoryReservationPort,
-                         OrderMapper orderMapper,
                          OrderItemPersistencePort orderItemPort){
         this.itemService = itemService;
         this.orderPricingService = orderPricingService;
         this.orderPort = orderPort;
         this.inventoryReservationPort = inventoryReservationPort;
-        this.orderMapper = orderMapper;
         this.orderItemPort = orderItemPort;
     }
 
