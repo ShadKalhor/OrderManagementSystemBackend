@@ -3,6 +3,7 @@ package ordermanager.infrastructure.service;
 import io.vavr.control.Either;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.UserAddressDomain;
 import ordermanager.domain.port.out.AddressPersistencePort;
 import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,11 @@ public class AddressService {
         this.addressPort = addressPort;
     }
 
-    public Either<StructuredError, UserAddress> CreateAddress(UserAddress userAddress){
+    public Either<StructuredError, UserAddressDomain> CreateAddress(UserAddressDomain userAddress){
         return addressPort.save(userAddress);
     }
 
-    public Either<StructuredError, UserAddress> UpdateAddress(UUID addressId, UserAddress userAddress){
+    public Either<StructuredError, UserAddressDomain> UpdateAddress(UUID addressId, UserAddressDomain userAddress){
 
         return GetAddressById(addressId).flatMap(existing -> {
                     userAddress.setId(addressId);
@@ -31,11 +32,11 @@ public class AddressService {
     }
 
 
-    public List<UserAddress> GetUserAddresses(UUID userId){
+    public List<UserAddressDomain> GetUserAddresses(UUID userId){
         return addressPort.findAddressesByUserId(userId);
     }
 
-    public Either<StructuredError, UserAddress> GetAddressById(UUID uuid){
+    public Either<StructuredError, UserAddressDomain> GetAddressById(UUID uuid){
         return addressPort.findById(uuid).toEither(new StructuredError("Address Not Found", ErrorType.NOT_FOUND_ERROR));
     }
 

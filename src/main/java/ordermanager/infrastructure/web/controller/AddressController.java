@@ -1,6 +1,6 @@
 package ordermanager.infrastructure.web.controller;
 
-import ordermanager.infrastructure.store.persistence.entity.UserAddress;
+import ordermanager.domain.model.UserAddressDomain;
 import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
 import ordermanager.infrastructure.web.dto.useraddress.UpdateUserAddressRequest;
@@ -31,9 +31,9 @@ public class AddressController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserAddressResponse CreateAddress(@Valid @RequestBody CreateUserAddressRequest addressBody){
 
-        UserAddress address = addressMapper.create(addressBody);
+        UserAddressDomain address = addressMapper.createDomain(addressBody);
         return addressService.CreateAddress(address)
-                .map(addressMapper::toResponse)
+                .map(addressMapper::domainToResponse)
                 .getOrElseThrow(ErrorStructureException::new);
     }
 
@@ -41,9 +41,9 @@ public class AddressController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public UserAddressResponse UpdateAddress(@PathVariable UUID addressId, @Valid @RequestBody UpdateUserAddressRequest addressBody){
 
-        var address = addressMapper.update(addressBody);
+        UserAddressDomain address = addressMapper.updateDomain(addressBody);
         return addressService.UpdateAddress(addressId, address)
-                .map(addressMapper::toResponse)
+                .map(addressMapper::domainToResponse)
                         .getOrElseThrow(ErrorStructureException::new);
     }
 
@@ -52,7 +52,7 @@ public class AddressController {
     public UserAddressResponse GetAddressById(@PathVariable("addressId") UUID addressId){
 
         return addressService.GetAddressById(addressId)
-                .map(addressMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+                .map(addressMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 

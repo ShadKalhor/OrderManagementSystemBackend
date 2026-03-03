@@ -22,6 +22,12 @@ public interface UserAddressMapper {
     UserAddress create(CreateUserAddressRequest r);
 
     @Mapping(target = "id", ignore = true)
+    UserAddressDomain createDomain(CreateUserAddressRequest r);
+
+    @Mapping(target = "id", ignore = true)
+    UserAddressDomain updateDomain(UpdateUserAddressRequest r);
+
+    @Mapping(target = "id", ignore = true)
     @Mapping(source = "userId", target = "user.id")
     UserAddress update(UpdateUserAddressRequest r);
 
@@ -29,6 +35,8 @@ public interface UserAddressMapper {
     @Mapping(source = "primary", target = "isPrimary")
     UserAddressResponse toResponse(UserAddress entity);
 
+    @Mapping(source="primary", target = "isPrimary")
+    UserAddressResponse domainToResponse(UserAddressDomain domain);
 
     @Mapping(source = "user", target = "userId")
     @Mapping(source = "primary", target = "isPrimary")
