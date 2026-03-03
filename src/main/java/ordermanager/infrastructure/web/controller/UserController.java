@@ -94,7 +94,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<UserAddressResponse> GetAddressById(@PathVariable("userId") UUID userId){
 
-        return addressService.GetUserAddresses(userId).stream().map(userAddressMapper::toResponse).toList();
+        return addressService.GetUserAddresses(userId).stream().map(userAddressMapper::domainToResponse).toList();
 
     }
 
