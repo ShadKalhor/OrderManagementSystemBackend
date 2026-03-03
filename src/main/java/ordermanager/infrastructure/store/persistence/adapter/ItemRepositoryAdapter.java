@@ -5,7 +5,9 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.ItemDomain;
 import ordermanager.domain.port.out.ItemPersistencePort;
+import ordermanager.infrastructure.mapper.ItemMapper;
 import ordermanager.infrastructure.store.persistence.entity.Item;
 import ordermanager.infrastructure.store.persistence.jpa.SpringDataItemRepository;
 import org.springframework.stereotype.Repository;
@@ -17,24 +19,27 @@ import java.util.UUID;
 public class ItemRepositoryAdapter implements ItemPersistencePort {
 
     SpringDataItemRepository itemRepository;
+    ItemMapper itemMapper;
 
-    public ItemRepositoryAdapter(SpringDataItemRepository itemRepository){
+    public ItemRepositoryAdapter(SpringDataItemRepository itemRepository, ItemMapper itemMapper){
         this.itemRepository = itemRepository;
+        this.itemMapper = itemMapper;
     }
 
     @Override
-    public Option<Item> findById(UUID id) {
-        return itemRepository.findOptionById(id);
+    public Option<ItemDomain> findById(UUID id) {
+        return itemRepository.findOptionById(id).map(itemMapper::toDomain);
     }
 
     @Override
-    public Either<StructuredError, Item> save(Item item) {
-        return Try.of(() -> itemRepository.save(item)).toEither().mapLeft(throwable -> new StructuredError("Could Not Save Item", ErrorType.SERVER_ERROR));
+    public Either<StructuredError, ItemDomain> save(ItemDomain item) {
+        Item entity = itemMapper.toEntity(item);
+        return Try.of(() -> itemRepository.save(entity)).map(itemMapper::toDomain).toEither().mapLeft(throwable -> new StructuredError("Could Not Save Item", ErrorType.SERVER_ERROR));
     }
 
     @Override
-    public List<Item> findAll() {
-        return itemRepository.findAll();
+    public List<ItemDomain> findAll() {
+        return itemRepository.findAll().stream().map(itemMapper::toDomain).toList();
     }
 
     @Override

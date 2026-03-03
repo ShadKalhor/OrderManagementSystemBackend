@@ -1,5 +1,6 @@
 package ordermanager.infrastructure.web.controller;
 
+import ordermanager.domain.model.ItemDomain;
 import ordermanager.infrastructure.service.ItemService;
 import ordermanager.infrastructure.web.dto.item.CreateItemRequest;
 import ordermanager.infrastructure.web.dto.item.ItemResponse;
@@ -30,16 +31,16 @@ public class ItemController {
     @ResponseStatus(HttpStatus.CREATED)
     public ItemResponse CreateItem(@Valid @RequestBody CreateItemRequest itemBody){
 
-        var item = itemMapper.create(itemBody);
-        return itemService.CreateItem(item).map(itemMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        ItemDomain item = itemMapper.createDomain(itemBody);
+        return itemService.CreateItem(item).map(itemMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
     }
 
     @PutMapping("/{itemId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ItemResponse UpdateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
-        var item = itemMapper.update(itemBody);
+        ItemDomain item = itemMapper.updateDomain(itemBody);
 
-        return itemService.UpdateItem(itemId,item).map(itemMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        return itemService.UpdateItem(itemId,item).map(itemMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
@@ -47,7 +48,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ItemResponse GetItemById(@PathVariable("itemId") UUID itemId){
 
-        return itemService.GetItemById(itemId).map(itemMapper::toResponse).getOrElseThrow(ErrorStructureException::new);
+        return itemService.GetItemById(itemId).map(itemMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
@@ -56,7 +57,7 @@ public class ItemController {
     public List<ItemResponse> GetAllItems(){
 
         return itemService.GetAllItems().stream()
-                .map(itemMapper::toResponse)
+                .map(itemMapper::domainToResponse)
                 .toList();
 
     }

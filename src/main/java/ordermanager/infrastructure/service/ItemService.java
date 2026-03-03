@@ -5,6 +5,7 @@ import io.vavr.control.Either;
 import io.vavr.control.Option;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.ItemDomain;
 import ordermanager.domain.port.out.ItemPersistencePort;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.entity.Item;
@@ -23,11 +24,11 @@ public class ItemService {
         this.itemPort = itemPort;
     }
 
-    public Either<StructuredError, Item> CreateItem(Item item) {
+    public Either<StructuredError, ItemDomain> CreateItem(ItemDomain item) {
         return itemPort.save(item);
     }
 
-    public Either<StructuredError, Item> UpdateItem(UUID itemId, Item item){
+    public Either<StructuredError, ItemDomain> UpdateItem(UUID itemId, ItemDomain item){
 
         return GetItemById(itemId).flatMap(existing -> {
             item.setId(itemId);
@@ -36,14 +37,14 @@ public class ItemService {
 
     }
 
-    public Either<StructuredError, Item> GetItemById(UUID itemId) {
+    public Either<StructuredError, ItemDomain> GetItemById(UUID itemId) {
 
         return itemPort.findById(itemId).toEither(new StructuredError("Could Not Find Item", ErrorType.NOT_FOUND_ERROR));
     }
 
 
 
-    public List<Item> GetAllItems() {
+    public List<ItemDomain> GetAllItems() {
         return itemPort.findAll();
     }
 
