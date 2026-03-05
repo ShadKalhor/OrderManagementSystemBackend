@@ -19,7 +19,7 @@ public record OrderResponse(
         DriverResponse driver,
         Status status,
         DeliveryStatus deliveryStatus,
-        List<OrderItemResponse> items,
+        List<OrderItemResponse> orderItems,
         BigDecimal subTotal,
         BigDecimal deliveryFee,
         BigDecimal tax,

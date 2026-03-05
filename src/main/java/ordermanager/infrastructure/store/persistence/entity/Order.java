@@ -43,7 +43,7 @@ public class Order {
     private DeliveryStatus deliveryStatus;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items;
+    private List<OrderItem> orderItems;
 
     @OneToOne()
     @JoinColumn(name = "reservationId")
@@ -62,17 +62,17 @@ public class Order {
     }
 
     public void addItem(OrderItem item) {
-        if(items == null)
-            items = new ArrayList<>();
+        if(orderItems == null)
+            orderItems = new ArrayList<>();
         if(item.getId() == null)
             item.setId(UUID.randomUUID());
-        this.items.add(item);
+        this.orderItems.add(item);
     }
 
     public void setItems(List<OrderItem> items) {
-        this.items = items;
-        if (this.items != null) {
-            for (var oi : this.items) {
+        this.orderItems = items;
+        if (this.orderItems != null) {
+            for (var oi : this.orderItems) {
                 oi.setOrder(this);
                 if (oi.getId() == null) oi.setId(UUID.randomUUID());
             }

@@ -27,12 +27,12 @@ public class OrderPricingService {
 
     public OrderDomain ApplyPricing(OrderDomain orderDomain) {
 
-        BigDecimal subtotal = calculateSubtotal(orderDomain.getItemIds());
+        BigDecimal subtotal = calculateSubtotal(orderDomain.getOrderItemIds());
         BigDecimal deliveryFee = calculateDeliveryFee(subtotal);
         BigDecimal tax = calculateTax(subtotal);
         BigDecimal total = calculateTotal(subtotal,deliveryFee,tax);
 
-        return new OrderDomain(orderDomain.getItemIds(), subtotal, deliveryFee,tax,total);
+        return new OrderDomain(orderDomain.getOrderItemIds(), subtotal, deliveryFee,tax,total);
     }
 
     private BigDecimal calculateSubtotal(List<UUID> orderItemIds){

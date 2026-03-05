@@ -33,7 +33,7 @@ public interface OrderMapper {
     Order create(CreateOrderRequest r);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source ="items", target ="itemIds")
+    @Mapping(source ="orderItems", target ="orderItemIds")
     @Mapping(target = "reservationId", ignore = true)
     @Mapping(target = "subTotal", ignore = true)
     @Mapping(target = "deliveryFee", ignore = true)
@@ -50,7 +50,7 @@ public interface OrderMapper {
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "reservationId", ignore = true)
-    @Mapping(target = "itemIds", ignore = true)
+    @Mapping(target = "orderItemIds", ignore = true)
     @Mapping(target = "userId", ignore = true)
     OrderDomain updateDomain(UpdateOrderRequest r);
 
@@ -64,7 +64,7 @@ public interface OrderMapper {
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "reservation", ignore = true)
-    @Mapping(target = "items", ignore = true)
+    @Mapping(target = "orderItems", ignore = true)
     Order update(UpdateOrderRequest r);
 
 
@@ -79,7 +79,7 @@ public interface OrderMapper {
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "address.id", target = "addressId")
     @Mapping(source = "driver.id", target = "driverId")
-    @Mapping(source = "items", target = "itemIds")
+    @Mapping(source = "orderItems", target = "orderItemIds")
     @Mapping(source = "reservation.id", target = "reservationId")
     OrderDomain toDomain(Order entity);
 
@@ -87,7 +87,7 @@ public interface OrderMapper {
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "addressId", target = "address.id")
     @Mapping(source = "driverId", target = "driver.id")
-    @Mapping(source = "itemIds", target = "items")
+    @Mapping(source = "orderItemIds", target = "orderItems")
     @Mapping(source = "reservationId", target = "reservation.id")
     Order toEntity(OrderDomain domain);
 
@@ -138,8 +138,8 @@ public interface OrderMapper {
 
     @AfterMapping
     default void linkItemsToOrder(@MappingTarget Order entity) {
-        if (entity.getItems() == null) return;
-        for (var oi : entity.getItems()) {
+        if (entity.getOrderItems() == null) return;
+        for (var oi : entity.getOrderItems()) {
             oi.setOrder(entity);
         }
     }

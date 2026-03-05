@@ -123,7 +123,7 @@ public class OrderService {
     }
 
     private Either<StructuredError, List<OrderItem>> hydrateItems(OrderDomain order) {
-        for (UUID orderItemId : order.getItemIds()) {
+        for (UUID orderItemId : order.getOrderItemIds()) {
             OrderItemDomain orderItemDomain = orderItemPort.GetById(orderItemId).getOrNull();
             if (orderItemDomain == null)
                 return Either.left(new StructuredError("Order Not Found",ErrorType.NOT_FOUND_ERROR));
