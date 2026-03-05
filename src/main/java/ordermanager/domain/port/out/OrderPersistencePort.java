@@ -4,7 +4,7 @@ import io.vavr.control.Either;
 import io.vavr.control.Option;
 import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.model.OrderDomain;
-import ordermanager.infrastructure.store.persistence.entity.Order;
+
 
 import java.util.List;
 import java.util.UUID;
