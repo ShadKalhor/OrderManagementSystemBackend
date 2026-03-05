@@ -1,19 +1,15 @@
 package ordermanager.infrastructure.service;
 
 import io.vavr.control.Either;
-import io.vavr.control.Option;
+
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.model.UserDomain;
 import ordermanager.domain.port.out.UserPersistencePort;
-import ordermanager.infrastructure.exception.EntityNotFoundException;
-import ordermanager.infrastructure.store.persistence.entity.Item;
-import ordermanager.infrastructure.store.persistence.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

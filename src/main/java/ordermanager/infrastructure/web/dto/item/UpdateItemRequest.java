@@ -12,6 +12,6 @@ public record UpdateItemRequest(
         @DecimalMin(value = "0.0", inclusive = true, message = "Discount cannot be negative")
         @DecimalMax(value = "1.0", inclusive = true, message = "Discount cannot be greater than 1.0")
         BigDecimal discount,
-        Boolean isAvailable,
+        Boolean available,
         Integer quantity
 ) {}

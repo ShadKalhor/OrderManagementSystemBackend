@@ -1,12 +1,10 @@
 package ordermanager.infrastructure.web.controller;
 
-import io.vavr.control.Option;
+
 import ordermanager.domain.model.UserDomain;
 import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.service.OrderService;
 import ordermanager.infrastructure.service.UserService;
-import ordermanager.infrastructure.store.persistence.entity.Order;
-import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.infrastructure.web.dto.order.OrderResponse;
 import ordermanager.infrastructure.web.dto.user.CreateUserRequest;
 import ordermanager.infrastructure.web.dto.user.UpdateUserRequest;
@@ -18,7 +16,6 @@ import ordermanager.infrastructure.mapper.UserAddressMapper;
 import ordermanager.infrastructure.mapper.UserMapper;
 import ordermanager.infrastructure.web.exception.ErrorStructureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

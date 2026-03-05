@@ -6,7 +6,6 @@ import ordermanager.infrastructure.web.dto.driver.CreateDriverRequest;
 import ordermanager.infrastructure.web.dto.driver.DriverResponse;
 import ordermanager.infrastructure.web.dto.driver.UpdateDriverRequest;
 import ordermanager.infrastructure.mapper.DriverMapper;
-import ordermanager.infrastructure.store.persistence.entity.Driver;
 import ordermanager.infrastructure.web.exception.ErrorStructureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

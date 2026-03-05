@@ -1,17 +1,14 @@
 package ordermanager.infrastructure.service;
 
 import io.vavr.control.Either;
-import io.vavr.control.Option;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.model.DriverDomain;
 import ordermanager.domain.port.out.DriverPersistencePort;
-import ordermanager.infrastructure.store.persistence.entity.Driver;
-import ordermanager.infrastructure.exception.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

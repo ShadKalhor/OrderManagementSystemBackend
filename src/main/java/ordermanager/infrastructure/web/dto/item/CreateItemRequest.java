@@ -12,6 +12,6 @@ public record CreateItemRequest(
         @DecimalMin(value="0.0", inclusive=true) BigDecimal price,
         @NotBlank String size,
         @DecimalMin(value="0.0", inclusive=true) BigDecimal discount,
-        boolean isAvailable,
+        boolean available,
         @Min(0) int quantity
 ) {}

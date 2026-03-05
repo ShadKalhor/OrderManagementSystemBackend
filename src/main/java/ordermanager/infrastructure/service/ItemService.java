@@ -2,14 +2,10 @@ package ordermanager.infrastructure.service;
 
 
 import io.vavr.control.Either;
-import io.vavr.control.Option;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.model.ItemDomain;
 import ordermanager.domain.port.out.ItemPersistencePort;
-import ordermanager.infrastructure.exception.EntityNotFoundException;
-import ordermanager.infrastructure.store.persistence.entity.Item;
-import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

@@ -3,6 +3,7 @@ package ordermanager.infrastructure.store.persistence.entity;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
@@ -27,7 +28,8 @@ public class Item {
     private BigDecimal price;
     private String size;
     private BigDecimal discount;
-    private boolean isAvailable;
+    @Column(name = "isAvailable")
+    private boolean available;
     private int quantity;
     private int reserved;
 

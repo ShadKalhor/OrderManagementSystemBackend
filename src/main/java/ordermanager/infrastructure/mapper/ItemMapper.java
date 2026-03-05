@@ -19,25 +19,20 @@ public interface ItemMapper {
     Item create(CreateItemRequest r);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source="isAvailable", target = "available")
     @Mapping(target = "reserved", ignore = true)
     ItemDomain createDomain(CreateItemRequest r);
 
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source="isAvailable", target = "available")
     @Mapping(target = "reserved", ignore = true)
     ItemDomain updateDomain(UpdateItemRequest r);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "reserved", ignore = true)
-    @Mapping(source="isAvailable", target = "isAvailable")
     Item update(UpdateItemRequest r);
 
-    @Mapping(source = "available", target = "isAvailable")
     ItemResponse toResponse(Item entity);
 
-    @Mapping(source="available", target = "isAvailable")
     ItemResponse domainToResponse(ItemDomain domain);
 
     ItemSummary toSummary(Item entity);
@@ -46,7 +41,7 @@ public interface ItemMapper {
 
     ItemDomain toDomain(Item entity);
 
-    @Mapping(source="available", target = "isAvailable")
+
     Item toEntity(ItemDomain domain);
 
 

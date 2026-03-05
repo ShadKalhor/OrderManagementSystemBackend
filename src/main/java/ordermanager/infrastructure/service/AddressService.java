@@ -5,7 +5,6 @@ import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.model.UserAddressDomain;
 import ordermanager.domain.port.out.AddressPersistencePort;
-import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
