@@ -1,10 +1,15 @@
 package ordermanager.infrastructure.store.persistence.adapter;
 
+import io.vavr.control.Either;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.OrderItemDomain;
+import ordermanager.domain.model.ReservationDomain;
 import ordermanager.domain.model.ReservationStatus;
 import ordermanager.domain.port.out.InventoryReservationPort;
-import ordermanager.domain.port.out.ReservationResult;
+import ordermanager.domain.model.ReservationResult;
+import ordermanager.infrastructure.mapper.ReserveMapper;
 import ordermanager.infrastructure.store.persistence.entity.*;
-import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.store.persistence.jpa.SpringDataItemRepository;
 import ordermanager.infrastructure.store.persistence.jpa.SpringDataReservationLineRepository;
 import ordermanager.infrastructure.store.persistence.jpa.SpringDataReservationRepository;
@@ -22,23 +27,28 @@ public class InventoryReservationAdapter implements InventoryReservationPort {
     private final SpringDataItemRepository itemRepo;
     private final SpringDataReservationRepository resRepo;
     private final SpringDataReservationLineRepository lineRepo;
+    private final ReserveMapper reserveMapper;
 
     public InventoryReservationAdapter(SpringDataItemRepository itemRepo,
                                        SpringDataReservationRepository resRepo,
-                                       SpringDataReservationLineRepository lineRepo) {
+                                       SpringDataReservationLineRepository lineRepo,
+                                       ReserveMapper reserveMapper) {
         this.itemRepo = itemRepo;
         this.resRepo = resRepo;
         this.lineRepo = lineRepo;
+        this.reserveMapper = reserveMapper;
     }
 
     @Override
     @Transactional
-    public ReservationResult reserveItems(List<OrderItem> items) {
+    public ReservationResult reserveItems(List<OrderItemDomain> items) {
+
+
         if (items == null || items.isEmpty()) {
             return new ReservationResult.Failure(List.of());
         }
 
-        var itemIds = items.stream().map(oi -> oi.getItem().getId()).toList();
+        var itemIds = items.stream().map(OrderItemDomain::getItemId).toList();
 
         //Map y item ba key, pashan check krdnawa w xstni item y be stock lo shortages.
         //check kawa la ruy efficiency
@@ -46,8 +56,8 @@ public class InventoryReservationAdapter implements InventoryReservationPort {
                 .collect(Collectors.toMap(Item::getId, x -> x));
 
         List<ReservationResult.UnavailableLine> shortages = new ArrayList<>();
-        for (OrderItem oi : items) {
-            Item inv = byId.get(oi.getItem().getId());
+        for (OrderItemDomain oi : items) {
+            Item inv = byId.get(oi.getItemId());
             int available = inv.getQuantity() - inv.getReserved();
             if (oi.getQuantity() > available) {
                 shortages.add(new ReservationResult.UnavailableLine(inv.getId(), oi.getQuantity(), available));
@@ -62,9 +72,9 @@ public class InventoryReservationAdapter implements InventoryReservationPort {
         res.setExpiresAt(Instant.now().plus(Duration.ofMinutes(15)));
         res = resRepo.save(res);
 
-        for (OrderItem oi : items) {
-            lineRepo.save(new ReservationLine(res, oi.getItem().getId(), oi.getQuantity()));
-            itemRepo.bumpReserved(oi.getItem().getId(), oi.getQuantity());
+        for (OrderItemDomain oi : items) {
+            lineRepo.save(new ReservationLine(res, oi.getItemId(), oi.getQuantity()));
+            itemRepo.bumpReserved(oi.getItemId(), oi.getQuantity());
         }
 
         return new ReservationResult.Success(resId);
@@ -107,11 +117,10 @@ public class InventoryReservationAdapter implements InventoryReservationPort {
     }
 
     @Override
-    public Reservation FindReservationById(UUID reservationId) {
-        Optional<Reservation> reservation = resRepo.findById(reservationId);
-        if(reservation.isPresent())
-            return reservation.get();
-
-        throw new EntityNotFoundException("Reservation",reservationId);
+    public Either<StructuredError, ReservationDomain> FindReservationById(UUID reservationId) {
+        ReservationDomain reservation = reserveMapper.toDomain(resRepo
+                .findOptionById(reservationId).toEither(() -> new StructuredError("Reservation Not Found", ErrorType.NOT_FOUND_ERROR))
+                .get());
+        return Either.right(reservation);
     }
 }

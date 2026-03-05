@@ -11,10 +11,11 @@ import ordermanager.domain.model.OrderItemDomain;
 import ordermanager.domain.port.out.OrderItemPersistencePort;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
-import ordermanager.domain.port.out.ReservationResult;
+import ordermanager.domain.model.ReservationResult;
 import ordermanager.domain.service.OrderPricingService;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.exception.InsufficientInventoryException;
+import ordermanager.infrastructure.mapper.OrderItemMapper;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 import ordermanager.domain.model.Status;
@@ -32,16 +33,19 @@ public class OrderService {
     private final OrderPersistencePort orderPort;
     private final InventoryReservationPort inventoryReservationPort;
     private final OrderItemPersistencePort orderItemPort;
+    private final OrderItemMapper orderItemMapper;
 
     public OrderService( ItemService itemService, OrderPricingService orderPricingService,
                          OrderPersistencePort orderPort,
                          InventoryReservationPort inventoryReservationPort,
-                         OrderItemPersistencePort orderItemPort){
+                         OrderItemPersistencePort orderItemPort,
+                         OrderItemMapper orderItemMapper){
         this.itemService = itemService;
         this.orderPricingService = orderPricingService;
         this.orderPort = orderPort;
         this.inventoryReservationPort = inventoryReservationPort;
         this.orderItemPort = orderItemPort;
+        this.orderItemMapper = orderItemMapper;
     }
 
 
@@ -50,9 +54,10 @@ public class OrderService {
                 .toEither(new StructuredError("OrderItems Not Found",
                         ErrorType.NOT_FOUND_ERROR)).get();
 
+        List<OrderItemDomain> orderItemDomains = orderItems.stream().map(orderItemMapper::toDomain).toList();
 
         //reserve y item akan daka gar hatu item habu unavailable bu result dabta instance ak la ReservationResult.Failure
-        var result = inventoryReservationPort.reserveItems(orderItems);
+        var result = inventoryReservationPort.reserveItems(orderItemDomains);
         if (result instanceof ReservationResult.Failure f) {
             throw new InsufficientInventoryException(f.lines());
         }
@@ -67,7 +72,8 @@ public class OrderService {
             draft.setTax(calculationResult.getTax());
             draft.setTotalPrice(calculationResult.getTotalPrice());
 
-            draft.setReservationId(inventoryReservationPort.FindReservationById(reservationId).getId());
+            draft.setReservationId(inventoryReservationPort.FindReservationById(reservationId)
+                    .toEither(() -> new StructuredError("Reservation Not Found", ErrorType.NOT_FOUND_ERROR)).get().getId());
             draft.setStatus(Status.Pending);
             return orderPort.save(draft);
         }).onFailure(ex -> inventoryReservationPort.releaseReservation(reservationId))

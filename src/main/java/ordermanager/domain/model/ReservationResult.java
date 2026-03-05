@@ -1,4 +1,4 @@
-package ordermanager.domain.port.out;
+package ordermanager.domain.model;
 
 import java.util.List;
 import java.util.UUID;

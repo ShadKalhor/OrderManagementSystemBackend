@@ -1,6 +1,6 @@
 package ordermanager.infrastructure.exception;
 
-import ordermanager.domain.port.out.ReservationResult;
+import ordermanager.domain.model.ReservationResult;
 
 import java.util.List;
 
