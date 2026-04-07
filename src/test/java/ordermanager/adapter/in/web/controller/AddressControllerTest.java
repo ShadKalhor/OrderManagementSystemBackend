@@ -1,184 +1,151 @@
-/*
 package ordermanager.adapter.in.web.controller;
 
-import io.vavr.control.Option;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vavr.control.Either;
+import ordermanager.domain.exception.ErrorType;
+import ordermanager.domain.exception.StructuredError;
+import ordermanager.domain.model.Genders;
+import ordermanager.domain.model.UserAddressDomain;
+import ordermanager.domain.model.UserDomain;
+import ordermanager.domain.model.UserRoles;
+import ordermanager.infrastructure.mapper.UserAddressMapper;
+import ordermanager.infrastructure.security.JwtService;
+import ordermanager.infrastructure.service.AddressService;
+import ordermanager.infrastructure.service.UserService;
+import ordermanager.infrastructure.store.persistence.entity.User;
+import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.infrastructure.web.controller.AddressController;
-import ordermanager.domain.dto.useraddress.CreateUserAddressRequest;
-import ordermanager.domain.dto.useraddress.UpdateUserAddressRequest;
+import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
+import ordermanager.infrastructure.web.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.List;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import ordermanager.infrastructure.store.persistence.entity.UserAddress;
-import ordermanager.infrastructure.service.AddressService;
-import ordermanager.domain.dto.useraddress.UserAddressResponse;
-import ordermanager.infrastructure.mapper.UserAddressMapper;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AddressController.class)
-class AddressControllerTest {
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
+public class AddressControllerTest{
+
 
     @Autowired
-    MockMvc mvc;
-
-    @MockBean
-    AddressService addressService;
-
-    @MockBean
-    UserAddressMapper addressMapper;
-
+    private MockMvc mockMvc;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private AddressService addressService;
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private UserAddressMapper userAddressMapper;
 
 
     @Test
-    void getUserAddresses_ok_withResults() throws Exception {
-        var userId = UUID.randomUUID();
+    void shouldCreateAddress() throws Exception {
 
-        var a1 = new UserAddress(); a1.setId(UUID.randomUUID());
-        var a2 = new UserAddress(); a2.setId(UUID.randomUUID());
+        String id = "112961f9-462e-49bd-85dd-b56041ec65d2";
 
-        var r1 = new UserAddressResponse(
-                a1.getId(),
-                userId,
-                "Line1",
-                "City",
-                "State",
-                "Zip",
-                "",
-                "",
-                false
+        Either<StructuredError,UserDomain> savedUser = Either.right(new UserDomain(UUID.fromString(id), UserRoles.Member,"Hogn",
+                "07502342323","123asdQWE$", Genders.Male));
+
+        CreateUserAddressRequest addressRequest =
+                new CreateUserAddressRequest(savedUser.get().getId(),
+                        "addressName", "erbil",
+                        "myDescription","House",
+                "1st Street","405",true);
+
+
+
+        UserAddressDomain addressDomain = new UserAddressDomain(UUID.randomUUID(), addressRequest.userId()
+                ,addressRequest.name(),addressRequest.city(),addressRequest.description(),addressRequest.type(),
+                addressRequest.street(), addressRequest.residentialNo(), addressRequest.isPrimary());
+
+
+        given(addressService.CreateAddress(any()))
+                .willReturn(Either.right(addressDomain));
+        given(userService.CreateUser(any(UserDomain.class))).willReturn(savedUser);
+
+        String jsonRequest = """
+                
+                {
+                    "userId": "112961f9-462e-49bd-85dd-b56041ec65d2",
+                    "name": "addressName",
+                    "city": "erbil",
+                    "description": "my Description",
+                    "type": "house",
+                    "street": "405",
+                    "residentialNo": "102",
+                    "isPrimary": true
+                }
+                """;
+
+        mockMvc.perform(post("/addresses").contentType(MediaType.APPLICATION_JSON).content(jsonRequest)).andExpect(status().isCreated());
+
+    }
+
+    @Test
+    void shouldNotReturnAddressBecauseOfInvalidUserId() throws Exception {
+
+        UserAddressDomain mappedDomain = new UserAddressDomain(
+                UUID.randomUUID(),
+                UUID.fromString("112961f9-462e-49bd-85dd-b56041ec65d2"),
+                "addressName",
+                "erbil",
+                "my Description",
+                "house",
+                "405",
+                "102",
+                true
         );
-        var r2 = new UserAddressResponse(
-                a2.getId(),
-                userId,
-                "Line2",
-                "City2",
-                "State2",
-                "Zip2",
-                "",
-                "",
-                false
-        );
 
-        given(addressService.GetUserAddresses(userId))
-                .willReturn(Option.of(List.of(a1, a2)));
+        when(userAddressMapper.createDomain(any(CreateUserAddressRequest.class)))
+                .thenReturn(mappedDomain);
 
-        given(addressMapper.toResponse(a1)).willReturn(r1);
-        given(addressMapper.toResponse(a2)).willReturn(r2);
+        when(addressService.CreateAddress(any(UserAddressDomain.class)))
+                .thenReturn(Either.left(
+                        new StructuredError("User not found", ErrorType.NOT_FOUND_ERROR)
+                ));
 
-        mvc.perform(get("/address/user/{userId}", userId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(a1.getId().toString()))
-                .andExpect(jsonPath("$[0].city").value("City"))
-                .andExpect(jsonPath("$[1].id").value(a2.getId().toString()))
-                .andExpect(jsonPath("$[1].city").value("City2"));
-    }
+        String jsonRequest = """
+            {
+                "userId": "112961f9-462e-49bd-85dd-b56041ec65d2",
+                "name": "addressName",
+                "city": "erbil",
+                "description": "my Description",
+                "type": "house",
+                "street": "405",
+                "residentialNo": "102",
+                "isPrimary": true
+            }
+            """;
 
-    @Test
-    void getUserAddresses_notFound_whenOptionalEmpty() throws Exception {
-        var userId = UUID.randomUUID();
-
-        given(addressService.GetUserAddresses(userId)).willReturn(Option.none());
-
-        mvc.perform(get("/address/user/{userId}", userId))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void getUserAddresses_notFound_whenListEmpty_andControllerTreatsEmptyAs404() throws Exception {
-        var userId = UUID.randomUUID();
-
-        given(addressService.GetUserAddresses(userId)).willReturn(Option.of(List.of()));
-
-        mvc.perform(get("/address/user/{userId}", userId))
-                .andExpect(status().isNotFound());
-    }
-
-
-    @Test
-    void createAddress_created() throws Exception {
-        var request = new CreateUserAddressRequest(UUID.randomUUID(), "City", "State", "ss", "House", "street1", "123",false);
-        var entity = new UserAddress(); entity.setId(UUID.randomUUID());
-        var response = new UserAddressResponse(entity.getId(), UUID.randomUUID(), "Line1", "City", "State", "Zip", "street1", "234", false);
-
-        given(addressMapper.create(request)).willReturn(entity);
-
-        given(addressService.CreateAddress(any(UserAddress.class)))
-                .willReturn(io.vavr.control.Either.right(entity));
-
-        given(addressMapper.toResponse(entity)).willReturn(response);
-
-        mvc.perform(post("/address")
+        mockMvc.perform(post("/addresses")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(entity.getId().toString()))
-                .andExpect(jsonPath("$.city").value("City"));
-
-        verify(addressService).CreateAddress(entity);
-    }
-
-    @Test
-    void updateAddress_ok() throws Exception {
-        var id = UUID.randomUUID();
-        var updateRequest = new UpdateUserAddressRequest(UUID.randomUUID(), "CityX", "StateX", "ZipX",
-                "", "", "", false);
-
-        var entity = new UserAddress(); entity.setId(id);
-        var updated = new UserAddress(); updated.setId(id);
-        var response = new UserAddressResponse(id, UUID.randomUUID(), "LineX", "CityX", "StateX",
-                "ZipX", "", "", true);
-
-        given(addressService.GetAddressById(id)).willReturn(Option.of(entity));
-
-        //because of optional, TODO: Check if optional is needed when creating or updating entities.
-        given(addressService.CreateAddress(any(UserAddress.class)))
-                .willReturn(Option.of(updated));
-*/
-/*
-
-        given(addressService.CreateAddress(entity)).willReturn(updated);
-*//*
-
-        given(addressMapper.toResponse(updated)).willReturn(response);
-
-        mvc.perform(put("/address/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id.toString()))
-                .andExpect(jsonPath("$.city").value("CityX"));
-
-        verify(addressService).CreateAddress(entity);
-    }
-
-    @Test
-    void updateAddress_notFound() throws Exception {
-        var id = UUID.randomUUID();
-        var updateRequest = new UpdateUserAddressRequest(UUID.randomUUID(), "CityX", "StateX", "ZipX",
-                "", "", "",true);
-
-        given(addressService.GetAddressById(id)).willReturn(Option.none());
-
-        mvc.perform(put("/address/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
+                        .content(jsonRequest))
                 .andExpect(status().isNotFound());
     }
 
 }
-*/
