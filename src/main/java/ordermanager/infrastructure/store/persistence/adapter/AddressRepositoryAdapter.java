@@ -43,7 +43,7 @@ public class AddressRepositoryAdapter implements AddressPersistencePort {
             UserAddress address = addressRepository.save(addressEntity);
             return addressMapper.toDomain(address);
         })
-                .toEither().mapLeft(throwable -> new StructuredError("Failed while storing address", ErrorType.SERVER_ERROR));
+                .toEither().mapLeft(throwable -> new StructuredError("Failed while storing address", ErrorType.NOT_FOUND_ERROR));
     }
 
     @Override

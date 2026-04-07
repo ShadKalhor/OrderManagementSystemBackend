@@ -3,9 +3,9 @@ package ordermanager.domain.service;
 import ordermanager.domain.model.ItemDomain;
 import ordermanager.domain.model.OrderDomain;
 import ordermanager.domain.model.OrderItemDomain;
+import ordermanager.domain.model.OrderLineDomain;
 import ordermanager.domain.port.out.ItemPersistencePort;
 import ordermanager.domain.port.out.OrderItemPersistencePort;
-import ordermanager.infrastructure.store.persistence.entity.OrderItem;
 
 
 import java.math.BigDecimal;
@@ -27,12 +27,12 @@ public class OrderPricingService {
 
     public OrderDomain ApplyPricing(OrderDomain orderDomain) {
 
-        BigDecimal subtotal = calculateSubtotal(orderDomain.getOrderItemIds());
+        BigDecimal subtotal = calculateSubtotal(orderDomain.getOrderLines().stream().map(OrderLineDomain::itemId).toList());
         BigDecimal deliveryFee = calculateDeliveryFee(subtotal);
         BigDecimal tax = calculateTax(subtotal);
         BigDecimal total = calculateTotal(subtotal,deliveryFee,tax);
 
-        return new OrderDomain(orderDomain.getOrderItemIds(), subtotal, deliveryFee,tax,total);
+        return new OrderDomain(orderDomain.getOrderLines(), subtotal, deliveryFee,tax,total);
     }
 
     private BigDecimal calculateSubtotal(List<UUID> orderItemIds){

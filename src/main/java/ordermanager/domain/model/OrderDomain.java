@@ -20,7 +20,7 @@ public class OrderDomain {
     private UUID userId;
     private UUID addressId;
     private UUID driverId;
-    private List<UUID> orderItemIds;
+    private List<OrderLineDomain> orderLines;
     private UUID reservationId;
 
     private Status status;
@@ -33,9 +33,9 @@ public class OrderDomain {
     private String notes;
 
 
-    public OrderDomain(List<UUID> orderItemIds, BigDecimal subtotal,
+    public OrderDomain(List<OrderLineDomain> orderLines, BigDecimal subtotal,
                        BigDecimal deliveryFee, BigDecimal tax, BigDecimal total) {
-        this.orderItemIds = orderItemIds;
+        this.orderLines = orderLines;
         this.subTotal = subtotal;
         this.deliveryFee = deliveryFee;
         this.tax = tax;

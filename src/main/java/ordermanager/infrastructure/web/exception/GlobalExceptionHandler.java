@@ -19,10 +19,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
-
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(ErrorStructureException.class)
+    public ResponseEntity<ErrorResponse> handleErrorStructureException(ErrorStructureException ex){
+        final var httpStatus = ex.getHttpStatus();
+        final var errorResponse = new ErrorResponse(ex.getMessage());
+        //new
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(httpStatus));
+    }
+
 
     @ExceptionHandler(EntityNotFoundException.class)
     ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {

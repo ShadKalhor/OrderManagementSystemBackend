@@ -21,6 +21,6 @@ public record CreateOrderRequest(
         Status status,
         @EnumOrNull(value = DeliveryStatus.class)
         DeliveryStatus deliveryStatus,
-        @Valid @NotEmpty List<CreateOrderItemRequest> orderItems,
+        @Valid @NotEmpty List<CreateOrderLineRequest> orderLines,
         @Size(max=255) String notes
 ) {}

@@ -5,20 +5,16 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
-import ordermanager.domain.model.ItemDomain;
-import ordermanager.domain.model.OrderDomain;
-import ordermanager.domain.model.OrderItemDomain;
+import ordermanager.domain.model.*;
 import ordermanager.domain.port.out.OrderItemPersistencePort;
 import ordermanager.domain.port.out.InventoryReservationPort;
 import ordermanager.domain.port.out.OrderPersistencePort;
-import ordermanager.domain.model.ReservationResult;
 import ordermanager.domain.service.OrderPricingService;
 import ordermanager.infrastructure.exception.EntityNotFoundException;
 import ordermanager.infrastructure.exception.InsufficientInventoryException;
 import ordermanager.infrastructure.mapper.OrderItemMapper;
 import ordermanager.infrastructure.store.persistence.entity.Order;
 import ordermanager.infrastructure.store.persistence.entity.OrderItem;
-import ordermanager.domain.model.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -123,7 +119,7 @@ public class OrderService {
     }
 
     private Either<StructuredError, List<OrderItem>> hydrateItems(OrderDomain order) {
-        for (UUID orderItemId : order.getOrderItemIds()) {
+        for (UUID orderItemId : order.getOrderLines().stream().map(OrderLineDomain::itemId).toList()) {
             OrderItemDomain orderItemDomain = orderItemPort.GetById(orderItemId).getOrNull();
             if (orderItemDomain == null)
                 return Either.left(new StructuredError("Order Not Found",ErrorType.NOT_FOUND_ERROR));

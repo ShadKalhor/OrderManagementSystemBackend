@@ -3,10 +3,7 @@ package ordermanager.infrastructure.mapper;
 
 import ordermanager.domain.model.OrderDomain;
 import ordermanager.infrastructure.store.persistence.entity.*;
-import ordermanager.infrastructure.web.dto.order.CreateOrderRequest;
-import ordermanager.infrastructure.web.dto.order.OrderDto;
-import ordermanager.infrastructure.web.dto.order.OrderResponse;
-import ordermanager.infrastructure.web.dto.order.UpdateOrderRequest;
+import ordermanager.infrastructure.web.dto.order.*;
 import org.mapstruct.*;
 
 
@@ -16,7 +13,7 @@ import java.util.function.Supplier;
 
 @Mapper(
     componentModel = "spring",
-    uses = { UserMapper.class, UserAddressMapper.class, DriverMapper.class, OrderItemMapper.class, MoneyMapper.class },
+    uses = { UserMapper.class, UserAddressMapper.class, DriverMapper.class, OrderItemMapper.class, MoneyMapper.class, CreateOrderLineRequest.class},
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface OrderMapper {
@@ -30,10 +27,11 @@ public interface OrderMapper {
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "reservation", ignore = true)
+    @Mapping(source = "orderLines", target = "orderItems")
     Order create(CreateOrderRequest r);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(source ="orderItems", target ="orderItemIds")
+    @Mapping(target ="orderLines", source ="orderLines")
     @Mapping(target = "reservationId", ignore = true)
     @Mapping(target = "subTotal", ignore = true)
     @Mapping(target = "deliveryFee", ignore = true)
@@ -50,7 +48,7 @@ public interface OrderMapper {
     @Mapping(target = "tax", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "reservationId", ignore = true)
-    @Mapping(target = "orderItemIds", ignore = true)
+    @Mapping(target = "orderLines", ignore = true)
     @Mapping(target = "userId", ignore = true)
     OrderDomain updateDomain(UpdateOrderRequest r);
 
@@ -79,7 +77,7 @@ public interface OrderMapper {
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "address.id", target = "addressId")
     @Mapping(source = "driver.id", target = "driverId")
-    @Mapping(source = "orderItems", target = "orderItemIds")
+    @Mapping(source = "orderItems", target = "orderLines")
     @Mapping(source = "reservation.id", target = "reservationId")
     OrderDomain toDomain(Order entity);
 
@@ -87,7 +85,7 @@ public interface OrderMapper {
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "addressId", target = "address.id")
     @Mapping(source = "driverId", target = "driver.id")
-    @Mapping(source = "orderItemIds", target = "orderItems")
+    @Mapping(source = "orderLines", target = "orderItems")
     @Mapping(source = "reservationId", target = "reservation.id")
     Order toEntity(OrderDomain domain);
 

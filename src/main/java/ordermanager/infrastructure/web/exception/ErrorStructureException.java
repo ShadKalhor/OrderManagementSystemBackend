@@ -13,6 +13,7 @@ public class ErrorStructureException extends RuntimeException {
     private final String message;
 
     public ErrorStructureException(StructuredError structuredError) {
+        super(structuredError.message());
         this.httpStatus = httpStatus(structuredError.type());
         this.message = structuredError.message();
     }

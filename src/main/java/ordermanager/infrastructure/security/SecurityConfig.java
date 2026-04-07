@@ -28,10 +28,12 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
+                              .anyRequest().authenticated());
+                /*.authorizeHttpRequests(auth -> auth
                         .requestMatchers(new AntPathRequestMatcher("/Auth/**", "POST"),
                                 new AntPathRequestMatcher("/User","POST")).permitAll()
                         .anyRequest().authenticated());
-
+*/
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
