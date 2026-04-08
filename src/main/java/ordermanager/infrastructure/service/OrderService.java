@@ -25,19 +25,18 @@ import java.util.UUID;
 public class OrderService {
 
     private final ItemService itemService;
-    private final OrderPricingService orderPricingService;
+    private final OrderPricingService orderPricingService = new OrderPricingService();
     private final OrderPersistencePort orderPort;
     private final InventoryReservationPort inventoryReservationPort;
     private final OrderItemPersistencePort orderItemPort;
     private final OrderItemMapper orderItemMapper;
 
-    public OrderService( ItemService itemService, OrderPricingService orderPricingService,
+    public OrderService( ItemService itemService,
                          OrderPersistencePort orderPort,
                          InventoryReservationPort inventoryReservationPort,
                          OrderItemPersistencePort orderItemPort,
                          OrderItemMapper orderItemMapper){
         this.itemService = itemService;
-        this.orderPricingService = orderPricingService;
         this.orderPort = orderPort;
         this.inventoryReservationPort = inventoryReservationPort;
         this.orderItemPort = orderItemPort;
