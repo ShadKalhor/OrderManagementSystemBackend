@@ -1,24 +1,33 @@
 package ordermanager.infrastructure.service;
 
 import io.vavr.control.Either;
+import io.vavr.control.Option;
+import lombok.RequiredArgsConstructor;
 import ordermanager.domain.exception.ErrorType;
 import ordermanager.domain.exception.StructuredError;
 import ordermanager.domain.model.UserAddressDomain;
+import ordermanager.domain.model.UserDomain;
 import ordermanager.domain.port.out.AddressPersistencePort;
+import ordermanager.domain.port.out.UserPersistencePort;
+import ordermanager.infrastructure.store.persistence.entity.User;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AddressService {
     
     private final AddressPersistencePort addressPort;
-
-    public AddressService(AddressPersistencePort addressPort){
-        this.addressPort = addressPort;
-    }
+    private final UserPersistencePort userPort;
 
     public Either<StructuredError, UserAddressDomain> CreateAddress(UserAddressDomain userAddress){
+
+        Option<UserDomain> userDomain = userPort.findById(userAddress.getUserId());
+
+        if(userDomain.isEmpty())
+            return Either.left(new StructuredError("User Not Found", ErrorType.NOT_FOUND_ERROR));
+
         return addressPort.save(userAddress);
     }
 
