@@ -13,13 +13,10 @@ import ordermanager.infrastructure.mapper.UserAddressMapper;
 import ordermanager.infrastructure.security.JwtService;
 import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.service.UserService;
-import ordermanager.infrastructure.store.persistence.entity.User;
-import ordermanager.infrastructure.store.persistence.entity.UserAddress;
 import ordermanager.infrastructure.web.controller.AddressController;
 import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
 import ordermanager.infrastructure.web.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,7 +25,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
