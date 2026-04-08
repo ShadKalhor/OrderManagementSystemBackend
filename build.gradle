@@ -1,12 +1,10 @@
 plugins {
-    // Apply the Java plugin
     id 'java'
-
-    // Apply the Spring Boot plugin
-    id 'org.springframework.boot' version '2.7.0'  // Use a stable version
-
-    // Dependency management plugin for Spring Boot
+    id 'groovy'
+    id 'org.springframework.boot' version '2.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.cloud.contract' version '3.1.9'
+
 
 }
 java {
@@ -22,6 +20,16 @@ sourceCompatibility = '17'  // Matches your JDK version
 repositories {
     // Use Maven Central to resolve dependencies
     mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2021.0.9")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 dependencies {
@@ -58,8 +66,29 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+    testImplementation 'io.rest-assured:spring-mock-mvc'
+    testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+
+}
+contracts {
+    testFramework = 'JUNIT5'
+    testMode = 'MockMvc'
+    baseClassForTests = 'ordermanager.contract.BaseContractTest'
+    contractsDslDir = file("$projectDir/src/contractTest/resources/contracts")
 }
 
+sourceSets {
+    contractTest {
+        java {
+            srcDirs += "$buildDir/generated-test-sources/contracts"
+        }
+    }
+}
+
+contractTest {
+    useJUnitPlatform()
+    dependsOn generateContractTests
+}
 
 test {
     useJUnitPlatform()  // Enable JUnit 5 testing platform
