@@ -2,4 +2,3 @@ app:
   jwt:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION_MS:3600000}
-JWT_SECRET: ${JWT_SECRET}
