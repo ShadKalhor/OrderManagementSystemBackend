@@ -1,9 +1,10 @@
 package contracts.address
 
+
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    description "should return 404 for invalid user"
+    description "should return bad request for invalid uuid"
 
     request {
         method POST()
@@ -12,13 +13,13 @@ Contract.make {
             contentType(applicationJson())
         }
         body(
-                userId: "9999-999999999999",
+                userId: "not-a-uuid",
                 name: "addressName",
                 city: "erbil",
                 description: "my Description",
-                type: "house",
-                street: "405",
-                residentialNo: "102",
+                type: "House",
+                street: "1st Street",
+                residentialNo: "405",
                 isPrimary: true
         )
     }

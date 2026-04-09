@@ -1,4 +1,5 @@
 package contracts.address
+
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
@@ -14,9 +15,9 @@ Contract.make {
                 userId: "112961f9-462e-49bd-85dd-b56041ec65d2",
                 city: "erbil",
                 description: "my Description",
-                type: "house",
-                street: "405",
-                residentialNo: "102",
+                type: "House",
+                street: "1st Street",
+                residentialNo: "405",
                 isPrimary: true
         )
     }
