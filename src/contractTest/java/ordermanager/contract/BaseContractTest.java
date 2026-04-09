@@ -10,6 +10,7 @@ import ordermanager.infrastructure.security.JwtService;
 import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.service.UserService;
 import ordermanager.infrastructure.web.controller.AddressController;
+import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
 import ordermanager.infrastructure.web.dto.useraddress.UserAddressResponse;
 import ordermanager.infrastructure.web.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,6 @@ public abstract class BaseContractTest {
     @Autowired
     MockMvc mockMvc;
 
-
     @MockBean
     JwtService jwtService;
 
@@ -46,47 +46,47 @@ public abstract class BaseContractTest {
     @MockBean
     UserAddressMapper userAddressMapper;
 
+    private static final UUID EXISTING_USER_ID =
+            UUID.fromString("112961f9-462e-49bd-85dd-b56041ec65d2");
+
+    private static final UUID UNKNOWN_USER_ID =
+            UUID.fromString("99999999-9999-9999-9999-999999999999");
+
+    private static final UUID CREATED_ADDRESS_ID =
+            UUID.fromString("22222222-2222-2222-2222-222222222222");
+
     @BeforeEach
     void setup() {
         RestAssuredMockMvc.mockMvc(mockMvc);
 
-        UserAddressDomain mappedDomain = new UserAddressDomain(
-                UUID.fromString("11111111-1111-1111-1111-111111111111"),
-                UUID.fromString("112961f9-462e-49bd-85dd-b56041ec65d2"),
-                "addressName",
-                "erbil",
-                "my Description",
-                "house",
-                "405",
-                "102",
-                true
-        );
+        when(userAddressMapper.createDomain(any(CreateUserAddressRequest.class)))
+                .thenAnswer(invocation -> {
+                    CreateUserAddressRequest r = invocation.getArgument(0);
+                    return new UserAddressDomain(
+                            null,
+                            r.userId(),
+                            r.name(),
+                            r.city(),
+                            r.description(),
+                            r.type(),
+                            r.street(),
+                            r.residentialNo(),
+                            r.isPrimary()
+                    );
+                });
 
-        UserAddressDomain responseDomain = new UserAddressDomain(
-                UUID.fromString("22222222-2222-2222-2222-222222222222"),
-                UUID.fromString("112961f9-462e-49bd-85dd-b56041ec65d2"),
-                "addressName",
-                "erbil",
-                "my Description",
-                "house",
-                "405",
-                "102",
-                true
-        );
-
-        when(userAddressMapper.createDomain(any())).thenReturn(mappedDomain);
-        //when(addressService.CreateAddress(any())).thenReturn(Either.right(responseDomain));
         when(addressService.CreateAddress(any(UserAddressDomain.class)))
-                .thenAnswer(inv -> {
-                    UserAddressDomain d = inv.getArgument(0);
+                .thenAnswer(invocation -> {
+                    UserAddressDomain d = invocation.getArgument(0);
 
-                    if (d.getUserId() != null &&
-                            d.getUserId().equals(UUID.fromString("99999999-9999-9999-9999-999999999999"))) {
-                        return Either.left(new StructuredError("User not found", ErrorType.NOT_FOUND_ERROR));
+                    if (d.getUserId() != null && d.getUserId().equals(UNKNOWN_USER_ID)) {
+                        return Either.left(
+                                new StructuredError("User Not Found", ErrorType.NOT_FOUND_ERROR)
+                        );
                     }
 
                     return Either.right(new UserAddressDomain(
-                            UUID.fromString("22222222-2222-2222-2222-222222222222"),
+                            CREATED_ADDRESS_ID,
                             d.getUserId(),
                             d.getName(),
                             d.getCity(),
@@ -99,8 +99,8 @@ public abstract class BaseContractTest {
                 });
 
         when(userAddressMapper.domainToResponse(any(UserAddressDomain.class)))
-                .thenAnswer(inv -> {
-                    UserAddressDomain d = inv.getArgument(0);
+                .thenAnswer(invocation -> {
+                    UserAddressDomain d = invocation.getArgument(0);
                     return new UserAddressResponse(
                             d.getId(),
                             d.getUserId(),
@@ -112,5 +112,6 @@ public abstract class BaseContractTest {
                             d.getResidentialNo(),
                             d.isPrimary()
                     );
-                });    }
+                });
+    }
 }
