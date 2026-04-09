@@ -15,6 +15,7 @@ import ordermanager.infrastructure.service.AddressService;
 import ordermanager.infrastructure.service.UserService;
 import ordermanager.infrastructure.web.controller.AddressController;
 import ordermanager.infrastructure.web.dto.useraddress.CreateUserAddressRequest;
+import ordermanager.infrastructure.web.dto.useraddress.UpdateUserAddressRequest;
 import ordermanager.infrastructure.web.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 
 import java.util.UUID;
@@ -59,13 +62,18 @@ public class AddressControllerTest{
     private UserAddressMapper userAddressMapper;
 
 
+    private final String id = "112961f9-462e-49bd-85dd-b56041ec65d2";
+
+
+    private final Either<StructuredError,UserDomain> savedUser = Either.right(new UserDomain(UUID.fromString(id), UserRoles.Member,"Hogn",
+            "07502342323","123asdQWE$", Genders.Male));
+
+
+    //Post Address Tests.
+
     @Test
     void shouldCreateAddress() throws Exception {
 
-        String id = "112961f9-462e-49bd-85dd-b56041ec65d2";
-
-        Either<StructuredError,UserDomain> savedUser = Either.right(new UserDomain(UUID.fromString(id), UserRoles.Member,"Hogn",
-                "07502342323","123asdQWE$", Genders.Male));
 
         CreateUserAddressRequest addressRequest =
                 new CreateUserAddressRequest(savedUser.get().getId(),
@@ -143,5 +151,44 @@ public class AddressControllerTest{
                         .content(jsonRequest))
                 .andExpect(status().isNotFound());
     }
+
+    //Put Address Tests
+    @Test
+    void shouldUpdateAddress() throws Exception {
+
+        UpdateUserAddressRequest addressRequest =
+                new UpdateUserAddressRequest(UUID.fromString(id),
+                "addressName","city","desc.",
+                "House","102nd Street","405",true);
+
+
+        UserAddressDomain addressDomain = new UserAddressDomain(UUID.randomUUID(), addressRequest.userId()
+                ,addressRequest.name(),addressRequest.city(),addressRequest.description(),addressRequest.type(),
+                addressRequest.street(), addressRequest.residentialNo(), addressRequest.isPrimary());
+
+        String jsonRequest = """
+            {
+                "userId": "112961f9-462e-49bd-85dd-b56041ec65d2",
+                "name": "addressName",
+                "city": "city",
+                "description": "desc.",
+                "type": "House",
+                "street": "102nd Street",
+                "residentialNo": "405",
+                "isPrimary": true
+            }
+            """;
+
+
+        given(userAddressMapper.updateDomain(any(UpdateUserAddressRequest.class)))
+                .willReturn(addressDomain);
+        when(addressService.UpdateAddress(eq(addressDomain.getId()), any(UserAddressDomain.class)))
+                .thenReturn(Either.right(addressDomain));
+
+        mockMvc.perform(put("/addresses/{addressId}", addressDomain.getId()).contentType(MediaType.APPLICATION_JSON).content(jsonRequest)).andExpect(status().isAccepted());
+
+
+    }
+
 
 }
