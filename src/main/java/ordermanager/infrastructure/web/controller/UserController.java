@@ -63,7 +63,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/user")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public UserResponse GetById(@PathVariable("userId") UUID userId){
 
@@ -71,9 +71,9 @@ public class UserController {
 
     }
 
-    @GetMapping
+    @GetMapping("/{phone}/phone")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserResponse GetByPhoneNumber(@RequestParam(required = false) String phoneNumber){
+    public UserResponse GetByPhoneNumber(@PathVariable(name = "phone") String phoneNumber){
 
         return userService.GetUserByPhoneNumber(phoneNumber).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
