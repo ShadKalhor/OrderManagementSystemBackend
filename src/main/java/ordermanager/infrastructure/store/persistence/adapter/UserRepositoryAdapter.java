@@ -28,7 +28,7 @@ public class UserRepositoryAdapter implements UserPersistencePort {
 
     @Override
     public Option<UserDomain> findById(UUID userId) {
-                return userRepository.findOptionById(userId).map(userMapper::toDomain);
+        return userRepository.findOptionById(userId).map(userMapper::toDomain);
     }
 
     @Override
