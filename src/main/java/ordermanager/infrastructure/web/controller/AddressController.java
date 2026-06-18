@@ -29,7 +29,7 @@ public class AddressController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserAddressResponse CreateAddress(@Valid @RequestBody CreateUserAddressRequest addressBody){
+    public UserAddressResponse createAddress(@Valid @RequestBody CreateUserAddressRequest addressBody){
 
         UserAddressDomain address = addressMapper.createDomain(addressBody);
         return addressService.CreateAddress(address)
@@ -38,8 +38,8 @@ public class AddressController {
     }
 
     @PutMapping("/{addressId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserAddressResponse UpdateAddress(@PathVariable UUID addressId, @Valid @RequestBody UpdateUserAddressRequest addressBody){
+    @ResponseStatus(HttpStatus.OK)
+    public UserAddressResponse updateAddress(@PathVariable UUID addressId, @Valid @RequestBody UpdateUserAddressRequest addressBody){
 
         UserAddressDomain address = addressMapper.updateDomain(addressBody);
         return addressService.UpdateAddress(addressId, address)
@@ -48,8 +48,8 @@ public class AddressController {
     }
 
     @GetMapping("/{addressId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserAddressResponse GetAddressById(@PathVariable("addressId") UUID addressId){
+    @ResponseStatus(HttpStatus.OK)
+    public UserAddressResponse getAddressById(@PathVariable("addressId") UUID addressId){
 
         return addressService.GetAddressById(addressId)
                 .map(addressMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
@@ -57,8 +57,8 @@ public class AddressController {
     }
 
     @DeleteMapping("/{addressId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void DeleteAddress(@PathVariable("addressId") UUID addressId){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAddress(@PathVariable("addressId") UUID addressId){
         addressService.DeleteAddress(addressId).getOrElseThrow(ErrorStructureException::new);
     }
 }
