@@ -29,15 +29,15 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemResponse CreateItem(@Valid @RequestBody CreateItemRequest itemBody){
+    public ItemResponse createItem(@Valid @RequestBody CreateItemRequest itemBody){
 
         ItemDomain item = itemMapper.createDomain(itemBody);
         return itemService.CreateItem(item).map(itemMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
     }
 
     @PutMapping("/{itemId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ItemResponse UpdateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
+    @ResponseStatus(HttpStatus.OK)
+    public ItemResponse updateItem(@PathVariable UUID itemId, @Valid @RequestBody UpdateItemRequest itemBody){
         ItemDomain item = itemMapper.updateDomain(itemBody);
 
         return itemService.UpdateItem(itemId,item).map(itemMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
@@ -45,16 +45,16 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ItemResponse GetItemById(@PathVariable("itemId") UUID itemId){
+    @ResponseStatus(HttpStatus.OK)
+    public ItemResponse getItemById(@PathVariable("itemId") UUID itemId){
 
         return itemService.GetItemById(itemId).map(itemMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<ItemResponse> GetAllItems(){
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemResponse> getAllItems(){
 
         return itemService.GetAllItems().stream()
                 .map(itemMapper::domainToResponse)
@@ -63,8 +63,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void DeleteItem(@PathVariable("itemId") UUID itemId){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteItem(@PathVariable("itemId") UUID itemId){
         itemService.DeleteItem(itemId).getOrElseThrow(ErrorStructureException::new);
     }
 }

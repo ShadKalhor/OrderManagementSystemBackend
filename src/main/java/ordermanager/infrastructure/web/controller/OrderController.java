@@ -32,7 +32,7 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderResponse CreateOrder(@Valid @RequestBody CreateOrderRequest orderBody){
+    public OrderResponse createOrder(@Valid @RequestBody CreateOrderRequest orderBody){
 
         OrderDomain order = orderMapper.createDomain(orderBody);
         order.setStatus(Status.NotProccessed);//TODO:Temp, pashan regaki chaktr lo chakrdni status dadanre.
@@ -42,28 +42,28 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public OrderResponse UpdateOrder(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderRequest orderBody){
+    @ResponseStatus(HttpStatus.OK)
+    public OrderResponse updateOrder(@PathVariable UUID orderId, @Valid @RequestBody UpdateOrderRequest orderBody){
         var order = orderMapper.update(orderBody);
         return orderService.UpdateOrder(orderId,order).map(orderMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
     }
 
     @GetMapping("/{orderId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public OrderResponse GetOrderById(@PathVariable("orderId") UUID orderId){
+    @ResponseStatus(HttpStatus.OK)
+    public OrderResponse getOrderById(@PathVariable("orderId") UUID orderId){
         return orderService.GetOrderById(orderId).map(orderMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
     }
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<OrderResponse> GetAllOrders(){
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderResponse> getAllOrders(){
         return orderService.GetAllOrders().stream().map(orderMapper::domainToResponse).toList();
     }
 
 
     @DeleteMapping("/{orderId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void DeleteOrder(@PathVariable("orderId") UUID orderId){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteOrder(@PathVariable("orderId") UUID orderId){
 
         orderService.DeleteOrder(orderId).getOrElseThrow(ErrorStructureException::new);
 

@@ -48,15 +48,15 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse CreateUser(@Valid @RequestBody CreateUserRequest userBody){
+    public UserResponse createUser(@Valid @RequestBody CreateUserRequest userBody){
 
         UserDomain user = userMapper.createDomain(userBody);
         return userService.CreateUser(user).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
     }
 
     @PutMapping("/{userId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserResponse UpdateUser(@PathVariable UUID userId, @Valid @RequestBody UpdateUserRequest userBody){
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse updateUser(@PathVariable UUID userId, @Valid @RequestBody UpdateUserRequest userBody){
 
         UserDomain user = userMapper.updateDomain(userBody);
         return userService.UpdateUser(userId,user).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
@@ -64,16 +64,16 @@ public class UserController {
 
 
     @GetMapping("/{userId}/user")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserResponse GetById(@PathVariable("userId") UUID userId){
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse getById(@PathVariable("userId") UUID userId){
 
         return userService.GetUserById(userId).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
     }
 
     @GetMapping("/{phone}/phone")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserResponse GetByPhoneNumber(@PathVariable(name = "phone") String phoneNumber){
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse getByPhoneNumber(@PathVariable(name = "phone") String phoneNumber){
 
         return userService.GetUserByPhoneNumber(phoneNumber).map(userMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
@@ -81,16 +81,16 @@ public class UserController {
 
 
     @GetMapping("/{userId}/orders")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<OrderResponse> GetOrders(@PathVariable("userId") UUID userId){
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderResponse> getOrders(@PathVariable("userId") UUID userId){
         return orderService.GetByUserId(userId).stream().map(orderMapper::domainToResponse).toList();
     }
 
 
     //TODO:Refactor this to be compatible with addressService.
     @GetMapping("/{userId}/addresses")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<UserAddressResponse> GetAddressById(@PathVariable("userId") UUID userId){
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserAddressResponse> getAddressById(@PathVariable("userId") UUID userId){
 
         return addressService.GetUserAddresses(userId).stream().map(userAddressMapper::domainToResponse).toList();
 
@@ -99,16 +99,16 @@ public class UserController {
 
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<UserSummary> GetAllUsers(){
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserSummary> getAllUsers(){
 
         return userService.GetAllUsers().stream().map(userMapper::domainToSummary).toList();
 
 
     }
     @DeleteMapping("/{userId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void DeleteUser(@PathVariable("userId") UUID userId){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable("userId") UUID userId){
         userService.DeleteUser(userId).getOrElseThrow(ErrorStructureException::new);
     }
 }

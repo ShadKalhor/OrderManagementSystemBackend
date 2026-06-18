@@ -28,7 +28,7 @@ public class DriverController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public DriverResponse CreateDriver(@Valid @RequestBody CreateDriverRequest driverBody){
+    public DriverResponse createDriver(@Valid @RequestBody CreateDriverRequest driverBody){
 
         DriverDomain driver = driverMapper.createDomain(driverBody);
         return driverService.CreateDriver(driver)
@@ -38,8 +38,8 @@ public class DriverController {
     }
 
     @PutMapping("/{driverId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public DriverResponse UpdateDriver(@PathVariable UUID driverId,@Valid @RequestBody UpdateDriverRequest driverBody){
+    @ResponseStatus(HttpStatus.OK)
+    public DriverResponse updateDriver(@PathVariable UUID driverId,@Valid @RequestBody UpdateDriverRequest driverBody){
 
         DriverDomain driver = driverMapper.updateDomain(driverBody);
         return driverService.UpdateDriver(driverId,driver).map(driverMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
@@ -47,8 +47,8 @@ public class DriverController {
     }
 
     @GetMapping("/{driverId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public DriverResponse GetDriver(@PathVariable UUID driverId){
+    @ResponseStatus(HttpStatus.OK)
+    public DriverResponse getDriver(@PathVariable UUID driverId){
 
         return driverService.GetDriverById(driverId).map(driverMapper::domainToResponse).getOrElseThrow(ErrorStructureException::new);
 
@@ -57,8 +57,8 @@ public class DriverController {
 
     //TODO:Double Check Endpoint Later.
     @GetMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<DriverResponse> GetAllDrivers(){
+    @ResponseStatus(HttpStatus.OK)
+    public List<DriverResponse> getAllDrivers(){
 
         return driverService.GetAllDrivers().stream()
                 .map(driverMapper::domainToResponse)
@@ -67,8 +67,8 @@ public class DriverController {
 
 
     @DeleteMapping("/{driverId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void DeleteDriver(@PathVariable UUID driverId){
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDriver(@PathVariable UUID driverId){
 
         driverService.DeleteDriver(driverId).getOrElseThrow(ErrorStructureException::new);
 
